@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="EmployeesService" />
+        <module name="NotificationService" />
+        <module name="ClientsService" />
+        <module name="AutorizeService" />
+        <module name="ApiGateAwayService" />
+        <module name="AppealsService" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ApiGateAwayService" target="1.5" />
+      <module name="AppealsService" target="1.5" />
+      <module name="AutorizeService" target="1.5" />
+      <module name="ClientsService" target="1.5" />
+      <module name="EmployeesService" target="1.5" />
+      <module name="NotificationService" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
