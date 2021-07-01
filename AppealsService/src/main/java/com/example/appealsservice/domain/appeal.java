@@ -1,4 +1,4 @@
-package com.example.clientsservice.domain;
+package com.example.appealsservice.domain;
 
 import lombok.Data;
 
@@ -6,9 +6,9 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "userq")
+@Table(name = "appeal")
 @Data
-public class User {
+public class Appeal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
