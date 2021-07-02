@@ -3,12 +3,14 @@ package com.example.clientsservice.dto;
 import com.example.clientsservice.domain.Client;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class ClientDto {
 
     private Long id;

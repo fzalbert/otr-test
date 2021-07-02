@@ -17,6 +17,6 @@ public interface ClientService {
 
     ClientDto update(ClientDto client);
     boolean deleteById(long id);
-    boolean changePassword(String newPassword);
+    boolean changePassword(long id,String newPassword);
 
 }

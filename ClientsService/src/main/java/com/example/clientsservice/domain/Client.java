@@ -1,8 +1,10 @@
 package com.example.clientsservice.domain;
 
+import com.example.clientsservice.dto.ClientDto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 
@@ -46,6 +48,11 @@ public class Client {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private  User user;
 
+    public Client(ClientDto client) { BeanUtils.copyProperties(client, this);
+    }
 
+    public Client() {
+
+    }
 }
 

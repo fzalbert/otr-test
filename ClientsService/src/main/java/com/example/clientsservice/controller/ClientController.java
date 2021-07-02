@@ -1,11 +1,10 @@
 package com.example.clientsservice.controller;
 
+import com.example.clientsservice.dto.ClientDto;
 import com.example.clientsservice.dto.ShortClientDto;
 import com.example.clientsservice.service.impl.ClientServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,8 +20,27 @@ public class ClientController {
         this.clientServiceImp = clientServiceImp;
     }
 
-    @GetMapping()
+    @GetMapping("/GetAll")
     public List<ShortClientDto> geAll() {
         return this.clientServiceImp.getAll();
     }
+
+    @PutMapping("/BlockById")
+    public void blockById(long id){ this.clientServiceImp.blockById(id);};
+
+    @PutMapping("/UnBlockById")
+    public void unblockById(long id){this.clientServiceImp.unblockById(id);}
+
+    @GetMapping("getById")
+    public ClientDto getById(long id){return this.clientServiceImp.getById(id);}
+
+    @PutMapping("update")
+    public ClientDto update(@RequestBody ClientDto clientrequest) {return  this.clientServiceImp.update(clientrequest);}
+
+    @DeleteMapping("DeleteById")
+    public boolean deleteById(long id){return this.clientServiceImp.deleteById(id);}
+
+    @PutMapping("ChangePassword")
+    public boolean changePassword(long id, String newPassword){this.clientServiceImp.changePassword(id, newPassword);
+    return true;}
 }
