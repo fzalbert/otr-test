@@ -21,9 +21,6 @@ public class Right {
     @Column(name = "title")
     private String title;
 
-    /*@OneToMany(mappedBy = "rights")
-    private Set<RoleRight> rights;*/
-
     @ManyToMany
     @JoinTable(
             name = "role_right",
