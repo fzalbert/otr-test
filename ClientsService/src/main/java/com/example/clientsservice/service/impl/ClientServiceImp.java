@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class ClientServiceImp implements ClientService{
 
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
     public ClientServiceImp(ClientRepository clientRepository)
     {
@@ -30,7 +30,7 @@ public class ClientServiceImp implements ClientService{
                 .findAll()
                 .stream()
                 .sorted(Comparator.comparing(Client::getShortName, Comparator.reverseOrder()))
-                .map(x -> new ShortClientDto(x))
+                .map(ShortClientDto::new)
                 .collect(Collectors.toList());
     }
 
