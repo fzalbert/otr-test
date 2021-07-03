@@ -10,9 +10,10 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "appeals")
+@Table(name = "appeal")
 @Data
 public class Appeal {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +30,7 @@ public class Appeal {
     @Column(name = "updateDate")
     private Date updateDate;
 
-    @Column(name = "status")
+    @Enumerated(EnumType.ORDINAL)
     private StatusAppeal statusAppeal;
 
     @OneToOne(cascade = CascadeType.ALL)

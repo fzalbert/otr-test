@@ -33,6 +33,4 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Client client;
 
-
-
 }

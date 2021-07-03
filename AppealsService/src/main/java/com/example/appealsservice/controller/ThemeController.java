@@ -23,21 +23,21 @@ public class ThemeController {
 
     @GetMapping()
     public List<ThemeDto> getAll() {
-        return this.themeServiceImpl.getAll();
+        return themeServiceImpl.getAll();
     }
 
     @GetMapping("/{name}")
-    public  ThemeDto Create( String name){
-        return this.themeServiceImpl.Create(name);
+    public  ThemeDto create( String name){
+        return themeServiceImpl.Create(name);
     }
 
     @GetMapping("/{id}")
-    public ThemeDto ById( Long id){
-        return this.themeServiceImpl.getById(id);
+    public ThemeDto byId( Long id){
+        return themeServiceImpl.getById(id);
     }
 
     @GetMapping("/{id},{name}")
-    public ThemeDto Update( Long id, String name){
-        return this.themeServiceImpl.update(id, name);
+    public ThemeDto update( Long id, String name){
+        return themeServiceImpl.update(id, name);
     }
 }

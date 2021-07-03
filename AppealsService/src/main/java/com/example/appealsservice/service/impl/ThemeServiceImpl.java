@@ -43,7 +43,7 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public ThemeDto Create(@NotNull String name) {
+    public ThemeDto Create(String name) {
 
         Theme theme = new Theme();
         theme.setName(name);

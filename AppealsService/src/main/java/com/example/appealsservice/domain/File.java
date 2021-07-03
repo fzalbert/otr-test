@@ -17,8 +17,9 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "url",columnDefinition="TEXT")
+    @Column(name = "url", columnDefinition = "TEXT")
     private String url;
+
 
     @Column(name = "date")
     private Date date;
@@ -28,3 +29,4 @@ public class File {
     private Appeal appeal;
 
 }
+

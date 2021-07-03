@@ -19,5 +19,4 @@ public class Theme {
     @Column(name = "name", columnDefinition="TEXT")
     private String name;
 
-
 }
