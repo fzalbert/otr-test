@@ -2,12 +2,27 @@ package com.example.employeesservice.dto.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Data
 public class CreateEmployeeDTO {
 
-    public String login;
-    public String password;
-    public String lastName;
-    public String email;
-    public long roleId;
+    @NotNull
+    @Size(min = 5, max = 20, message = "Error login")
+    private String login;
+
+    @NotNull
+    @Size(min = 5, message = "Error password")
+    private String password;
+
+    private String lastName;
+
+    @NotNull
+    @Email(message = "Error email")
+    private String email;
+
+    @NotNull
+    private long roleId;
 }

@@ -9,10 +9,13 @@ import com.example.employeesservice.exception.ResourceNotFoundException;
 import com.example.employeesservice.repository.EmployeeRepository;
 import com.example.employeesservice.repository.RoleRepository;
 import com.example.employeesservice.service.EmployeeService;
+import com.example.employeesservice.validation.CreateEmployeeDtoValidator;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -23,15 +26,20 @@ public class EmployeeServiceImp implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
+    private final CreateEmployeeDtoValidator dtoValidator;
 
-    public EmployeeServiceImp(EmployeeRepository employeeRepository, RoleRepository roleRepository) {
+    @Autowired
+    public EmployeeServiceImp(EmployeeRepository employeeRepository,
+                              RoleRepository roleRepository, CreateEmployeeDtoValidator dtoValidator) {
         this.employeeRepository = employeeRepository;
         this.roleRepository = roleRepository;
+        this.dtoValidator = dtoValidator;
     }
 
     /** Создание сотрудника */
     @Override
     public boolean create(CreateEmployeeDTO request) {
+        dtoValidator.validate(request);
         var employee = this.dtoToEntity(request, new Employee());
         employeeRepository.save(employee);
         return true;
@@ -94,12 +102,12 @@ public class EmployeeServiceImp implements EmployeeService {
 
         var person = new Person();
         BeanUtils.copyProperties(request, person, "password");
-        person.setPassword(DigestUtils.md5Hex(request.password));
+        person.setPassword(DigestUtils.md5Hex(request.getPassword()));
         person.setRegistrationDate(new Date());
         employee.setPerson(person);
 
-        var role = roleRepository.findById(request.roleId)
-                .orElseThrow(() -> new ResourceNotFoundException(request.roleId));
+        var role = roleRepository.findById(request.getRoleId())
+                .orElseThrow(() -> new ResourceNotFoundException(request.getRoleId()));
         employee.setRole(role);
 
         return employee;

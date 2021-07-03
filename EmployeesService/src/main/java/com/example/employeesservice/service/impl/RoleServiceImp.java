@@ -8,6 +8,7 @@ import com.example.employeesservice.repository.EmployeeRepository;
 import com.example.employeesservice.repository.RoleRepository;
 import com.example.employeesservice.service.RoleService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -17,11 +18,10 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImp implements RoleService {
 
-    private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
 
+    @Autowired
     public RoleServiceImp(EmployeeRepository employeeRepository, RoleRepository roleRepository) {
-        this.employeeRepository = employeeRepository;
         this.roleRepository = roleRepository;
     }
 

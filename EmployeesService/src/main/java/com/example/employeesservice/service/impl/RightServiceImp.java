@@ -6,6 +6,7 @@ import com.example.employeesservice.exception.ResourceNotFoundException;
 import com.example.employeesservice.repository.RightRepository;
 import com.example.employeesservice.repository.RoleRepository;
 import com.example.employeesservice.service.RightService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -18,6 +19,7 @@ public class RightServiceImp implements RightService {
     private final RoleRepository roleRepository;
     private final RightRepository rightRepository;
 
+    @Autowired
     public RightServiceImp(RoleRepository roleRepository, RightRepository rightRepository) {
         this.roleRepository = roleRepository;
         this.rightRepository = rightRepository;

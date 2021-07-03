@@ -7,6 +7,7 @@ import com.example.employeesservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class EmployeeController {
     }
 
     @PostMapping("create")
-    public boolean create(@RequestBody CreateEmployeeDTO request) {
+    public boolean create(@Valid @RequestBody CreateEmployeeDTO request) {
         return employeeService.create(request);
     }
 
