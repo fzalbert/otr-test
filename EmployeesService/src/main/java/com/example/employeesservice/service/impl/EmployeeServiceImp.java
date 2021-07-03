@@ -29,6 +29,7 @@ public class EmployeeServiceImp implements EmployeeService {
         this.roleRepository = roleRepository;
     }
 
+    /** Создание сотрудника */
     @Override
     public boolean create(CreateEmployeeDTO request) {
         var employee = this.dtoToEntity(request, new Employee());
@@ -36,6 +37,7 @@ public class EmployeeServiceImp implements EmployeeService {
         return true;
     }
 
+    /** Обновление сотрудника */
     @Override
     public EmployeeDTO update(CreateEmployeeDTO request, long employeeId) {
         var employee = employeeRepository.findById(employeeId)
@@ -46,6 +48,7 @@ public class EmployeeServiceImp implements EmployeeService {
         return new EmployeeDTO(updatedEmployee);
     }
 
+    /** Удаление сотрудника */
     @Override
     public boolean delete(long employeeId) {
         var employee = employeeRepository.findById(employeeId)
@@ -54,9 +57,9 @@ public class EmployeeServiceImp implements EmployeeService {
         return true;
     }
 
+    /** Получить список всех сотрудников в системе */
     @Override
     public List<ShortEmployeeDTO> getList() {
-
         return employeeRepository
                 .findAll()
                 .stream()
@@ -65,6 +68,7 @@ public class EmployeeServiceImp implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    /** Получить данные о сотруднике по id */
     @Override
     public EmployeeDTO getById(long employeeId) {
         var employee = employeeRepository.findById(employeeId)
@@ -72,6 +76,7 @@ public class EmployeeServiceImp implements EmployeeService {
         return new EmployeeDTO(employee);
     }
 
+    /** Назначить роль сотруднику */
     @Override
     public boolean appointRole(long employeeId, long roleId) {
         var employee = employeeRepository.findById(employeeId)
@@ -83,6 +88,7 @@ public class EmployeeServiceImp implements EmployeeService {
         return true;
     }
 
+    /** Преобразовать из dto в сущность employee */
     private Employee dtoToEntity(CreateEmployeeDTO request, Employee employee) {
         BeanUtils.copyProperties(request, employee);
 

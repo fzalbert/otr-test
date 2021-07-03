@@ -25,6 +25,7 @@ public class RoleServiceImp implements RoleService {
         this.roleRepository = roleRepository;
     }
 
+    /** Создание роли */
     @Override
     public boolean create(CreateRoleDTO request) {
         var role = this.dtoInEntity(request, new Role());
@@ -33,6 +34,7 @@ public class RoleServiceImp implements RoleService {
         return true;
     }
 
+    /** Обновление роли */
     @Override
     public RoleDTO update(CreateRoleDTO request, long id) {
         var role = roleRepository.findById(id)
@@ -43,9 +45,9 @@ public class RoleServiceImp implements RoleService {
         return new RoleDTO(updatedRole);
     }
 
+    /** Получить список ролей */
     @Override
     public List<RoleDTO> getList() {
-
         return roleRepository
                 .findAll()
                 .stream()
@@ -54,6 +56,7 @@ public class RoleServiceImp implements RoleService {
                 .collect(Collectors.toList());
     }
 
+    /** Удалить роль */
     @Override
     public boolean delete(long id) {
         var role = roleRepository.findById(id)
@@ -63,6 +66,7 @@ public class RoleServiceImp implements RoleService {
         return true;
     }
 
+    /** Преобразовать из dto в сущность role */
     private Role dtoInEntity(CreateRoleDTO request, Role role) {
         BeanUtils.copyProperties(request, role);
         return role;

@@ -23,6 +23,7 @@ public class RightServiceImp implements RightService {
         this.rightRepository = rightRepository;
     }
 
+    /** Добавить права для определенной роли */
     @Override
     public boolean appointRole(long id, long roleId) {
         var role = roleRepository.findById(roleId)
@@ -35,9 +36,9 @@ public class RightServiceImp implements RightService {
         return true;
     }
 
+    /** Получить список всех прав */
     @Override
     public List<RightDTO> getList() {
-
         return rightRepository
                 .findAll()
                 .stream()
@@ -46,18 +47,15 @@ public class RightServiceImp implements RightService {
                 .collect(Collectors.toList());
     }
 
+    /** Получить список прав, относящихся к выбранной роле */
     @Override
     public List<RightDTO> getListByRoleId(long roleId) {
+        var role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException(roleId));
 
-        return  roleRepository
-                .findAll()
+        return role.getRights()
                 .stream()
-                .filter(x -> x.getId() == roleId)
-                .findFirst()
-                .map(x -> x.getRights()
-                        .stream()
-                        .map(RightDTO::new))
-                .get()
+                .map(RightDTO::new)
                 .collect(Collectors.toList());
     }
 }

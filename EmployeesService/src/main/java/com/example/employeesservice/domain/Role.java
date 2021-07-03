@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,5 +26,6 @@ public class Role {
             name = "role_right",
             joinColumns = @JoinColumn(name = "rights_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Right> rights;
+    private List<Right> rights;
+
 }
