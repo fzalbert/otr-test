@@ -1,32 +1,69 @@
 package com.example.appealsservice.domain;
-
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
-import java.util.Date;
 
-@Getter
-@Setter
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "files")
-@Data
 public class File {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "url", columnDefinition = "TEXT")
-    private String url;
+    private String name;
 
+    private Long appealId;
 
-    @Column(name = "date")
-    private Date date;
+    private String type;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "appeal_id", referencedColumnName = "id")
-    private Appeal appeal;
+    @Lob
+    private byte[] data;
+
+    public File() {
+    }
+
+    public File(String name, String type, byte[] data, long appealId) {
+        this.name = name;
+        this.type = type;
+        this.data = data;
+        this.appealId = appealId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getAppealId() {
+        return appealId;
+    }
+
+    public void setAppealId(long appealId) {
+        this.appealId = appealId;
+    }
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
 
 }
 
