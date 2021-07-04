@@ -37,6 +37,7 @@ public class FileServiceImpl {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         File fileDb = new File();
         fileDb.setName(fileName);
+        fileDb.setAppealId(appealId);
         fileDb.setType(file.getContentType());
         fileDb.setData(file.getBytes());
 
