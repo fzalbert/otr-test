@@ -1,6 +1,6 @@
 package com.example.clientsservice.domain;
 
-import com.example.clientsservice.dto.ClientDto;
+import com.example.clientsservice.dto.request.ClientDto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

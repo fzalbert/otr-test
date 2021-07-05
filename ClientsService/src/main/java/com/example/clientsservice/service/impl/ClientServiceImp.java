@@ -1,23 +1,18 @@
 package com.example.clientsservice.service.impl;
 
 import com.example.clientsservice.domain.Client;
-import com.example.clientsservice.domain.User;
-import com.example.clientsservice.dto.ClientDto;
-import com.example.clientsservice.dto.ShortClientDto;
-import com.example.clientsservice.exception.BaseRuntimeException;
+import com.example.clientsservice.dto.request.ClientDto;
+import com.example.clientsservice.dto.responce.ShortClientDto;
 import com.example.clientsservice.exception.ResourceNotFoundException;
 import com.example.clientsservice.repository.ClientRepository;
 import com.example.clientsservice.repository.UserRepository;
 import com.example.clientsservice.service.ClientService;
+import com.example.clientsservice.validation.ClientDtoValidator;
 import com.sun.istack.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 
@@ -26,11 +21,14 @@ public class ClientServiceImp implements ClientService{
 
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
+    private final ClientDtoValidator dtoValidator;
 
-    public ClientServiceImp(ClientRepository clientRepository, UserRepository userRepository)
+    public ClientServiceImp(ClientRepository clientRepository, UserRepository userRepository,
+                            ClientDtoValidator dtoValidator)
     {
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
+        this.dtoValidator = dtoValidator;
     }
 
     /**Получение всех клиентов*/
@@ -93,7 +91,7 @@ public class ClientServiceImp implements ClientService{
     @NotNull
     @Override
     public ClientDto update(ClientDto clientrequest) {
-
+        dtoValidator.validate(clientrequest);
         var client = clientRepository.findById(clientrequest.getId()).orElseThrow(() -> new ResourceNotFoundException(clientrequest.getId()));
         if(client == null)
             return null;

@@ -1,11 +1,13 @@
 package com.example.clientsservice.controller;
 
-import com.example.clientsservice.dto.ClientDto;
-import com.example.clientsservice.dto.ShortClientDto;
+import com.example.clientsservice.dto.request.ClientDto;
+import com.example.clientsservice.dto.responce.ShortClientDto;
 import com.example.clientsservice.service.impl.ClientServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -35,7 +37,7 @@ public class ClientController {
     public ClientDto getById(long id){return this.clientServiceImp.getById(id);}
 
     @PutMapping("update")
-    public ClientDto update(@RequestBody ClientDto clientrequest) {return  this.clientServiceImp.update(clientrequest);}
+    public ClientDto update(@RequestBody @Valid ClientDto clientrequest) {return  this.clientServiceImp.update(clientrequest);}
 
     @DeleteMapping("DeleteById")
     public boolean deleteById(long id){return this.clientServiceImp.deleteById(id);}
