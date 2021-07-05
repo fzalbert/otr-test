@@ -11,6 +11,8 @@ public interface TaskService {
 
     List<TaskDto> getTasksByEmployeeId(long employeeId);
 
+    TaskDto geById(long Id);
+
     //admin appoint appeals to employees
     void Appoint(long employeeId, long appealId);
 

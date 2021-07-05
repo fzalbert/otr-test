@@ -29,13 +29,27 @@ public class TaskServiceImpl implements TaskService {
         this.appealRepository = appealRepository;
     }
 
+
+    /** взять задачу */
     @Override
     public void takeTask(long appealId, long employeeId) {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
 
-        var task = new Task();
+        if(appeal.getStatusAppeal() != StatusAppeal.NotProcessed)
+            throw new NotRightsException("the employee is already fulfilling appeal");
+
+        var task = taskRepository
+                .findAll()
+                .stream()
+                .filter(x -> x.getEmployeeId() == employeeId && x.getAppeal().getId() == appealId)
+                .findFirst()
+                .orElseThrow(()
+                        -> new NotRightsException("task already created"));
+
+
+        task = new Task();
         task.setEmployeeId(employeeId);
         task.setDate( new Date());
         task.setOver(false);
@@ -47,6 +61,7 @@ public class TaskServiceImpl implements TaskService {
         appealRepository.save(appeal);
     }
 
+    /** получить список задач по id сотрудника */
     @Override
     public List<TaskDto> getTasksByEmployeeId(long employeeId) {
 
@@ -58,9 +73,16 @@ public class TaskServiceImpl implements TaskService {
                 .map(x -> new TaskDto(x, new AppealDto(x.getAppeal())))
                 .collect(Collectors.toList());
 
-
     }
 
+    @Override
+    public TaskDto geById(long id) {
+        var task = taskRepository
+                .findById(id).orElseThrow(()
+                        -> new ResourceNotFoundException(id));
+
+        return new TaskDto(task, new AppealDto(task.getAppeal()));
+    }
 
 
     @Override
@@ -70,7 +92,18 @@ public class TaskServiceImpl implements TaskService {
                 .findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
 
-        var task = new Task();
+        if(appeal.getStatusAppeal() != StatusAppeal.NotProcessed)
+            throw new NotRightsException("the employee is already fulfilling appeal");
+
+        var task = taskRepository
+                .findAll()
+                .stream()
+                .filter(x -> x.getEmployeeId() == employeeId && x.getAppeal().getId() == appealId)
+                .findFirst()
+                .orElseThrow(()
+                        -> new NotRightsException("task already created"));
+
+        task = new Task();
         task.setEmployeeId(employeeId);
         task.setDate( new Date());
         task.setOver(false);
@@ -100,4 +133,5 @@ public class TaskServiceImpl implements TaskService {
         appealRepository.save(task.getAppeal());
 
     }
+
 }
