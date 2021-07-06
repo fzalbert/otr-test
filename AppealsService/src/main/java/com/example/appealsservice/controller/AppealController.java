@@ -37,6 +37,4 @@ public class AppealController {
         return appealServiceImpl.create(clientId, request);
     }
 
-
-
 }

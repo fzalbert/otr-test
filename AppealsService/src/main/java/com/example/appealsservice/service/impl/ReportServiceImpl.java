@@ -32,6 +32,7 @@ public class ReportServiceImpl implements ReportService {
         this.taskRepository = taskRepository;
     }
 
+    /** создание отчета и одобрение обращения  */
     @Override
     public void approve(long taskId, long employeeId, String text) {
 
@@ -55,6 +56,7 @@ public class ReportServiceImpl implements ReportService {
 
     }
 
+    /** создание отчета и отклонение обращения  */
     @Override
     public void reject(long taskId, long employeeId, String text) {
 
@@ -77,6 +79,7 @@ public class ReportServiceImpl implements ReportService {
         appealRepository.save(task.getAppeal());
     }
 
+    /** получить все отчеты  */
     @Override
     public List<ReportDto> getAll() {
         return reportRepository
@@ -87,6 +90,7 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
     }
 
+    /** получить по id */
     @Override
     public ReportDto getById(long id) {
         var report = reportRepository.findById(id).orElseThrow(()
@@ -95,6 +99,7 @@ public class ReportServiceImpl implements ReportService {
         return new ReportDto(report);
     }
 
+    /** получение списка отчетов по выбранному статусу  */
     @Override
     public List<ReportDto> getByStatus(ReportStatus status) {
         return reportRepository

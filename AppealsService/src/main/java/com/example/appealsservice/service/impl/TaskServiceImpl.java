@@ -75,6 +75,8 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
+
+    /** получить задачу по id  */
     @Override
     public TaskDto geById(long id) {
         var task = taskRepository

@@ -27,12 +27,12 @@ public class TaskController {
         taskServiceImpl.takeTask(appealId, employeeId);
     }
 
-    @GetMapping()
+    @GetMapping("appoint")
     public void appoint(long employeeId, long appealId) {
         taskServiceImpl.Appoint(employeeId, appealId);
     }
 
-    @GetMapping()
+    @GetMapping("{id}")
     public TaskDto byId(long id) {
        return taskServiceImpl.geById(id);
     }

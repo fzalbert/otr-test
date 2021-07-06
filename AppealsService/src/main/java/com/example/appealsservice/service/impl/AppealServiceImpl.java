@@ -37,6 +37,7 @@ public class AppealServiceImpl implements AppealService {
         this.fileRepository = fileRepository;
     }
 
+    /** получение списка обращений  */
     @Override
     public List<AppealDto> getAll() {
 
@@ -48,6 +49,7 @@ public class AppealServiceImpl implements AppealService {
                 .collect(Collectors.toList());
     }
 
+    /** получение обращения по id */
     @Override
     public AppealDto getById(long id) {
         var appeal = appealRepository.findById(id).orElseThrow(()
@@ -56,6 +58,7 @@ public class AppealServiceImpl implements AppealService {
         return new AppealDto(appeal);
     }
 
+    /** создание обращения */
     @Override
     public AppealDto create(long clientId, AppealRequestDto request) {
 
@@ -70,10 +73,13 @@ public class AppealServiceImpl implements AppealService {
         appeal.setClientId(clientId);
 
         appealRepository.save(appeal);
+
+
         return new AppealDto(appeal);
 
     }
 
+    /** удаление обращения */
     @Override
     public void delete(long id) {
         var appeal = appealRepository.findById(id).orElseThrow(()
@@ -82,6 +88,7 @@ public class AppealServiceImpl implements AppealService {
         appealRepository.delete(appeal);
     }
 
+    /** обновление обращения  */
     @Override
     public AppealDto updateMyAppeal(long clientId, long id, AppealRequestDto request) {
 
@@ -104,11 +111,13 @@ public class AppealServiceImpl implements AppealService {
 
     }
 
+    /** получение списка обращений с помощью фильтра*/
     @Override
     public List<AppealDto> filter(FilterAppealDto filter) {
         return null;
     }
 
+    /** получение списка обращений клиента  */
     @Override
     public List<AppealDto> myAppeals(long clientId) {
         return appealRepository
@@ -119,8 +128,4 @@ public class AppealServiceImpl implements AppealService {
                 .map(AppealDto::new)
                 .collect(Collectors.toList());
     }
-
-
-
-
 }

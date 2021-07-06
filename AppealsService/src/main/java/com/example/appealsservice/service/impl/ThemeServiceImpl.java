@@ -22,6 +22,7 @@ public class ThemeServiceImpl implements ThemeService {
         this.themeRepository = themeRepository;
     }
 
+    /** получить все темы  */
     @Override
     public List<ThemeDto> getAll() {
 
@@ -33,6 +34,7 @@ public class ThemeServiceImpl implements ThemeService {
                 .collect(Collectors.toList());
     }
 
+    /** получить тему по id  */
     @Override
     public ThemeDto getById(long id) {
         var theme = themeRepository.findById(id).orElseThrow(()
@@ -42,6 +44,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     }
 
+    /** создать */
     @Override
     public ThemeDto Create(String name) {
 
@@ -53,6 +56,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     }
 
+    /** удалить по id  */
     @Override
     public void Delete(long id) {
 
@@ -63,6 +67,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     }
 
+    /** обновить  */
     @Override
     public ThemeDto update(Long id, @NotNull String name) {
 
