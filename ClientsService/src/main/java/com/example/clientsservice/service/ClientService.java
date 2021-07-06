@@ -1,7 +1,7 @@
 package com.example.clientsservice.service;
 
-import com.example.clientsservice.dto.ClientDto;
-import com.example.clientsservice.dto.ShortClientDto;
+import com.example.clientsservice.dto.request.ClientDto;
+import com.example.clientsservice.dto.responce.ShortClientDto;
 
 import java.util.List;
 
