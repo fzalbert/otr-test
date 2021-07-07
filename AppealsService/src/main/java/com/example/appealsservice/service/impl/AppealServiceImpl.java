@@ -131,12 +131,8 @@ public class AppealServiceImpl implements AppealService {
             appeals.filter(x -> x.getStatusAppeal() == filter.statusAppeal);
 
         if(filter.date != null)
-            appeals.filter(string ->
-                    string.getCreateDate().compareTo(filter.date) == 0);
-
-
-
-
+            appeals.filter(x -> x.getCreateDate().after(filter.date));
+        
         return appeals.map(AppealDto::new).collect(Collectors.toList());
     }
 
