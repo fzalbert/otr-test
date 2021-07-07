@@ -1,0 +1,121 @@
+<strong>Here you would put the actual form to work on the task</strong>
+
+<p>
+  You can use this form through Camunda Tasklist
+  by setting the formKey of a BPMN User Task to:
+  <code>embedded:app:forms/task-form.html</code>
+</p>
+
+<form class="form-horizontal">
+
+  <div class="control-group">
+    <label class="control-label">Id</label>
+    <div class="controls">
+      <input type="text"
+             cam-variable-name="appeals_id"
+             readonly="true"
+             class="form-control" />      
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Client</label>
+    <div class="controls">
+      <input type="text"
+             cam-variable-name="appeal_client_name"
+             readonly="true"
+             class="form-control" />
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Status</label>
+    <div class="controls">
+      <input type="text"
+             cam-variable-name="appeal_status"
+             readonly="true"
+             class="form-control" />
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Created at</label>
+    <div class="controls">
+      <input type="text"
+             cam-variable-name="created_at"
+             readonly="true"
+             class="form-control" />
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Theme</label>
+    <div class="controls">
+      <input type="text"
+             cam-variable-name="appeal_theme"
+             readonly="true"
+             class="form-control" />
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Description</label>
+    <div class="controls">
+      <input type="text"
+             cam-variable-name="appeal_description"
+             readonly="true"
+             class="form-control" />
+    </div>
+  </div>
+
+  <div class="control-group">
+    <h3 class="control-label">Выберите действие</h3>
+
+    <label>
+      <input type="checkbox"
+             class="radio"
+             value="1"
+             cam-variable-name="approved"
+             cam-variable-type="Boolean"
+             name="fooby[1][]"/>
+      Подтверждение
+    </label>
+
+    <label>
+      <input type="checkbox"
+             class="radio"
+             value="1"
+             cam-variable-name="denied"
+             cam-variable-type="Boolean"
+             name="fooby[1][]"/>
+      Отмена
+    </label>
+    <label>
+      <input type="checkbox"
+             class="radio"
+             value="1"
+             cam-variable-name="changed"
+             cam-variable-type="Boolean"
+             name="fooby[1][]"/>
+      Изменение
+    </label>
+  </div>
+
+  <script cam-script type="text/form-script">
+      $("input:checkbox").on('click', function() {
+      // in the handler, 'this' refers to the box clicked on
+      var $box = $(this);
+      if ($box.is(":checked")) {
+      // the name of the box is retrieved using the .attr() method
+      // as it is assumed and expected to be immutable
+      var group = "input:checkbox[name='" + $box.attr("name") + "']";
+      // the checked state of the group/box on the other hand will change
+      // and the current value is retrieved using .prop() method
+      $(group).prop("checked", false);
+      $box.prop("checked", true);
+    } else {
+      $box.prop("checked", false);
+    }
+  });
+  </script>
+</form>
