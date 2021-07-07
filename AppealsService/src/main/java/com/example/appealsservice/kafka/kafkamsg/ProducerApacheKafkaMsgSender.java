@@ -2,7 +2,7 @@ package com.example.appealsservice.kafka.kafkamsg;
 
 import java.util.Properties;
 
-import com.example.appealsservice.kafka.ModelEvent;
+import com.example.appealsservice.kafka.model.ModelMessage;
 import com.example.appealsservice.kafka.config.PropertiesConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,7 +51,7 @@ public class ProducerApacheKafkaMsgSender {
         return properties;
     }
 
-    public void sendJson(ModelEvent model) throws JsonProcessingException {
+    public void sendJson(ModelMessage model) throws JsonProcessingException {
         initializeKafkaProducer();
         log.info("Msg before Kafka sending " + model.toString());
         String topic = config.getMsgTopic();

@@ -7,6 +7,7 @@ public class AppealRequestDto {
     @NotNull
     public Long themeId;
 
+
     public String description;
 
 }

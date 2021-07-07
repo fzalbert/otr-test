@@ -74,8 +74,8 @@ public class AppealServiceImpl implements AppealService {
 
         appealRepository.save(appeal);
 
-
-        return new AppealDto(appeal);
+        var appealDto = new AppealDto(appeal);
+        return appealDto;
 
     }
 

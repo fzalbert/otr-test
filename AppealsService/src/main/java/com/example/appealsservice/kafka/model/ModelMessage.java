@@ -1,4 +1,4 @@
-package com.example.appealsservice.kafka;
+package com.example.appealsservice.kafka.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @Setter
 @Getter
-public class ModelEvent {
+public class ModelMessage {
 
     private String email;
 
@@ -14,5 +14,6 @@ public class ModelEvent {
 
     private String content;
 
+    private String subject;
 
 }

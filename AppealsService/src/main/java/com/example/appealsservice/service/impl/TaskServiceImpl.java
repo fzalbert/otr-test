@@ -7,9 +7,14 @@ import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.kafka.kafkamsg.ProducerApacheKafkaMsgSender;
+import com.example.appealsservice.kafka.model.MessageType;
+import com.example.appealsservice.kafka.model.ModelConvertor;
+import com.example.appealsservice.kafka.model.ModelMessage;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.TaskService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -21,18 +26,21 @@ import java.util.stream.Collectors;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final ProducerApacheKafkaMsgSender apacheKafkaMsgSender;
     private final AppealRepository appealRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository, AppealRepository appealRepository)
+    public TaskServiceImpl(TaskRepository taskRepository, AppealRepository appealRepository,
+                           ProducerApacheKafkaMsgSender apacheKafkaMsgSender)
     {
         this.taskRepository = taskRepository;
         this.appealRepository = appealRepository;
+        this.apacheKafkaMsgSender = apacheKafkaMsgSender;
     }
 
 
     /** взять задачу */
     @Override
-    public void takeTask(long appealId, long employeeId) {
+    public void takeTask(long appealId, long employeeId) throws JsonProcessingException {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
@@ -59,6 +67,11 @@ public class TaskServiceImpl implements TaskService {
 
         appeal.setStatusAppeal(StatusAppeal.InProccesing);
         appealRepository.save(appeal);
+
+        ModelMessage model = ModelConvertor.Convert("chakalov.spiridon@mail.ru",
+                "Спиридон", "Рассматривается", MessageType.TakeAppeal);
+        apacheKafkaMsgSender.initializeKafkaProducer();
+        apacheKafkaMsgSender.sendJson(model);
     }
 
     /** получить список задач по id сотрудника */

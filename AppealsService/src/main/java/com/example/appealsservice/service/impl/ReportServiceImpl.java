@@ -6,10 +6,12 @@ import com.example.appealsservice.domain.StatusAppeal;
 import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.kafka.kafkamsg.ProducerApacheKafkaMsgSender;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.ReportRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.ReportService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -24,6 +26,7 @@ public class ReportServiceImpl implements ReportService {
     private final TaskRepository taskRepository;
     private final AppealRepository appealRepository;
     private final ReportRepository reportRepository;
+
 
     public ReportServiceImpl(AppealRepository appealRepository, ReportRepository reportRepository,
                              TaskRepository taskRepository) {
@@ -53,6 +56,7 @@ public class ReportServiceImpl implements ReportService {
 
         task.getAppeal().setStatusAppeal(StatusAppeal.Success);
         appealRepository.save(task.getAppeal());
+
 
     }
 

@@ -5,6 +5,7 @@ import com.example.appealsservice.domain.Task;
 import java.util.Date;
 
 public class TaskDto {
+
     private Long id;
 
     private AppealDto appealDto;
