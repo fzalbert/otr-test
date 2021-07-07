@@ -21,14 +21,14 @@ public class TaskController {
         this.taskServiceImpl = taskServiceImpl;
     }
 
-    @GetMapping()
+    @GetMapping("take")
     public void take(long appealId, long employeeId) throws JsonProcessingException {
         taskServiceImpl.takeTask(appealId, employeeId);
 
     }
 
     @GetMapping("appoint")
-    public void appoint(long employeeId, long appealId) {
+    public void appoint(long employeeId, long appealId) throws JsonProcessingException {
         taskServiceImpl.Appoint(employeeId, appealId);
 
     }

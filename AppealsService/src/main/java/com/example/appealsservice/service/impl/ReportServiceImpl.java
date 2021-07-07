@@ -7,10 +7,14 @@ import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.kafka.kafkamsg.ProducerApacheKafkaMsgSender;
+import com.example.appealsservice.kafka.model.MessageType;
+import com.example.appealsservice.kafka.model.ModelConvertor;
+import com.example.appealsservice.kafka.model.ModelMessage;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.ReportRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.ReportService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,27 +30,30 @@ public class ReportServiceImpl implements ReportService {
     private final TaskRepository taskRepository;
     private final AppealRepository appealRepository;
     private final ReportRepository reportRepository;
+    private final ProducerApacheKafkaMsgSender apacheKafkaMsgSender;
 
 
     public ReportServiceImpl(AppealRepository appealRepository, ReportRepository reportRepository,
-                             TaskRepository taskRepository) {
+                             TaskRepository taskRepository, ProducerApacheKafkaMsgSender apacheKafkaMsgSender) {
         this.appealRepository = appealRepository;
         this.reportRepository = reportRepository;
+        this.apacheKafkaMsgSender = apacheKafkaMsgSender;
         this.taskRepository = taskRepository;
     }
 
     /** создание отчета и одобрение обращения  */
     @Override
-    public void approve(long taskId, long employeeId, String text) {
+    public void approve(long taskId, long employeeId, String text) throws JsonProcessingException {
 
         var task = taskRepository.findById(taskId).orElseThrow(()
                 -> new ResourceNotFoundException(taskId));
 
         if(task.getEmployeeId() != employeeId)
-            throw  new NotRightsException("");
+            throw  new NotRightsException("No rigths");
 
         var report = new Report();
         report.setCreateDate(new Date());
+        report.setAppeal(task.getAppeal());
         report.setReportStatus(ReportStatus.Success);
         report.setText(text);
 
@@ -57,18 +64,23 @@ public class ReportServiceImpl implements ReportService {
         task.getAppeal().setStatusAppeal(StatusAppeal.Success);
         appealRepository.save(task.getAppeal());
 
+        ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
+                task.getAppeal().getNameClient(), "APPEAL APPROVED", MessageType.Accept);
+
+        apacheKafkaMsgSender.initializeKafkaProducer();
+        apacheKafkaMsgSender.sendJson(model);
 
     }
 
     /** создание отчета и отклонение обращения  */
     @Override
-    public void reject(long taskId, long employeeId, String text) {
+    public void reject(long taskId, long employeeId, String text) throws JsonProcessingException {
 
         var task = taskRepository.findById(taskId).orElseThrow(()
                 -> new ResourceNotFoundException(taskId));
 
         if(task.getEmployeeId() != employeeId)
-            throw  new NotRightsException("");
+            throw  new NotRightsException("No rigths");
 
         var report = new Report();
         report.setCreateDate(new Date());
@@ -81,6 +93,12 @@ public class ReportServiceImpl implements ReportService {
 
         task.getAppeal().setStatusAppeal(StatusAppeal.Rejected);
         appealRepository.save(task.getAppeal());
+
+        ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
+                task.getAppeal().getNameClient(), "APPEAL DECLINED ", MessageType.Reject);
+
+        apacheKafkaMsgSender.initializeKafkaProducer();
+        apacheKafkaMsgSender.sendJson(model);
     }
 
     /** получить все отчеты  */

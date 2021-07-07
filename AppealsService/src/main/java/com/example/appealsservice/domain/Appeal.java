@@ -27,6 +27,12 @@ public class Appeal {
     @Column(name = "createDate")
     private Date createDate;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "nameClient")
+    private String nameClient;
+
     @Column(name = "updateDate")
     private Date updateDate;
 

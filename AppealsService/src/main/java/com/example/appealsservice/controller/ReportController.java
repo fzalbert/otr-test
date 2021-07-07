@@ -6,6 +6,7 @@ import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.service.impl.AppealServiceImpl;
 import com.example.appealsservice.service.impl.ReportServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +34,12 @@ public class ReportController {
     }
 
     @GetMapping("/approve")
-    public void approve(long taskId, long employeeId, String text) {
+    public void approve(long taskId, long employeeId, String text) throws JsonProcessingException {
         reportServiceImpl.approve(taskId, employeeId, text);
     }
 
     @GetMapping("/reject")
-    public void reject(long taskId, long employeeId, String text) {
+    public void reject(long taskId, long employeeId, String text) throws JsonProcessingException {
         reportServiceImpl.approve(taskId, employeeId, text);
     }
 
