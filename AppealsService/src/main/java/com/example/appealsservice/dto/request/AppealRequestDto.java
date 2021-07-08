@@ -15,5 +15,5 @@ public class AppealRequestDto {
     public String clientName;
 
     public String description;
-
+    
 }

@@ -121,7 +121,7 @@ public class AppealServiceImpl implements AppealService {
                 .findAll()
                 .stream()
                 .sorted(Comparator.comparing(Appeal::getCreateDate, Comparator.reverseOrder()));
-                //
+
 
         if(filter.themeId != null && filter.themeId != 0)
             appeals.filter(x -> x.getTheme().getId().equals(filter.themeId));
@@ -132,7 +132,7 @@ public class AppealServiceImpl implements AppealService {
 
         if(filter.date != null)
             appeals.filter(x -> x.getCreateDate().after(filter.date));
-        
+
         return appeals.map(AppealDto::new).collect(Collectors.toList());
     }
 

@@ -32,7 +32,7 @@ public class FileServiceImpl {
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
         if(appeal.getClientId() != clientId)
-            throw new NotRightsException("");
+            throw new NotRightsException("You can add files only to your appeals");
 
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         File fileDb = new File();
@@ -52,5 +52,7 @@ public class FileServiceImpl {
     public Stream<File> getAllFiles() {
         return fileRepository.findAll().stream();
     }
+
+    public Stream<File>
 
 }

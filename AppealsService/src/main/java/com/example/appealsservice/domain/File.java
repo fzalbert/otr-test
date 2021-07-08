@@ -23,7 +23,7 @@ public class File {
     public File() {
     }
 
-    public File(String name, String type, byte[] data, long appealId) {
+    public File(String name, String type, byte[] data, long appealId ) {
         this.name = name;
         this.type = type;
         this.data = data;
