@@ -2,19 +2,20 @@ package com.example.appealsservice.service;
 
 import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 
 public interface TaskService {
 
-    void takeTask(long appealId, long employeeId);
+    void takeTask(long appealId, long employeeId) throws JsonProcessingException;
 
     List<TaskDto> getTasksByEmployeeId(long employeeId);
 
     TaskDto geById(long Id);
 
     //admin appoint appeals to employees
-    void Appoint(long employeeId, long appealId);
+    void Appoint(long employeeId, long appealId) throws JsonProcessingException;
 
-    void returnAppeal(long employeeId, long taskId);
+    void returnAppeal(long employeeId, long taskId) throws JsonProcessingException;
 }

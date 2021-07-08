@@ -37,6 +37,7 @@ public class AppealServiceImpl implements AppealService {
         this.fileRepository = fileRepository;
     }
 
+    /** получение списка обращений  */
     @Override
     public List<AppealDto> getAll() {
 
@@ -48,6 +49,7 @@ public class AppealServiceImpl implements AppealService {
                 .collect(Collectors.toList());
     }
 
+    /** получение обращения по id */
     @Override
     public AppealDto getById(long id) {
         var appeal = appealRepository.findById(id).orElseThrow(()
@@ -56,6 +58,7 @@ public class AppealServiceImpl implements AppealService {
         return new AppealDto(appeal);
     }
 
+    /** создание обращение */
     @Override
     public AppealDto create(long clientId, AppealRequestDto request) {
 
@@ -65,15 +68,20 @@ public class AppealServiceImpl implements AppealService {
         var appeal = new Appeal();
         appeal.setCreateDate(new Date());
         appeal.setTheme(theme);
+        appeal.setEmail(request.email);
+        appeal.setNameClient(request.clientName);
         appeal.setDescription(request.description);
         appeal.setStatusAppeal(StatusAppeal.NotProcessed);
         appeal.setClientId(clientId);
 
         appealRepository.save(appeal);
-        return new AppealDto(appeal);
+
+        var appealDto = new AppealDto(appeal);
+        return appealDto;
 
     }
 
+    /** удаление обращение */
     @Override
     public void delete(long id) {
         var appeal = appealRepository.findById(id).orElseThrow(()
@@ -82,6 +90,7 @@ public class AppealServiceImpl implements AppealService {
         appealRepository.delete(appeal);
     }
 
+    /** обновление обращение  */
     @Override
     public AppealDto updateMyAppeal(long clientId, long id, AppealRequestDto request) {
 
@@ -92,7 +101,7 @@ public class AppealServiceImpl implements AppealService {
                 -> new ResourceNotFoundException(id));
 
         if (appeal.getClientId() != clientId)
-            throw new NotRightsException("");
+            throw new NotRightsException("This appeal you are not available");
 
         appeal.setTheme(theme);
         appeal.setUpdateDate(new Date());
@@ -104,11 +113,30 @@ public class AppealServiceImpl implements AppealService {
 
     }
 
+    /** получение списка обращений с помощью фильтра*/
     @Override
     public List<AppealDto> filter(FilterAppealDto filter) {
-        return null;
+
+        var appeals = appealRepository
+                .findAll()
+                .stream()
+                .sorted(Comparator.comparing(Appeal::getCreateDate, Comparator.reverseOrder()));
+                //
+
+        if(filter.themeId != null && filter.themeId != 0)
+            appeals.filter(x -> x.getTheme().getId().equals(filter.themeId));
+
+
+        if(filter.statusAppeal != null)
+            appeals.filter(x -> x.getStatusAppeal() == filter.statusAppeal);
+
+        if(filter.date != null)
+            appeals.filter(x -> x.getCreateDate().after(filter.date));
+        
+        return appeals.map(AppealDto::new).collect(Collectors.toList());
     }
 
+    /** получение списка обращений клиента  */
     @Override
     public List<AppealDto> myAppeals(long clientId) {
         return appealRepository
@@ -119,8 +147,4 @@ public class AppealServiceImpl implements AppealService {
                 .map(AppealDto::new)
                 .collect(Collectors.toList());
     }
-
-
-
-
 }
