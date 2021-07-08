@@ -32,7 +32,7 @@ public class ClientDto {
     @Email(message = "Email должен быть корректным адресом электронной почты")
     private String email;
 
-    @Size(min = 5, message = "Error FullAdress")
+    @Size(min = 5, message = "Error FullAddress")
     private String fullAddress;
 
     @Size(min= 5, message = "FullNameOrg")

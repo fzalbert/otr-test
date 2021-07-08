@@ -126,4 +126,19 @@ public class ClientServiceImp implements ClientService{
 
         return true;
     }
+
+    @Override
+    public Boolean auth(String login, String password) {
+
+        var user = userRepository
+                .findAll()
+                .stream()
+                .filter(x -> x.getLogin().equals(login) && x.getPassword().equals(password))
+                .findFirst()
+                .orElse(null);
+
+        return user != null;
+    }
+
+
 }

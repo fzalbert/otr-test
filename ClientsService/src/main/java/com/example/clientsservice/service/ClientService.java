@@ -8,15 +8,11 @@ import java.util.List;
 public interface ClientService {
 
     List<ShortClientDto> getAll();
-
     ClientDto getById(long id);
-
     void blockById(long id);
-
     void unblockById(long id);
-
     ClientDto update(ClientDto client);
     boolean deleteById(long id);
-    boolean changePassword(long id,String newPassword);
-
+    boolean changePassword(long id, String newPassword);
+    Boolean auth(String login, String password);
 }

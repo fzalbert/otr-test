@@ -24,9 +24,10 @@ public class JwtController {
         this.jwtService = jwtService;
     }
 
-    /**
-     * Validate and parse JWT
-     */
+/**
+     * Validate and parse JWT*/
+
+
     @RequestMapping(value = "/parse", method = RequestMethod.POST)
     public ResponseEntity<?> getSomeSensitiveData(@RequestBody JwtParseRequestDto requestDto) {
         try {

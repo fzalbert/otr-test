@@ -5,15 +5,15 @@ import java.util.List;
 public class JwtParseResponseDto {
 
     private String username;
-
-    private List<String> authorities;
+    private String name;
+    private Long roleId;
 
     public JwtParseResponseDto() {
     }
 
-    public JwtParseResponseDto(String username, List<String> authorities) {
+    public JwtParseResponseDto(String username, Long roleId) {
         this.username = username;
-        this.authorities = authorities;
+        this.roleId = roleId;
     }
 
     public String getUsername() {
@@ -24,11 +24,11 @@ public class JwtParseResponseDto {
         this.username = username;
     }
 
-    public List<String> getAuthorities() {
-        return authorities;
+    public Long getRoleId() {
+        return roleId;
     }
 
-    public void setAuthorities(List<String> authorities) {
-        this.authorities = authorities;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 }

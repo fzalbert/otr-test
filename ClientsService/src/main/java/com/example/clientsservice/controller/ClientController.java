@@ -22,6 +22,11 @@ public class ClientController {
         this.clientServiceImp = clientServiceImp;
     }
 
+    @GetMapping("auth")
+    public Boolean auth(String login, String password) {
+        return this.clientServiceImp.auth(login, password);
+    }
+
     @GetMapping("/GetAll")
     public List<ShortClientDto> geAll() {
         return this.clientServiceImp.getAll();

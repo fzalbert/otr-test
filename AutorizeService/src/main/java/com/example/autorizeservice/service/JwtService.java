@@ -28,9 +28,7 @@ public class JwtService {
                 .getBody();
 
         String username = claims.getSubject();
-        //noinspection unchecked
-        List<String> authorities = claims.get("authorities", List.class);
 
-        return new JwtParseResponseDto(username, authorities);
+        return new JwtParseResponseDto();
     }
 }

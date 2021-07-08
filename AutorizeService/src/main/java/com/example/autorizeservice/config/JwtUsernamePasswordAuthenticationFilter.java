@@ -1,20 +1,24 @@
 package com.example.autorizeservice.config;
 
+import com.example.autorizeservice.dto.LoginDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -36,14 +40,20 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException {
 
-        /*LoginDto loginDto = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
+        LoginDto loginDto = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
+        var checkUser = CheckUser(loginDto.getUsername(), loginDto.getPassword());
 
-        return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(
+        if (!checkUser) {
+            response.sendError(401);
+            return null;
+        }
+
+        var user = new UsernamePasswordAuthenticationToken(
                 loginDto.getUsername(),
-                loginDto.getPassword(),
-                Collections.emptyList()
-        ));*/
-        return null;
+                loginDto.getPassword()
+        );
+        SecurityContextHolder.getContext().setAuthentication(user);
+        return user;
     }
 
     @Override
@@ -60,5 +70,15 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
                 .signWith(SignatureAlgorithm.HS256, signingKey.getBytes())
                 .compact();
         response.addHeader(HEADER, HEADER_VALUE_PREFIX + " " + token);
+    }
+
+    /**
+     * Test method
+     **/
+    private Boolean CheckUser(String login, String password) {
+        final String url = "http://localhost:5555/wh/clients/auth?login="+login+"&password="+password;
+
+        var restTemplate = new RestTemplate();
+        return restTemplate.getForObject(url, Boolean.class);
     }
 }
