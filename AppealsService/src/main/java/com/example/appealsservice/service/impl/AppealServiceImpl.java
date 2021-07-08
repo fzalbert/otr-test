@@ -1,23 +1,23 @@
 package com.example.appealsservice.service.impl;
 
 import com.example.appealsservice.domain.Appeal;
-import com.example.appealsservice.domain.File;
 import com.example.appealsservice.domain.StatusAppeal;
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
 
-import com.example.appealsservice.dto.response.FileDto;
+import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.FileRepository;
 import com.example.appealsservice.repository.ThemeRepository;
 import com.example.appealsservice.service.AppealService;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -27,25 +27,25 @@ import java.util.stream.Collectors;
 public class AppealServiceImpl implements AppealService {
 
     private final AppealRepository appealRepository;
-    private final FileRepository fileRepository;
+    private final FileServiceImpl fileServiceImpl;
     private final ThemeRepository themeRepository;
 
     public AppealServiceImpl(AppealRepository appealRepository, ThemeRepository themeRepository,
-                             FileRepository fileRepository) {
+                             FileRepository fileRepository, FileServiceImpl fileServiceImpl) {
         this.appealRepository = appealRepository;
         this.themeRepository = themeRepository;
-        this.fileRepository = fileRepository;
+        this.fileServiceImpl = fileServiceImpl;
     }
 
-    /** получение списка обращений  */
+    /** получение списка обращений */
     @Override
-    public List<AppealDto> getAll() {
+    public List<ShortAppealDto> getAll() {
 
         return appealRepository
                 .findAll()
                 .stream()
                 .sorted(Comparator.comparing(Appeal::getCreateDate, Comparator.reverseOrder()))
-                .map(AppealDto::new)
+                .map(ShortAppealDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -55,12 +55,14 @@ public class AppealServiceImpl implements AppealService {
         var appeal = appealRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
 
-        return new AppealDto(appeal);
+        var files = fileServiceImpl.getFilesByIdAppealId(id);
+
+        return new AppealDto(appeal, files);
     }
 
-    /** создание обращение */
+    /** создание обращения */
     @Override
-    public AppealDto create(long clientId, AppealRequestDto request) {
+    public AppealDto create(MultipartFile file, AppealRequestDto request) throws IOException {
 
         var theme = themeRepository.findById(request.themeId).orElseThrow(()
                 -> new ResourceNotFoundException(request.themeId));
@@ -68,29 +70,34 @@ public class AppealServiceImpl implements AppealService {
         var appeal = new Appeal();
         appeal.setCreateDate(new Date());
         appeal.setTheme(theme);
+        appeal.setStartDate(request.startDate);
+        appeal.setEndDate(request.endDate);
+        appeal.setTradeCode(request.tradeCode);
+        appeal.setAmount(request.amount);
         appeal.setEmail(request.email);
         appeal.setNameClient(request.clientName);
         appeal.setDescription(request.description);
         appeal.setStatusAppeal(StatusAppeal.NotProcessed);
-        appeal.setClientId(clientId);
+        appeal.setClientId(request.clientId);
 
         appealRepository.save(appeal);
 
-        var appealDto = new AppealDto(appeal);
-        return appealDto;
+        if (file !=null) {
+            fileServiceImpl.store(file,appeal.getId(), appeal.getClientId());
 
+            return new AppealDto(appeal, fileServiceImpl.getFilesByIdAppealId(appeal.getId()));
+        }
+        return new AppealDto(appeal, null);
     }
 
-    /** удаление обращение */
     @Override
     public void delete(long id) {
-        var appeal = appealRepository.findById(id).orElseThrow(()
+        var theme = appealRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
-
-        appealRepository.delete(appeal);
     }
 
-    /** обновление обращение  */
+
+    /** обновление обращения  */
     @Override
     public AppealDto updateMyAppeal(long clientId, long id, AppealRequestDto request) {
 
@@ -109,7 +116,7 @@ public class AppealServiceImpl implements AppealService {
 
         appealRepository.save(appeal);
 
-        return new AppealDto(appeal);
+        return new AppealDto(appeal, fileServiceImpl.getFilesByIdAppealId(appeal.getId()));
 
     }
 
@@ -133,7 +140,9 @@ public class AppealServiceImpl implements AppealService {
         if(filter.date != null)
             appeals.filter(x -> x.getCreateDate().after(filter.date));
 
-        return appeals.map(AppealDto::new).collect(Collectors.toList());
+
+        return appeals.map(x -> new AppealDto(x, fileServiceImpl.getFilesByIdAppealId(x.getId())))
+                .collect(Collectors.toList());
     }
 
     /** получение списка обращений клиента  */
@@ -144,7 +153,7 @@ public class AppealServiceImpl implements AppealService {
                 .stream()
                 .filter(x -> x.getClientId() == clientId)
                 .sorted(Comparator.comparing(Appeal::getCreateDate, Comparator.reverseOrder()))
-                .map(AppealDto::new)
+                .map(x -> new AppealDto(x, fileServiceImpl.getFilesByIdAppealId(x.getId())))
                 .collect(Collectors.toList());
     }
-}
+    }

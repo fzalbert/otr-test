@@ -4,6 +4,7 @@ import com.example.appealsservice.domain.StatusAppeal;
 import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.Theme;
 import com.example.appealsservice.dto.response.AppealDto;
+import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
@@ -86,7 +87,7 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .filter(x -> x.getEmployeeId() == employeeId)
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
-                .map(x -> new TaskDto(x, new AppealDto(x.getAppeal())))
+                .map(x -> new TaskDto(x, new ShortAppealDto(x.getAppeal())))
                 .collect(Collectors.toList());
 
     }
@@ -99,7 +100,7 @@ public class TaskServiceImpl implements TaskService {
                 .findById(id).orElseThrow(()
                         -> new ResourceNotFoundException(id));
 
-        return new TaskDto(task, new AppealDto(task.getAppeal()));
+        return new TaskDto(task, new ShortAppealDto(task.getAppeal()));
     }
 
 

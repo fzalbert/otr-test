@@ -1,20 +1,18 @@
 package com.example.appealsservice.dto.response;
 
-
 import com.example.appealsservice.domain.Appeal;
 import com.example.appealsservice.domain.StatusAppeal;
 import com.example.appealsservice.domain.Theme;
-import lombok.*;
-import org.springframework.beans.BeanUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
-public class AppealDto {
+public class ShortAppealDto {
 
     private Long id;
 
@@ -24,26 +22,14 @@ public class AppealDto {
 
     private String description;
 
-    private Date startDate;
-
-    private Date endDate;
-
-    private String tradeCode;
-
-    @Nullable
-    private double amount;
-
     private Date createDate;
 
     private StatusAppeal statusAppeal;
 
 
-    private List<FileDto> files;
+    public ShortAppealDto() {}
 
-    public AppealDto()
-        {}
-
-    public AppealDto(Appeal appeal, List<FileDto> files) {
+    public ShortAppealDto(Appeal appeal) {
 
         if(appeal == null)
             return;
@@ -53,7 +39,6 @@ public class AppealDto {
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();
         statusAppeal = appeal.getStatusAppeal();
-        this.files = files;
 
     }
 }

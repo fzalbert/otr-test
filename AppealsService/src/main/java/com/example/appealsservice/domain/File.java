@@ -17,6 +17,7 @@ public class File {
 
     private String type;
 
+
     @Lob
     private byte[] data;
 
