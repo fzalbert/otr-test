@@ -28,7 +28,7 @@ public class JwtService {
                 .getBody();
 
         String username = claims.getSubject();
-
-        return new JwtParseResponseDto();
+        long role = 3;
+        return new JwtParseResponseDto(username, role);
     }
 }

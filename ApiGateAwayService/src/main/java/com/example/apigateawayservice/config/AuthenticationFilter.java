@@ -27,8 +27,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final RestTemplate restTemplate;
 
-    public AuthenticationFilter(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public AuthenticationFilter() {
+        this.restTemplate = new RestTemplate();
     }
 
     @Override
@@ -47,6 +47,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                         null,
                         responseDto.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
                 );
+
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception ignore) {
                 SecurityContextHolder.clearContext();
