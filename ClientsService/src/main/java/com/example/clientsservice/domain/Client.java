@@ -1,6 +1,7 @@
 package com.example.clientsservice.domain;
 
 import com.example.clientsservice.dto.request.ClientDto;
+import com.example.clientsservice.dto.request.CreateClientDto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,8 @@ public class Client {
     private  User user;
 
     public Client(ClientDto client) { BeanUtils.copyProperties(client, this);
+    }
+    public Client(CreateClientDto client) { BeanUtils.copyProperties(client, this);
     }
 
     public Client() {
