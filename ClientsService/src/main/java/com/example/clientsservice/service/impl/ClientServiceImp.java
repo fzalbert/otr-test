@@ -1,17 +1,22 @@
 package com.example.clientsservice.service.impl;
 
 import com.example.clientsservice.domain.Client;
+import com.example.clientsservice.domain.User;
 import com.example.clientsservice.dto.request.ClientDto;
+import com.example.clientsservice.dto.request.CreateClientDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
 import com.example.clientsservice.exception.ResourceNotFoundException;
 import com.example.clientsservice.repository.ClientRepository;
 import com.example.clientsservice.repository.UserRepository;
 import com.example.clientsservice.service.ClientService;
 import com.example.clientsservice.validation.ClientDtoValidator;
+import com.example.clientsservice.validation.CreateClientDtoValidator;
 import com.sun.istack.NotNull;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,13 +27,15 @@ public class ClientServiceImp implements ClientService{
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final ClientDtoValidator dtoValidator;
+    private final CreateClientDtoValidator createClientDtoValidator;
 
     public ClientServiceImp(ClientRepository clientRepository, UserRepository userRepository,
-                            ClientDtoValidator dtoValidator)
+                            ClientDtoValidator dtoValidator, CreateClientDtoValidator createClientDtoValidator)
     {
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
         this.dtoValidator = dtoValidator;
+        this.createClientDtoValidator = createClientDtoValidator;
     }
 
     /**Получение всех клиентов*/
@@ -130,14 +137,32 @@ public class ClientServiceImp implements ClientService{
     @Override
     public Boolean auth(String login, String password) {
 
+        var md5Password = DigestUtils.md5Hex(password);
+
         var user = userRepository
                 .findAll()
                 .stream()
-                .filter(x -> x.getLogin().equals(login) && x.getPassword().equals(password))
+                .filter(x -> x.getLogin().equals(login) && md5Password.equals(x.getPassword()))
                 .findFirst()
                 .orElse(null);
 
         return user != null;
+    }
+
+    @Override
+    public Boolean register(CreateClientDto request) {
+        createClientDtoValidator.validate(request);
+        var client = new Client(request);
+
+        User user = new User();
+        user.setActive(true);
+        user.setLogin(request.getLogin());
+        user.setPassword(DigestUtils.md5Hex(request.getPassword()));
+        user.setRegistrationDate(new Date());
+
+        client.setUser(user);
+        clientRepository.save(client);
+        return true;
     }
 
 

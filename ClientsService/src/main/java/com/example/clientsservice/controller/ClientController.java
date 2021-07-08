@@ -1,6 +1,7 @@
 package com.example.clientsservice.controller;
 
 import com.example.clientsservice.dto.request.ClientDto;
+import com.example.clientsservice.dto.request.CreateClientDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
 import com.example.clientsservice.service.impl.ClientServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +23,23 @@ public class ClientController {
         this.clientServiceImp = clientServiceImp;
     }
 
+    @PostMapping("register")
+    public Boolean register(@RequestBody @Valid CreateClientDto request){return  this.clientServiceImp.register((request));}
+
     @GetMapping("auth")
     public Boolean auth(String login, String password) {
         return this.clientServiceImp.auth(login, password);
     }
 
-    @GetMapping("/GetAll")
+    @GetMapping("GetAll")
     public List<ShortClientDto> geAll() {
         return this.clientServiceImp.getAll();
     }
 
-    @PutMapping("/BlockById")
+    @PutMapping("BlockById")
     public void blockById(long id){ this.clientServiceImp.blockById(id);};
 
-    @PutMapping("/UnBlockById")
+    @PutMapping("UnBlockById")
     public void unblockById(long id){this.clientServiceImp.unblockById(id);}
 
     @GetMapping("getById")
