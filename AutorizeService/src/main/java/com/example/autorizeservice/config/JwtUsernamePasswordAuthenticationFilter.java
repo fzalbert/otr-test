@@ -52,6 +52,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
                 loginDto.getUsername(),
                 loginDto.getPassword()
         );
+
         SecurityContextHolder.getContext().setAuthentication(user);
         return user;
     }
@@ -82,3 +83,4 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
         return restTemplate.getForObject(url, Boolean.class);
     }
 }
+
