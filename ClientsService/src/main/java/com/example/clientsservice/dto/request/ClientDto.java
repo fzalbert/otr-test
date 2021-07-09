@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
@@ -18,18 +19,16 @@ public class ClientDto {
     @NotNull
     private Long id;
 
-    @Size(min = 5, message = "Error Full Name")
-    private String fullName;
+    @Size(min = 5, message = "Error Fio")
+    private String fio;
 
-    private String shortName;
-
-    @Size(min = 10, max = 12, message = "Error INN")
+    @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "Error inn")
     private String inn;
 
-    @Size(min = 9 ,max = 9, message = "Error kpp")
+    @Pattern(regexp = "^(\\d{9})$", message = "Error kpp")
     private String kpp;
 
-    @Email(message = "Email должен быть корректным адресом электронной почты")
+    @Email(message = "Email error")
     private String email;
 
     @Size(min = 5, message = "Error FullAddress")

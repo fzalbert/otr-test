@@ -1,5 +1,6 @@
 package com.example.clientsservice.service;
 
+import com.example.clientsservice.dto.request.AuthDto;
 import com.example.clientsservice.dto.request.ClientDto;
 import com.example.clientsservice.dto.request.CreateClientDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
@@ -15,6 +16,6 @@ public interface ClientService {
     ClientDto update(ClientDto client);
     boolean deleteById(long id);
     boolean changePassword(long id, String newPassword);
-    Boolean auth(String login, String password);
-    Boolean register(CreateClientDto request);
+    long auth(AuthDto request);
+    long register(CreateClientDto request);
 }

@@ -1,5 +1,6 @@
 package com.example.clientsservice.controller;
 
+import com.example.clientsservice.dto.request.AuthDto;
 import com.example.clientsservice.dto.request.ClientDto;
 import com.example.clientsservice.dto.request.CreateClientDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
@@ -24,34 +25,33 @@ public class ClientController {
     }
 
     @PostMapping("register")
-    public Boolean register(@RequestBody @Valid CreateClientDto request){return  this.clientServiceImp.register((request));}
+    public long register(@RequestBody @Valid CreateClientDto request){return  this.clientServiceImp.register((request));}
 
     @GetMapping("auth")
-    public Boolean auth(String login, String password) {
-        return this.clientServiceImp.auth(login, password);
+    public Long auth(AuthDto request) {
+        return this.clientServiceImp.auth(request);
     }
 
-    @GetMapping("GetAll")
+    @GetMapping("get_all")
     public List<ShortClientDto> geAll() {
         return this.clientServiceImp.getAll();
     }
 
-    @PutMapping("BlockById")
+    @PutMapping("block_by_id")
     public void blockById(long id){ this.clientServiceImp.blockById(id);};
 
-    @PutMapping("UnBlockById")
+    @PutMapping("un_block_by_id")
     public void unblockById(long id){this.clientServiceImp.unblockById(id);}
 
-    @GetMapping("getById")
+    @GetMapping("get_by_id")
     public ClientDto getById(long id){return this.clientServiceImp.getById(id);}
 
     @PutMapping("update")
     public ClientDto update(@RequestBody @Valid ClientDto clientrequest) {return  this.clientServiceImp.update(clientrequest);}
 
-    @DeleteMapping("DeleteById")
+    @DeleteMapping("delete_by_id")
     public boolean deleteById(long id){return this.clientServiceImp.deleteById(id);}
 
-    @PutMapping("ChangePassword")
-    public boolean changePassword(long id, String newPassword){this.clientServiceImp.changePassword(id, newPassword);
-    return true;}
+    @PutMapping("change_password")
+    public boolean changePassword(long id, String newPassword){return this.clientServiceImp.changePassword(id, newPassword);}
 }

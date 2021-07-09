@@ -13,9 +13,7 @@ public class ShortClientDto {
 
     private Long id;
 
-    private String fullName;
-
-    private String shortName;
+    private String fio;
 
     private String fullNameOrg;
 

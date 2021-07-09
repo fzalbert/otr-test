@@ -2,6 +2,7 @@ package com.example.clientsservice.service.impl;
 
 import com.example.clientsservice.domain.Client;
 import com.example.clientsservice.domain.User;
+import com.example.clientsservice.dto.request.AuthDto;
 import com.example.clientsservice.dto.request.ClientDto;
 import com.example.clientsservice.dto.request.CreateClientDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
@@ -9,6 +10,7 @@ import com.example.clientsservice.exception.ResourceNotFoundException;
 import com.example.clientsservice.repository.ClientRepository;
 import com.example.clientsservice.repository.UserRepository;
 import com.example.clientsservice.service.ClientService;
+import com.example.clientsservice.validation.AuthDtoValidator;
 import com.example.clientsservice.validation.ClientDtoValidator;
 import com.example.clientsservice.validation.CreateClientDtoValidator;
 import com.sun.istack.NotNull;
@@ -28,14 +30,17 @@ public class ClientServiceImp implements ClientService{
     private final UserRepository userRepository;
     private final ClientDtoValidator dtoValidator;
     private final CreateClientDtoValidator createClientDtoValidator;
+    private final AuthDtoValidator authDtoValidator;
 
     public ClientServiceImp(ClientRepository clientRepository, UserRepository userRepository,
-                            ClientDtoValidator dtoValidator, CreateClientDtoValidator createClientDtoValidator)
+                            ClientDtoValidator dtoValidator, CreateClientDtoValidator createClientDtoValidator,
+                            AuthDtoValidator authDtoValidator)
     {
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
         this.dtoValidator = dtoValidator;
         this.createClientDtoValidator = createClientDtoValidator;
+        this.authDtoValidator = authDtoValidator;
     }
 
     /**Получение всех клиентов*/
@@ -45,7 +50,7 @@ public class ClientServiceImp implements ClientService{
         return clientRepository
                 .findAll()
                 .stream()
-                .sorted(Comparator.comparing(Client::getShortName, Comparator.reverseOrder()))
+                .sorted(Comparator.comparing(Client::getFio, Comparator.reverseOrder()))
                 .map(ShortClientDto::new)
                 .collect(Collectors.toList());
     }
@@ -66,10 +71,7 @@ public class ClientServiceImp implements ClientService{
         var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
 
         var user = userRepository
-                .findAll()
-                .stream()
-                .filter(x -> x.getId() == client.getUser().getId())
-                .findFirst()
+                .findById(client.getUser().getId())
                 .get();
 
         user.setActive(false);
@@ -83,13 +85,11 @@ public class ClientServiceImp implements ClientService{
         var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
 
         var user = userRepository
-                .findAll()
-                .stream()
-                .filter(x -> x.getId() == client.getUser().getId())
-                .findFirst()
+                .findById(client.getUser().getId())
                 .get();
 
         user.setActive(true);
+        user.setAttemptsBlocking(0);
 
         userRepository.save(user);
     }
@@ -97,13 +97,13 @@ public class ClientServiceImp implements ClientService{
     /**Обновить клиента*/
     @NotNull
     @Override
-    public ClientDto update(ClientDto clientrequest) {
-        dtoValidator.validate(clientrequest);
-        var client = clientRepository.findById(clientrequest.getId()).orElseThrow(() -> new ResourceNotFoundException(clientrequest.getId()));
+    public ClientDto update(ClientDto clientRequest) {
+        dtoValidator.validate(clientRequest);
+        var client = clientRepository.findById(clientRequest.getId()).orElseThrow(() -> new ResourceNotFoundException(clientRequest.getId()));
         if(client == null)
             return null;
 
-        Client updateClient = new Client(clientrequest);
+        Client updateClient = new Client(clientRequest);
         updateClient.setUser(client.getUser());
         clientRepository.save(updateClient);
         ClientDto newDto = new ClientDto(updateClient);
@@ -134,23 +134,21 @@ public class ClientServiceImp implements ClientService{
         return true;
     }
 
+    /**Авторизация*/
     @Override
-    public Boolean auth(String login, String password) {
-
-        var md5Password = DigestUtils.md5Hex(password);
-
+    public long auth(AuthDto authRequest) {
+        authDtoValidator.validate(authRequest);
         var user = userRepository
-                .findAll()
-                .stream()
-                .filter(x -> x.getLogin().equals(login) && md5Password.equals(x.getPassword()))
-                .findFirst()
+                .findByLogin(authRequest.getLogin())
                 .orElse(null);
 
-        return user != null;
+
+        return user.getClient().getId();
     }
 
+    /**Регистрация*/
     @Override
-    public Boolean register(CreateClientDto request) {
+    public long register(CreateClientDto request) {
         createClientDtoValidator.validate(request);
         var client = new Client(request);
 
@@ -162,7 +160,8 @@ public class ClientServiceImp implements ClientService{
 
         client.setUser(user);
         clientRepository.save(client);
-        return true;
+
+        return client.getId();
     }
 
 

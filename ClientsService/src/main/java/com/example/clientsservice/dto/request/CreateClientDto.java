@@ -1,8 +1,6 @@
 package com.example.clientsservice.dto.request;
 
-import com.example.clientsservice.domain.Client;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -20,8 +18,8 @@ public class CreateClientDto {
     private String password;
 
     @NotNull
-    @Size(min = 5, message = "Error Full Name")
-    private String fullName;
+    @Size(min = 5, message = "Error Fio")
+    private String fio;
 
     @NotNull
     @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "Error inn")
@@ -30,8 +28,6 @@ public class CreateClientDto {
 
     @Pattern(regexp = "^(\\d{9})$", message = "Error kpp")
     private String kpp;
-
-    private String shortName;
 
     @NotNull
     @Size(min = 5, message = "Error FullAddress")

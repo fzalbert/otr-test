@@ -3,15 +3,10 @@ package com.example.clientsservice.domain;
 import com.example.clientsservice.dto.request.ClientDto;
 import com.example.clientsservice.dto.request.CreateClientDto;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 
-
-@Getter
-@Setter
 @Entity
 @Table(name = "client")
 @Data
@@ -21,17 +16,14 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fullName")
-    private String fullName;
+    @Column(name = "fio")
+    private String fio;
 
     @Column(name = "inn")
     private String inn;
 
     @Column(name = "kpp")
     private String kpp;
-
-    @Column(name = "shortName")
-    private String shortName;
 
     @Column(name = "fullAddress")
     private String fullAddress;

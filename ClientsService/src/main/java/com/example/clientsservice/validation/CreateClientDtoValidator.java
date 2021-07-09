@@ -3,7 +3,7 @@ package com.example.clientsservice.validation;
 import com.example.clientsservice.common.validation.BaseValidator;
 import com.example.clientsservice.dto.request.CreateClientDto;
 import com.example.clientsservice.exception.FieldNotUniqueException;
-import com.example.clientsservice.exception.WrongCheckNumberException;
+import com.example.clientsservice.exception.TemplateException;
 import com.example.clientsservice.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 @Component
 public class CreateClientDtoValidator implements BaseValidator<CreateClientDto> {
     private static final String FIELD_INN = "inn";
-    private static final String FIELD_CONNUMBER = "Control number inn";
+    private static final String FIELD_CON_NUMBER = "Control number inn";
     private static final String FIELD_EMAIL = "email";
     private static final String FIELD_KPP = "kpp";
     private static final String FIELD_LOGIN = "login";
@@ -45,7 +45,7 @@ public class CreateClientDtoValidator implements BaseValidator<CreateClientDto> 
         var checkControlNumberInn = checkInn(CreateClientDto.getInn());
 
         if(!checkControlNumberInn){
-            throw new WrongCheckNumberException(FIELD_CONNUMBER);
+            throw new TemplateException(FIELD_CON_NUMBER);
         }
 
         var checkInnClient = this.clientRepository
