@@ -2,6 +2,7 @@ package com.example.apigateawayservice.config;
 
 import com.example.apigateawayservice.dto.JwtParseRequestDto;
 import com.example.apigateawayservice.dto.JwtParseResponseDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,11 +20,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class AuthenticationFilter extends OncePerRequestFilter {
-    public static final String HEADER = "Authorization";
+    private final String HEADER = "Authorization";
 
-    public static final String HEADER_VALUE_PREFIX = "Bearer";
+    private final String HEADER_VALUE_PREFIX = "Bearer";
 
-    private static final String JWT_PARSE_URL = "http://auth-service/v1/jwt/parse";
+    @Value("${security.jwt.parse.url}")
+    private String JWT_PARSE_URL;
 
     private final RestTemplate restTemplate;
 

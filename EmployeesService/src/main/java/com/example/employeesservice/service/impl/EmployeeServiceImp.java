@@ -5,14 +5,17 @@ import com.example.employeesservice.domain.Person;
 import com.example.employeesservice.dto.request.CreateEmployeeDTO;
 import com.example.employeesservice.dto.response.EmployeeDTO;
 import com.example.employeesservice.dto.response.ShortEmployeeDTO;
+import com.example.employeesservice.exception.MissingRequiredFieldException;
 import com.example.employeesservice.exception.ResourceNotFoundException;
 import com.example.employeesservice.repository.EmployeeRepository;
+import com.example.employeesservice.repository.PersonRepository;
 import com.example.employeesservice.repository.RoleRepository;
 import com.example.employeesservice.service.EmployeeService;
 import com.example.employeesservice.validation.CreateEmployeeDtoValidator;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -22,18 +25,36 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Scope("prototype")
 public class EmployeeServiceImp implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final CreateEmployeeDtoValidator dtoValidator;
+    private final PersonRepository personRepository;
 
     @Autowired
-    public EmployeeServiceImp(EmployeeRepository employeeRepository,
+    public EmployeeServiceImp(EmployeeRepository employeeRepository, PersonRepository personRepository,
                               RoleRepository roleRepository, CreateEmployeeDtoValidator dtoValidator) {
         this.employeeRepository = employeeRepository;
         this.roleRepository = roleRepository;
         this.dtoValidator = dtoValidator;
+        this.personRepository = personRepository;
+    }
+
+    /** Авторизация */
+    @Override
+    public Long auth(String login, String password) {
+        var md5Password = DigestUtils.md5Hex(password);
+
+        var user = personRepository
+                .findAll()
+                .stream()
+                .filter(x -> x.getLogin().equals(login) && md5Password.equals(x.getPassword()))
+                .findFirst()
+                .orElseThrow(MissingRequiredFieldException::new);
+
+        return user.getEmployee().getId();
     }
 
     /** Создание сотрудника */

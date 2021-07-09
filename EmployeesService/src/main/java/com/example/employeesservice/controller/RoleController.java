@@ -4,11 +4,13 @@ import com.example.employeesservice.dto.request.CreateRoleDTO;
 import com.example.employeesservice.dto.response.RoleDTO;
 import com.example.employeesservice.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Scope("prototype")
 @RequestMapping("role")
 public class RoleController {
 

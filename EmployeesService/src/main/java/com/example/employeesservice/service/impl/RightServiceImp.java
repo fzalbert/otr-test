@@ -7,6 +7,7 @@ import com.example.employeesservice.repository.RightRepository;
 import com.example.employeesservice.repository.RoleRepository;
 import com.example.employeesservice.service.RightService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Scope("prototype")
 public class RightServiceImp implements RightService {
 
     private final RoleRepository roleRepository;

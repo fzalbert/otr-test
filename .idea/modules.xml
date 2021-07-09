@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/AutorizeService/AutorizeService.iml" filepath="$PROJECT_DIR$/AutorizeService/AutorizeService.iml" />
       <module fileurl="file://$PROJECT_DIR$/ClientsService/ClientsService.iml" filepath="$PROJECT_DIR$/ClientsService/ClientsService.iml" />
       <module fileurl="file://$PROJECT_DIR$/EmployeesService/EmployeesService.iml" filepath="$PROJECT_DIR$/EmployeesService/EmployeesService.iml" />
-      <module fileurl="file://$PROJECT_DIR$/NotificationService/NotificationService.iml" filepath="$PROJECT_DIR$/NotificationService/NotificationService.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/otr-test.iml" filepath="$PROJECT_DIR$/.idea/otr-test.iml" />
     </modules>
   </component>

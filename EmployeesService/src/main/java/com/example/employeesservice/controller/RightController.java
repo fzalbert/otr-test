@@ -6,11 +6,13 @@ import com.example.employeesservice.dto.response.RightDTO;
 import com.example.employeesservice.service.EmployeeService;
 import com.example.employeesservice.service.RightService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Scope("prototype")
 @RequestMapping("right")
 public class RightController {
 

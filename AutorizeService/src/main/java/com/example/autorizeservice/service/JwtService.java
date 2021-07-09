@@ -28,7 +28,9 @@ public class JwtService {
                 .getBody();
 
         String username = claims.getSubject();
-        long role = 3;
-        return new JwtParseResponseDto(username, role);
+
+        List<String> authorities = claims.get("authorities", List.class);
+        Long clientId = Long.parseLong(authorities.get(0));
+        return new JwtParseResponseDto(clientId);
     }
 }

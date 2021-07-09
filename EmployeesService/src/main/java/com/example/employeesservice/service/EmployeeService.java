@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface EmployeeService {
 
+    Long auth(String login, String password);
     boolean create(CreateEmployeeDTO request);
     EmployeeDTO update (CreateEmployeeDTO request, long id);
     boolean delete (long id);

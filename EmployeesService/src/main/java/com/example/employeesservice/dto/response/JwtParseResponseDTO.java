@@ -1,15 +1,12 @@
-package com.example.autorizeservice.dto;
+package com.example.employeesservice.dto.response;
 
-import java.util.List;
-
-public class JwtParseResponseDto {
-
+public class JwtParseResponseDTO {
     private Long userId;
 
-    public JwtParseResponseDto() {
+    public JwtParseResponseDTO() {
     }
 
-    public JwtParseResponseDto(Long userId) {
+    public JwtParseResponseDTO(Long userId) {
         this.userId = userId;
     }
 

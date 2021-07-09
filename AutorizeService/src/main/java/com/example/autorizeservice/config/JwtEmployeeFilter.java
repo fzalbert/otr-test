@@ -1,6 +1,7 @@
 package com.example.autorizeservice.config;
 
 import com.example.autorizeservice.dto.LoginDto;
+import com.example.autorizeservice.enums.UserType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -19,10 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
-public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
 
     public static final String HEADER = "Authorization";
 
@@ -30,8 +34,8 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
 
     private final String signingKey;
 
-    public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager, String signingKey) {
-        super(new AntPathRequestMatcher("/v1/login", "POST"));
+    public JwtEmployeeFilter(AuthenticationManager authenticationManager, String signingKey) {
+        super(new AntPathRequestMatcher("/v1/login/employee", "POST"));
         setAuthenticationManager(authenticationManager);
         this.signingKey = signingKey;
     }
@@ -41,16 +45,21 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
             throws AuthenticationException, IOException {
 
         LoginDto loginDto = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
-        var checkUser = CheckUser(loginDto.getUsername(), loginDto.getPassword());
+        var clientId = CheckUser(loginDto.getUsername(), loginDto.getPassword());
 
-        if (!checkUser) {
+        if (clientId == null) {
             response.sendError(401);
             return null;
         }
 
+        List<GrantedAuthority> list = new ArrayList<>();
+        list.add(new SimpleGrantedAuthority(clientId.toString()));
+        list.add(new SimpleGrantedAuthority(UserType.EMPLOYEE.name()));
+
         var user = new UsernamePasswordAuthenticationToken(
                 loginDto.getUsername(),
-                loginDto.getPassword()
+                loginDto.getPassword(),
+                list
         );
 
         SecurityContextHolder.getContext().setAuthentication(user);
@@ -73,14 +82,10 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
         response.addHeader(HEADER, HEADER_VALUE_PREFIX + " " + token);
     }
 
-    /**
-     * Test method
-     **/
-    private Boolean CheckUser(String login, String password) {
-        final String url = "http://localhost:5555/wh/clients/auth?login="+login+"&password="+password;
+    private Long CheckUser(String login, String password) {
+        final String url = "http://localhost:7777/wh/account/auth?login="+login+"&password="+password;
 
         var restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, Boolean.class);
+        return restTemplate.getForObject(url, Long.class);
     }
 }
-
