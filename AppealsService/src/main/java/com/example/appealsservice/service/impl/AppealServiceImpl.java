@@ -83,11 +83,13 @@ public class AppealServiceImpl implements AppealService {
         }
 
 
-        if( request.tradeCode != null)
-        {
-            if(request.tradeCode.length() != 10 && request.tradeCode.matches("[0-9]+"))
-                throw new NotRightsException("Incorrect tradeCode");
-        }
+        /*переделать и создать сущность с кодами*/
+        
+//        if( request.tradeCode != null)
+//        {
+//            if(request.tradeCode.length() != 10 && request.tradeCode.matches("[0-9]+"))
+//                throw new NotRightsException("Incorrect tradeCode");
+//        }
 
 
         var appeal = new Appeal();
@@ -150,13 +152,6 @@ public class AppealServiceImpl implements AppealService {
         {
             if(request.startDate.after(request.endDate))
                 throw new NotRightsException("Incorrect date");
-        }
-
-
-        if( request.tradeCode != null)
-        {
-            if(request.tradeCode.length() != 10 && request.tradeCode.matches("[0-9]+"))
-                throw new NotRightsException("Incorrect tradeCode");
         }
 
         appeal.setTheme(theme);
