@@ -10,7 +10,7 @@ public interface FileService {
 
     FileDto getById(Long fileId);
 
-    void store(MultipartFile file, long appealId, long clientId) throws IOException;
+    void store(MultipartFile file, Long appealId, Long clientId) throws IOException;
 
     List<FileDto> getFilesByAppealId(Long appealId);
 

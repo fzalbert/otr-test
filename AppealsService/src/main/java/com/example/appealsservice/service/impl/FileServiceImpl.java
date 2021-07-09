@@ -44,7 +44,7 @@ public class FileServiceImpl implements FileService {
         return new FileDto(file.getAppealId(), file.getName(), fileDownloadUri, file.getType(), file.getData().length);
     }
 
-    public void store(MultipartFile file, long appealId, long clientId) throws IOException {
+    public void store(MultipartFile file, Long appealId, Long clientId) throws IOException {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));

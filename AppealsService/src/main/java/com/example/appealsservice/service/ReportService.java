@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface ReportService {
 
-    void approve(long taskId, long employeeId, String text) throws JsonProcessingException;
-    void reject(long taskId, long employeeId, String text) throws JsonProcessingException;
+    void approve(Long taskId, Long employeeId, String text) throws JsonProcessingException;
+    void reject(Long taskId, Long employeeId, String text) throws JsonProcessingException;
 
     List<ReportDto> getAll();
 
-    ReportDto getById(long id);
+    ReportDto getById(Long id);
 
     List<ReportDto> getByStatus(ReportStatus status);
 }

@@ -43,7 +43,7 @@ public class ReportServiceImpl implements ReportService {
 
     /** создание отчета и одобрение обращения  */
     @Override
-    public void approve(long taskId, long employeeId, String text) throws JsonProcessingException {
+    public void approve(Long taskId, Long employeeId, String text) throws JsonProcessingException {
 
         var task = taskRepository.findById(taskId).orElseThrow(()
                 -> new ResourceNotFoundException(taskId));
@@ -77,7 +77,7 @@ public class ReportServiceImpl implements ReportService {
 
     /** создание отчета и отклонение обращения  */
     @Override
-    public void reject(long taskId, long employeeId, String text) throws JsonProcessingException {
+    public void reject(Long taskId, Long employeeId, String text) throws JsonProcessingException {
 
         var task = taskRepository.findById(taskId).orElseThrow(()
                 -> new ResourceNotFoundException(taskId));
@@ -117,7 +117,7 @@ public class ReportServiceImpl implements ReportService {
 
     /** получить по id */
     @Override
-    public ReportDto getById(long id) {
+    public ReportDto getById(Long id) {
         var report = reportRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
 

@@ -37,7 +37,7 @@ public class AppealController {
     }
 
     @GetMapping("/{id}")
-    public AppealDto byId(long id){
+    public AppealDto byId(Long id){
         return appealServiceImpl.getById(id);
     }
 
@@ -47,8 +47,13 @@ public class AppealController {
     }
 
     @GetMapping("/byClientId/{id}")
-    public List<AppealDto> byClientId(long clientId){
+    public List<AppealDto> byClientId(Long clientId){
         return appealServiceImpl.myAppeals(clientId);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(Long id){
+        appealServiceImpl.delete(id);
     }
 
 

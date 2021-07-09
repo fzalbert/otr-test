@@ -27,11 +27,14 @@ public class FileController {
 
 
     @GetMapping("/files{appealId}")
-    public List<FileDto> getFilesByIdAppealId(long appealId) {
+    public List<FileDto> getFilesByIdAppealId(Long appealId) {
         return fileServiceImpl.getFilesByAppealId(appealId);
-
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(Long id){
+        fileServiceImpl.deleteFile(id);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<byte[]> getFileByte(@PathVariable Long id) {
@@ -43,16 +46,15 @@ public class FileController {
     }
 
 
-
-
     @PostMapping(value="/upload")
     public ResponseEntity<ResponseMessage> uploadFile(@RequestPart("appealId") String appealId,
+                                                      @RequestPart("appealId") String clientId,
                                                       @RequestPart("file") List<MultipartFile> files) {
         String message = "";
         try {
-            for (MultipartFile f:
+            for (MultipartFile fileRequest:
                  files) {
-                fileServiceImpl.store(f, Long.valueOf(appealId), 1);
+                fileServiceImpl.store(fileRequest, Long.parseLong(appealId), Long.parseLong(clientId));
             }
 
             message = "Uploaded the file successfully";
@@ -63,5 +65,4 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
     }
-
 }
