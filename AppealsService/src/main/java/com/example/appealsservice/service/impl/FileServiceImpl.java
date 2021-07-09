@@ -41,7 +41,7 @@ public class FileServiceImpl implements FileService {
                 .path(file.getId().toString())
                 .toUriString();
 
-        return new FileDto(file, fileDownloadUri, file.getData().length);
+        return new FileDto(file.getAppealId(), file.getName(), fileDownloadUri, file.getType(), file.getData().length);
     }
 
     public void store(MultipartFile file, long appealId, long clientId) throws IOException {
@@ -63,26 +63,23 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileDto> getFilesByIdAppealId(Long appealId) {
-
+    public List<FileDto> getFilesByAppealId(Long appealId) {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
 
-        var files = fileRepository
-                .findAll()
-                .stream()
-                .filter(x-> x.getAppealId() == appealId)
-                .map(x -> {
+        List<FileDto> files = getAllFiles().map(dbFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/files/")
-                    .path(x.getId().toString())
+                    .path(dbFile.getId().toString())
                     .toUriString();
 
-            return new FileDto(x,
+            return new FileDto(appeal.getId(),
+                    dbFile.getName(),
                     fileDownloadUri,
-                    x.getData().length);
+                    dbFile.getType(),
+                    dbFile.getData().length);
         }).collect(Collectors.toList());
 
         return files;
@@ -97,9 +94,13 @@ public class FileServiceImpl implements FileService {
         fileRepository.delete(file);
 
     }
+
     public File getFile(Long id) {
         return fileRepository.findById(id).get();
     }
 
+    private Stream<File> getAllFiles() {
+        return fileRepository.findAll().stream();
+    }
 
 }

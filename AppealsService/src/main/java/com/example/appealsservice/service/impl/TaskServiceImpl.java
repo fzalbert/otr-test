@@ -109,7 +109,7 @@ public class TaskServiceImpl implements TaskService {
 
         var appeal = appealRepository
                 .findById(appealId).orElseThrow(()
-                -> new ResourceNotFoundException(appealId));
+                         -> new ResourceNotFoundException(appealId));
 
         if(appeal.getStatusAppeal() != StatusAppeal.NotProcessed)
             throw new NotRightsException("the employee is already fulfilling appeal");

@@ -15,7 +15,7 @@ public interface AppealService {
 
     AppealDto getById(long id);
 
-    AppealDto create(MultipartFile file, AppealRequestDto request) throws IOException;
+    AppealDto create(List<MultipartFile> files, AppealRequestDto request) throws IOException;
 
     void delete(long id);
 

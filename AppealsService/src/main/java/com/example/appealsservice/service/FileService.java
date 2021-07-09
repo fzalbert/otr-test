@@ -12,7 +12,7 @@ public interface FileService {
 
     void store(MultipartFile file, long appealId, long clientId) throws IOException;
 
-    List<FileDto> getFilesByIdAppealId(Long appealId);
+    List<FileDto> getFilesByAppealId(Long appealId);
 
     void deleteFile(Long Id);
 

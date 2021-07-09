@@ -13,14 +13,17 @@ import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.FileRepository;
 import com.example.appealsservice.repository.ThemeRepository;
 import com.example.appealsservice.service.AppealService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +40,9 @@ public class AppealServiceImpl implements AppealService {
         this.fileServiceImpl = fileServiceImpl;
     }
 
-    /** получение списка обращений */
+    /**
+     * получение списка обращений
+     */
     @Override
     public List<ShortAppealDto> getAll() {
 
@@ -49,23 +54,41 @@ public class AppealServiceImpl implements AppealService {
                 .collect(Collectors.toList());
     }
 
-    /** получение обращения по id */
+    /**
+     * получение обращения по id
+     */
     @Override
     public AppealDto getById(long id) {
         var appeal = appealRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
 
-        var files = fileServiceImpl.getFilesByIdAppealId(id);
+        var files = fileServiceImpl.getFilesByAppealId(id);
 
         return new AppealDto(appeal, files);
     }
 
-    /** создание обращения */
+    /**
+     * создание обращения
+     */
     @Override
-    public AppealDto create(MultipartFile file, AppealRequestDto request) throws IOException {
+    public AppealDto create(List<MultipartFile> files, AppealRequestDto request) throws IOException {
 
         var theme = themeRepository.findById(request.themeId).orElseThrow(()
                 -> new ResourceNotFoundException(request.themeId));
+
+        if(request.startDate != null && request.endDate != null)
+        {
+            if(request.startDate.after(request.endDate))
+            throw new NotRightsException("Incorrect date");
+        }
+
+
+        if( request.tradeCode != null)
+        {
+            if(request.tradeCode.length() != 10 && request.tradeCode.matches("[0-9]+"))
+                throw new NotRightsException("Incorrect tradeCode");
+        }
+
 
         var appeal = new Appeal();
         appeal.setCreateDate(new Date());
@@ -82,22 +105,32 @@ public class AppealServiceImpl implements AppealService {
 
         appealRepository.save(appeal);
 
-        if (file !=null) {
-            fileServiceImpl.store(file,appeal.getId(), appeal.getClientId());
+        if (files != null && !files.isEmpty()) {
 
-            return new AppealDto(appeal, fileServiceImpl.getFilesByIdAppealId(appeal.getId()));
+            for (MultipartFile f :
+                    files) {
+                fileServiceImpl.store(f, appeal.getId(), appeal.getClientId());
+            }
+
+
+            return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()));
         }
         return new AppealDto(appeal, null);
     }
 
     @Override
     public void delete(long id) {
-        var theme = appealRepository.findById(id).orElseThrow(()
+        var appeal = appealRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
+
+        /*check user*/
+        appealRepository.delete(appeal);
     }
 
 
-    /** обновление обращения  */
+    /**
+     * обновление обращения
+     */
     @Override
     public AppealDto updateMyAppeal(long clientId, long id, AppealRequestDto request) {
 
@@ -110,50 +143,74 @@ public class AppealServiceImpl implements AppealService {
         if (appeal.getClientId() != clientId)
             throw new NotRightsException("This appeal you are not available");
 
+        if(appeal.getStatusAppeal() != StatusAppeal.NeedUpdate || appeal.getStatusAppeal() != StatusAppeal.NotProcessed )
+            throw new NotRightsException("This appeal cannot be updated because it is already being considered");
+
+        if(request.startDate != null && request.endDate != null)
+        {
+            if(request.startDate.after(request.endDate))
+                throw new NotRightsException("Incorrect date");
+        }
+
+
+        if( request.tradeCode != null)
+        {
+            if(request.tradeCode.length() != 10 && request.tradeCode.matches("[0-9]+"))
+                throw new NotRightsException("Incorrect tradeCode");
+        }
+
         appeal.setTheme(theme);
+        appeal.setAmount(request.amount);
+        appeal.setTradeCode(request.tradeCode);
+        appeal.setStartDate(request.startDate);
+        appeal.setEndDate(request.endDate);
         appeal.setUpdateDate(new Date());
         appeal.setDescription(request.description);
 
         appealRepository.save(appeal);
 
-        return new AppealDto(appeal, fileServiceImpl.getFilesByIdAppealId(appeal.getId()));
+        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()));
 
     }
 
-    /** получение списка обращений с помощью фильтра*/
+    /**
+     * получение списка обращений с помощью фильтра
+     */
     @Override
     public List<AppealDto> filter(FilterAppealDto filter) {
 
         var appeals = appealRepository
                 .findAll()
-                .stream()
-                .sorted(Comparator.comparing(Appeal::getCreateDate, Comparator.reverseOrder()));
+                .stream();
 
 
-        if(filter.themeId != null && filter.themeId != 0)
+        if (filter.themeId != null && filter.themeId != 0)
             appeals.filter(x -> x.getTheme().getId().equals(filter.themeId));
 
 
-        if(filter.statusAppeal != null)
+        if (filter.statusAppeal != null)
             appeals.filter(x -> x.getStatusAppeal() == filter.statusAppeal);
 
-        if(filter.date != null)
+        if (filter.date != null)
             appeals.filter(x -> x.getCreateDate().after(filter.date));
 
 
-        return appeals.map(x -> new AppealDto(x, fileServiceImpl.getFilesByIdAppealId(x.getId())))
+        return appeals.collect(Collectors.toList())
+                .stream()
+                .map(x -> new AppealDto(x, fileServiceImpl.getFilesByAppealId(x.getId())))
                 .collect(Collectors.toList());
     }
 
-    /** получение списка обращений клиента  */
+    /**
+     * получение списка обращений клиента
+     */
     @Override
     public List<AppealDto> myAppeals(long clientId) {
+
         return appealRepository
-                .findAll()
+                .findByClientId(clientId, Sort.by(Sort.Direction.DESC, "createDate") )
                 .stream()
-                .filter(x -> x.getClientId() == clientId)
-                .sorted(Comparator.comparing(Appeal::getCreateDate, Comparator.reverseOrder()))
-                .map(x -> new AppealDto(x, fileServiceImpl.getFilesByIdAppealId(x.getId())))
+                .map(x -> new AppealDto(x, fileServiceImpl.getFilesByAppealId(x.getId())))
                 .collect(Collectors.toList());
     }
-    }
+}

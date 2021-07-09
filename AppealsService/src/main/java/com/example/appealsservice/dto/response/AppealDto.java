@@ -53,6 +53,9 @@ public class AppealDto {
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();
         statusAppeal = appeal.getStatusAppeal();
+        startDate = appeal.getStartDate();
+        endDate = appeal.getEndDate();
+        tradeCode = appeal.getTradeCode();
         this.files = files;
 
     }

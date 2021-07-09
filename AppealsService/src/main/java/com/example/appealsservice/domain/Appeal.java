@@ -19,7 +19,7 @@ public class Appeal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "client_id")
+    @Column(name = "clientId")
     private Long clientId;
 
     @Column(name = "description", columnDefinition="TEXT")

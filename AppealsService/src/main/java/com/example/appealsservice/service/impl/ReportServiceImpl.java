@@ -49,7 +49,10 @@ public class ReportServiceImpl implements ReportService {
                 -> new ResourceNotFoundException(taskId));
 
         if(task.getEmployeeId() != employeeId)
-            throw  new NotRightsException("No rigths");
+            throw  new NotRightsException("This task is not yours");
+
+        if(task.isOver())
+            throw new NotRightsException("Task already over");
 
         var report = new Report();
         report.setCreateDate(new Date());
@@ -80,7 +83,7 @@ public class ReportServiceImpl implements ReportService {
                 -> new ResourceNotFoundException(taskId));
 
         if(task.getEmployeeId() != employeeId)
-            throw  new NotRightsException("No rigths");
+            throw  new NotRightsException("This task is not yours");
 
         var report = new Report();
         report.setCreateDate(new Date());

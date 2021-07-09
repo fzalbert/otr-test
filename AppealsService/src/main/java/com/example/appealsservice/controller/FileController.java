@@ -11,12 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("files")
@@ -30,18 +26,14 @@ public class FileController {
     }
 
 
-    @GetMapping("/files")
+    @GetMapping("/files{appealId}")
     public List<FileDto> getFilesByIdAppealId(long appealId) {
-        return fileServiceImpl.getFilesByIdAppealId(appealId);
+        return fileServiceImpl.getFilesByAppealId(appealId);
 
     }
 
-    @GetMapping("/files/{id}")
-    public FileDto getFile(@PathVariable Long id) {
-        return fileServiceImpl.getById(id);
-    }
 
-    @GetMapping("/filesByte/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<byte[]> getFileByte(@PathVariable Long id) {
         File fileDB = fileServiceImpl.getFile(id);
 
@@ -50,17 +42,26 @@ public class FileController {
                 .body(fileDB.getData());
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
+
+
+
+    @PostMapping(value="/upload")
+    public ResponseEntity<ResponseMessage> uploadFile(@RequestPart("appealId") String appealId,
+                                                      @RequestPart("file") List<MultipartFile> files) {
         String message = "";
         try {
-            fileServiceImpl.store(file, 1, 1);
+            for (MultipartFile f:
+                 files) {
+                fileServiceImpl.store(f, Long.valueOf(appealId), 1);
+            }
 
-            message = "Uploaded the file successfully: " + file.getOriginalFilename();
+            message = "Uploaded the file successfully";
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
         } catch (Exception e) {
-            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+            message = "Could not upload the file";
+
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
     }
+
 }

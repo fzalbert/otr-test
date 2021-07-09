@@ -1,13 +1,18 @@
 package com.example.appealsservice.controller;
 
 import com.example.appealsservice.dto.request.AppealRequestDto;
+import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.FileDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.dto.response.ThemeDto;
 import com.example.appealsservice.service.impl.AppealServiceImpl;
 import com.example.appealsservice.service.impl.ThemeServiceImpl;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
+import jdk.jfr.ContentType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -36,11 +41,27 @@ public class AppealController {
         return appealServiceImpl.getById(id);
     }
 
-
-    @PostMapping("/create")
-    public AppealDto create(@RequestBody AppealRequestDto request,
-                            @RequestPart("file") @ApiParam(value="File", required=true) MultipartFile file) throws IOException {
-        return appealServiceImpl.create(file, request);
+    @PostMapping("/filter")
+    public List<AppealDto> byId(@RequestBody FilterAppealDto request){
+        return appealServiceImpl.filter(request);
     }
+
+    @GetMapping("/byClientId/{id}")
+    public List<AppealDto> byClientId(long clientId){
+        return appealServiceImpl.myAppeals(clientId);
+    }
+
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_JSON_VALUE,
+                        MediaType.MULTIPART_FORM_DATA_VALUE})
+    public AppealDto create( @RequestParam("request") String request,
+                            @RequestParam(value = "file", required = false) List<MultipartFile> files) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        var appeal = objectMapper.readValue(request, AppealRequestDto.class);
+        return appealServiceImpl.create(files, appeal);
+    }
+
 
 }

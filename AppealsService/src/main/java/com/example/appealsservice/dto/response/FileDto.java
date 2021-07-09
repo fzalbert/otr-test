@@ -7,31 +7,59 @@ import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
 
-
-@Getter
-@Setter
 public class FileDto {
-    private Long id;
-    private Long appealId;
     private String name;
+    private Long appealId;
     private String url;
     private String type;
     private long size;
 
-    public FileDto()
-    {
-
-    }
-
-    public FileDto(File file, String url, long size) {
-        if(file == null)
-            return;
-        id = file.getId();
-        appealId = file.getAppealId();
-        name = file.getName();
+    public FileDto(Long appealId, String name, String url, String type, long size) {
+        this.name = name;
         this.url = url;
-        type = file.getType();
+        this.appealId = appealId;
+        this.type = type;
         this.size = size;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getAppealId() {
+        return appealId;
+    }
+
+    public void setAppealId(Long appealId) {
+        this.appealId = appealId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
 }
+
