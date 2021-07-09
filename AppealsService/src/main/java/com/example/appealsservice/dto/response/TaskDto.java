@@ -8,13 +8,17 @@ public class TaskDto {
 
     private Long id;
 
-    private AppealDto appealDto;
+    private ShortAppealDto appealDto;
 
     private boolean isOver;
 
     private Date date;
 
-    public TaskDto(Task task,AppealDto appeal)
+    public TaskDto()
+    {
+
+    }
+    public TaskDto(Task task,ShortAppealDto appeal)
     {
         if (task == null)
             return;

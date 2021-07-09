@@ -4,6 +4,7 @@ import com.example.appealsservice.domain.StatusAppeal;
 import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.Theme;
 import com.example.appealsservice.dto.response.AppealDto;
+import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
@@ -41,7 +42,7 @@ public class TaskServiceImpl implements TaskService {
 
     /** взять задачу */
     @Override
-    public void takeTask(long appealId, long employeeId) throws JsonProcessingException {
+    public void takeTask(Long appealId, Long employeeId) throws JsonProcessingException {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
@@ -79,14 +80,14 @@ public class TaskServiceImpl implements TaskService {
 
     /** получить список задач по id сотрудника */
     @Override
-    public List<TaskDto> getTasksByEmployeeId(long employeeId) {
+    public List<TaskDto> getTasksByEmployeeId(Long employeeId) {
 
         return taskRepository
                 .findAll()
                 .stream()
                 .filter(x -> x.getEmployeeId() == employeeId)
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
-                .map(x -> new TaskDto(x, new AppealDto(x.getAppeal())))
+                .map(x -> new TaskDto(x, new ShortAppealDto(x.getAppeal())))
                 .collect(Collectors.toList());
 
     }
@@ -94,24 +95,24 @@ public class TaskServiceImpl implements TaskService {
 
     /** получить задачу по id  */
     @Override
-    public TaskDto geById(long id) {
+    public TaskDto geById(Long id) {
         var task = taskRepository
                 .findById(id).orElseThrow(()
                         -> new ResourceNotFoundException(id));
 
-        return new TaskDto(task, new AppealDto(task.getAppeal()));
+        return new TaskDto(task, new ShortAppealDto(task.getAppeal()));
     }
 
 
     @Override
-    public void Appoint(long employeeId, long appealId) throws JsonProcessingException {
+    public void Appoint(Long employeeId, Long appealId) throws JsonProcessingException {
 
         var appeal = appealRepository
                 .findById(appealId).orElseThrow(()
-                -> new ResourceNotFoundException(appealId));
+                         -> new ResourceNotFoundException(appealId));
 
         if(appeal.getStatusAppeal() != StatusAppeal.NotProcessed)
-            throw new NotRightsException("the employee is already fulfilling appeal");
+            throw new NotRightsException("The employee is already fulfilling appeal");
 
         var task = taskRepository
                 .findAll()
@@ -120,7 +121,7 @@ public class TaskServiceImpl implements TaskService {
                 .findFirst();
 
         if (task.isPresent())
-            throw new NotRightsException("task already created");
+            throw new NotRightsException("Task already created");
 
         var taskDb = new Task();
         taskDb.setEmployeeId(employeeId);
@@ -142,7 +143,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void returnAppeal(long employeeId, long taskId) throws JsonProcessingException {
+    public void returnAppeal(Long employeeId, Long taskId) throws JsonProcessingException {
 
         var task = taskRepository
                 .findById(taskId).orElseThrow(()

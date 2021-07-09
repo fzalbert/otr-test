@@ -43,13 +43,16 @@ public class ReportServiceImpl implements ReportService {
 
     /** создание отчета и одобрение обращения  */
     @Override
-    public void approve(long taskId, long employeeId, String text) throws JsonProcessingException {
+    public void approve(Long taskId, Long employeeId, String text) throws JsonProcessingException {
 
         var task = taskRepository.findById(taskId).orElseThrow(()
                 -> new ResourceNotFoundException(taskId));
 
         if(task.getEmployeeId() != employeeId)
-            throw  new NotRightsException("No rigths");
+            throw  new NotRightsException("This task is not yours");
+
+        if(task.isOver())
+            throw new NotRightsException("Task already over");
 
         var report = new Report();
         report.setCreateDate(new Date());
@@ -74,13 +77,13 @@ public class ReportServiceImpl implements ReportService {
 
     /** создание отчета и отклонение обращения  */
     @Override
-    public void reject(long taskId, long employeeId, String text) throws JsonProcessingException {
+    public void reject(Long taskId, Long employeeId, String text) throws JsonProcessingException {
 
         var task = taskRepository.findById(taskId).orElseThrow(()
                 -> new ResourceNotFoundException(taskId));
 
         if(task.getEmployeeId() != employeeId)
-            throw  new NotRightsException("No rigths");
+            throw  new NotRightsException("This task is not yours");
 
         var report = new Report();
         report.setCreateDate(new Date());
@@ -114,7 +117,7 @@ public class ReportServiceImpl implements ReportService {
 
     /** получить по id */
     @Override
-    public ReportDto getById(long id) {
+    public ReportDto getById(Long id) {
         var report = reportRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
 

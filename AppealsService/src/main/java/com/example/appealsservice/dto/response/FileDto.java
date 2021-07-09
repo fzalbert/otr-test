@@ -2,30 +2,24 @@ package com.example.appealsservice.dto.response;
 
 import com.example.appealsservice.domain.File;
 import com.example.appealsservice.domain.Theme;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
 
-
 public class FileDto {
-    private Long id;
-    private Long appealId;
     private String name;
+    private Long appealId;
     private String url;
     private String type;
     private long size;
 
-    public FileDto(Long id, Long appealId, String name, String url, String type, long size) {
-        this.id = id;
-        this.appealId = appealId;
+    public FileDto(Long appealId, String name, String url, String type, long size) {
         this.name = name;
         this.url = url;
+        this.appealId = appealId;
         this.type = type;
         this.size = size;
-    }
-
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {
@@ -68,3 +62,4 @@ public class FileDto {
         this.size = size;
     }
 }
+

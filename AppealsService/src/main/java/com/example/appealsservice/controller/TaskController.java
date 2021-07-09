@@ -22,19 +22,19 @@ public class TaskController {
     }
 
     @GetMapping("take")
-    public void take(long appealId, long employeeId) throws JsonProcessingException {
+    public void take(Long appealId, Long employeeId) throws JsonProcessingException {
         taskServiceImpl.takeTask(appealId, employeeId);
 
     }
 
     @GetMapping("appoint")
-    public void appoint(long employeeId, long appealId) throws JsonProcessingException {
+    public void appoint(Long employeeId, Long appealId) throws JsonProcessingException {
         taskServiceImpl.Appoint(employeeId, appealId);
 
     }
 
     @GetMapping("{id}")
-    public TaskDto byId(long id) {
+    public TaskDto byId(Long id) {
        return taskServiceImpl.geById(id);
     }
 

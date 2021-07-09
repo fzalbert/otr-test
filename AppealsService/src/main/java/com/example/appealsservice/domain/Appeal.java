@@ -3,6 +3,7 @@ package com.example.appealsservice.domain;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "appeal")
+@Table(name = "appeals")
 @Data
 public class Appeal {
 
@@ -18,7 +19,7 @@ public class Appeal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "client_id")
+    @Column(name = "clientId")
     private Long clientId;
 
     @Column(name = "description", columnDefinition="TEXT")
@@ -38,6 +39,20 @@ public class Appeal {
 
     @Enumerated(EnumType.ORDINAL)
     private StatusAppeal statusAppeal;
+
+    @Column(name = "startDate")
+    private Date startDate;
+
+    @Column(name = "endDate")
+    private Date endDate;
+
+    @Nullable
+    @Column(name = "tradeCode")
+    private String tradeCode;
+
+    @Nullable
+    @Column(name = "amount")
+    private double amount;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "theme_id", referencedColumnName = "id")

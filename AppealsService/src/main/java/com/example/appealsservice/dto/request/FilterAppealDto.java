@@ -1,10 +1,8 @@
 package com.example.appealsservice.dto.request;
 
 import com.example.appealsservice.domain.StatusAppeal;
-import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 
-import javax.validation.constraints.Null;
 import java.util.Date;
 
 public class FilterAppealDto {

@@ -8,14 +8,14 @@ import java.util.List;
 
 public interface TaskService {
 
-    void takeTask(long appealId, long employeeId) throws JsonProcessingException;
+    void takeTask(Long appealId, Long employeeId) throws JsonProcessingException;
 
-    List<TaskDto> getTasksByEmployeeId(long employeeId);
+    List<TaskDto> getTasksByEmployeeId(Long employeeId);
 
-    TaskDto geById(long Id);
+    TaskDto geById(Long Id);
 
     //admin appoint appeals to employees
-    void Appoint(long employeeId, long appealId) throws JsonProcessingException;
+    void Appoint(Long employeeId, Long appealId) throws JsonProcessingException;
 
-    void returnAppeal(long employeeId, long taskId) throws JsonProcessingException;
+    void returnAppeal(Long employeeId, Long taskId) throws JsonProcessingException;
 }
