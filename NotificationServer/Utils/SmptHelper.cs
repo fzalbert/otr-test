@@ -1,18 +1,38 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Utils
 {
     public static class SMTPHelper
     {
-        public static string SMTP_SERVER = "smtp.gmail.com";
-        public static int SMTP_PORT = 587;
-        public static string SMTP_LOGIN = "chakalov228@gmail.com";
-        public static string SMTP_PASSWORD = "spiridon3365276";
+        public readonly static string SMTP_SERVER;
+        public readonly static int    SMTP_PORT;
+        public readonly static string SMTP_LOGIN;
+        public readonly static string SMTP_PASSWORD;
+        
 
+        static SMTPHelper()
+        {
+            using (var r = new StreamReader("mailsettings.json"))
+            {
+                var json = r.ReadToEnd();
+                dynamic d = JObject.Parse(json);
+                
+                SMTP_SERVER   = d.SMTP_SERVER  ;
+                SMTP_PORT     = d.SMTP_PORT    ;
+                SMTP_LOGIN    = d.SMTP_LOGIN   ;
+                SMTP_PASSWORD = d.SMTP_PASSWORD;
+            }
+
+        }
+    
         /// <summary>
         /// Send Mail via SMTP method
         /// </summary>
