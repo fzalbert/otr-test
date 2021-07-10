@@ -2,10 +2,14 @@ package com.example.appealsservice.controller;
 
 
 import com.example.appealsservice.domain.File;
+import com.example.appealsservice.domain.Tnved;
 import com.example.appealsservice.dto.response.FileDto;
+import com.example.appealsservice.dto.response.TnvedDto;
 import com.example.appealsservice.exception.ResponseMessage;
+import com.example.appealsservice.repository.TnvedRepository;
 import com.example.appealsservice.service.impl.FileServiceImpl;
-import com.opencsv.CSVReader;
+
+import com.example.appealsservice.service.impl.TnvedServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,12 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -26,10 +26,12 @@ import java.util.List;
 public class FileController {
 
     private final FileServiceImpl fileServiceImpl;
+    private final TnvedServiceImpl tnvedServiceImpl;
 
     @Autowired
-    public FileController(FileServiceImpl fileServiceImpl) {
+    public FileController(FileServiceImpl fileServiceImpl, TnvedServiceImpl tnvedServiceImpl) {
         this.fileServiceImpl = fileServiceImpl;
+        this.tnvedServiceImpl = tnvedServiceImpl;
     }
 
 
@@ -39,7 +41,7 @@ public class FileController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(Long id){
+    public void delete(Long id) {
         fileServiceImpl.deleteFile(id);
     }
 
@@ -53,14 +55,14 @@ public class FileController {
     }
 
 
-    @PostMapping(value="/upload")
+    @PostMapping(value = "/upload")
     public ResponseEntity<ResponseMessage> uploadFile(@RequestPart("appealId") String appealId,
                                                       @RequestPart("appealId") String clientId,
                                                       @RequestPart("file") List<MultipartFile> files) {
         String message = "";
         try {
-            for (MultipartFile fileRequest:
-                 files) {
+            for (MultipartFile fileRequest :
+                    files) {
                 fileServiceImpl.store(fileRequest, Long.parseLong(appealId), Long.parseLong(clientId));
             }
 
@@ -73,22 +75,9 @@ public class FileController {
         }
     }
 
-    @PostMapping("/csv")
-    public List<List<String>>  csv(){
 
-        var filename = "C:\\Users\\chaka\\Desktop\\tnved.csv";
-        List<List<String>> records = new ArrayList<List<String>>();
-        String[] values = null;
-        try (CSVReader csvReader = new CSVReader(new FileReader(filename));) {
-
-            while ((values = csvReader.readNext()) != null) {
-                records.add(Arrays.asList(values));
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return records;
+    @GetMapping("/init")
+    public void initTnveds() throws IOException, URISyntaxException {
+        tnvedServiceImpl.init();
     }
 }

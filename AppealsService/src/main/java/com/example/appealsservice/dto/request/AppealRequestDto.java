@@ -21,7 +21,7 @@ public class AppealRequestDto {
     public Date endDate;
 
     @Nullable
-    public String tradeCode;
+    public Long tnvedId;
 
     @Nullable
     public Double amount;

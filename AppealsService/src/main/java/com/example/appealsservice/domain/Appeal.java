@@ -46,15 +46,16 @@ public class Appeal {
     @Column(name = "endDate")
     private Date endDate;
 
-    @Nullable
-    @Column(name = "tradeCode")
-    private String tradeCode;
 
     @Nullable
     @Column(name = "amount")
     private double amount;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "theme_id", referencedColumnName = "id")
+    @JoinColumn(name = "tnvedId", referencedColumnName = "id")
+    private Tnved tnved;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "themeId", referencedColumnName = "id")
     private Theme theme;
 }

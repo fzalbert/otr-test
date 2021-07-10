@@ -2,6 +2,7 @@ package com.example.appealsservice.service.impl;
 
 import com.example.appealsservice.domain.Appeal;
 import com.example.appealsservice.domain.StatusAppeal;
+import com.example.appealsservice.domain.Tnved;
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
@@ -12,31 +13,32 @@ import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.FileRepository;
 import com.example.appealsservice.repository.ThemeRepository;
+import com.example.appealsservice.repository.TnvedRepository;
 import com.example.appealsservice.service.AppealService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class AppealServiceImpl implements AppealService {
 
     private final AppealRepository appealRepository;
+    private final TnvedRepository tnvedRepository;
     private final FileServiceImpl fileServiceImpl;
     private final ThemeRepository themeRepository;
 
     public AppealServiceImpl(AppealRepository appealRepository, ThemeRepository themeRepository,
-                             FileRepository fileRepository, FileServiceImpl fileServiceImpl) {
+                             FileRepository fileRepository, FileServiceImpl fileServiceImpl,
+                             TnvedRepository tnvedRepository) {
         this.appealRepository = appealRepository;
         this.themeRepository = themeRepository;
+        this.tnvedRepository = tnvedRepository;
         this.fileServiceImpl = fileServiceImpl;
     }
 
@@ -82,14 +84,15 @@ public class AppealServiceImpl implements AppealService {
             throw new NotRightsException("Incorrect date");
         }
 
+        Tnved tnved =null;
+        if(request.tnvedId != null && request.tnvedId != 0)
+        {
+            tnved = tnvedRepository.findById(request.tnvedId).orElseThrow(()
+                    -> new ResourceNotFoundException(request.tnvedId));
+        }
 
-        /*переделать и создать сущность с кодами*/
-        
-//        if( request.tradeCode != null)
-//        {
-//            if(request.tradeCode.length() != 10 && request.tradeCode.matches("[0-9]+"))
-//                throw new NotRightsException("Incorrect tradeCode");
-//        }
+
+
 
 
         var appeal = new Appeal();
@@ -97,8 +100,8 @@ public class AppealServiceImpl implements AppealService {
         appeal.setTheme(theme);
         appeal.setStartDate(request.startDate);
         appeal.setEndDate(request.endDate);
-        appeal.setTradeCode(request.tradeCode);
         appeal.setAmount(request.amount);
+        appeal.setTnved(tnved);
         appeal.setEmail(request.email);
         appeal.setNameClient(request.clientName);
         appeal.setDescription(request.description);
@@ -154,9 +157,16 @@ public class AppealServiceImpl implements AppealService {
                 throw new NotRightsException("Incorrect date");
         }
 
+        Tnved tnved =null;
+        if(request.tnvedId != null && request.tnvedId != 0)
+        {
+             tnved = tnvedRepository.findById(request.tnvedId).orElseThrow(()
+                    -> new ResourceNotFoundException(request.tnvedId));
+        }
+
         appeal.setTheme(theme);
         appeal.setAmount(request.amount);
-        appeal.setTradeCode(request.tradeCode);
+        appeal.setTnved(tnved);
         appeal.setStartDate(request.startDate);
         appeal.setEndDate(request.endDate);
         appeal.setUpdateDate(new Date());

@@ -3,6 +3,8 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import java.net.URI;
+
 @Entity
 @Table(name = "files")
 public class File {
@@ -20,7 +22,13 @@ public class File {
     @Lob
     private byte[] data;
 
-    public File() {
+
+    public File()
+    {
+
+    }
+
+    public File(String path) {
     }
 
     public File(String name, String type, byte[] data, long appealId ) {

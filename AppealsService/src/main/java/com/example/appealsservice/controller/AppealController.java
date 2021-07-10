@@ -3,41 +3,42 @@ package com.example.appealsservice.controller;
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
-import com.example.appealsservice.dto.response.FileDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
-import com.example.appealsservice.dto.response.ThemeDto;
+import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.service.impl.AppealServiceImpl;
-import com.example.appealsservice.service.impl.ThemeServiceImpl;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.ApiParam;
-import jdk.jfr.ContentType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 @RestController
 @RequestMapping("appeals")
-public class AppealController {
+public class AppealController  extends AuthorizeController{
 
     private final AppealServiceImpl appealServiceImpl;
 
     @Autowired
-    public AppealController(AppealServiceImpl appealServiceImpl) {
+    public AppealController(AppealServiceImpl appealServiceImpl, HttpServletRequest request) {
+        super(request);
         this.appealServiceImpl = appealServiceImpl;
     }
 
     @GetMapping()
     public List<ShortAppealDto> getAll() {
+
         return appealServiceImpl.getAll();
     }
 
     @GetMapping("/{id}")
     public AppealDto byId(Long id){
+        if(employeeModel == null)
+            throw new NotRightsException("You are not employee");
         return appealServiceImpl.getById(id);
     }
 

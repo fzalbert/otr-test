@@ -8,16 +8,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequestMapping("themes")
-public class ThemeController {
+public class ThemeController extends AuthorizeController{
 
     private final ThemeServiceImpl themeServiceImpl;
 
     @Autowired
-    public ThemeController(ThemeServiceImpl themeServiceImpl) {
+    public ThemeController(ThemeServiceImpl themeServiceImpl, HttpServletRequest request) {
+        super(request);
         this.themeServiceImpl = themeServiceImpl;
     }
 
