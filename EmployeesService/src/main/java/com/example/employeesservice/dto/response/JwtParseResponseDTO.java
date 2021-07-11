@@ -1,20 +1,17 @@
 package com.example.employeesservice.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtParseResponseDTO {
+
     private Long userId;
 
-    public JwtParseResponseDTO() {
-    }
-
-    public JwtParseResponseDTO(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    private List<String> authorities;
 }

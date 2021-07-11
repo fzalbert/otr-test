@@ -26,11 +26,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.autorizeservice.utils.SecurityConstants.AUTHORIZATION_HEADER;
+import static com.example.autorizeservice.utils.SecurityConstants.BEARER_PREFIX;
+
 public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
-
-    public static final String HEADER = "Authorization";
-
-    public static final String HEADER_VALUE_PREFIX = "Bearer";
 
     private final String signingKey;
 
@@ -54,7 +53,7 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
 
         List<GrantedAuthority> list = new ArrayList<>();
         list.add(new SimpleGrantedAuthority(clientId.toString()));
-        list.add(new SimpleGrantedAuthority(UserType.CLIENT.name()));
+        list.add(new SimpleGrantedAuthority("ROLE_" + UserType.CLIENT.name()));
 
         var user = new UsernamePasswordAuthenticationToken(
                 loginDto.getUsername(),
@@ -79,12 +78,11 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
                 .setExpiration(Date.from(now.plusSeconds(8 * 60 * 60))) // token expires in 8 hours
                 .signWith(SignatureAlgorithm.HS256, signingKey.getBytes())
                 .compact();
-        response.addHeader(HEADER, HEADER_VALUE_PREFIX + " " + token);
+
+        response.addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + " " + token);
     }
 
-    /**
-     * Test method
-     **/
+
     private Long CheckUser(String login, String password) {
         final String url = "http://localhost:5555/wh/clients/auth?login="+login+"&password="+password;
 

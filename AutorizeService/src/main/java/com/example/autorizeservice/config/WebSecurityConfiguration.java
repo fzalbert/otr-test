@@ -1,7 +1,9 @@
 package com.example.autorizeservice.config;
 
+import com.example.autorizeservice.enums.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,6 +22,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.signingKey = signingKey;
     }
 
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("username").password("password").roles(UserType.CLIENT.name(), UserType.EMPLOYEE.name());
+    }
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -35,6 +43,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v1/login/client").permitAll()
                 .antMatchers("/v1/login/employee").permitAll()
                 .antMatchers("/v1/jwt/parse").permitAll()
+                .antMatchers("/v1/jwt/is-valid").permitAll()
                 .anyRequest().authenticated();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.apigateawayservice.config;
 
+import com.example.apigateawayservice.enums.UserType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -28,6 +29,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterAfter(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/auth/**").permitAll();
+                .antMatchers("/auth/**")
+                .permitAll()
+                .antMatchers("/employee/**").hasRole(UserType.EMPLOYEE.name())
+                .antMatchers("/client/**").hasRole(UserType.CLIENT.name());
     }
 }
