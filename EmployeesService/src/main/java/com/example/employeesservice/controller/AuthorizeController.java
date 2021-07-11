@@ -17,21 +17,10 @@ public abstract class AuthorizeController {
     protected final Employee employee;
 
     public AuthorizeController(HttpServletRequest request, EmployeeRepository employeeRepository) {
-        String token = request.getHeader(AUTHORIZATION_HEADER);
-        token = token.replace(BEARER_PREFIX + " ", "");
-        JwtParseResponseDTO response = parseJwt(token);
 
-        this.employee = employeeRepository.findById(response.getUserId()).orElse(null);
-    }
-
-    private JwtParseResponseDTO parseJwt(String token) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String JWT_PARSE_URL = "http://localhost:8090/v1/jwt/parse";
-        JwtParseResponseDTO responseDto = restTemplate.postForObject(JWT_PARSE_URL, new JwtParseRequestDTO(token),
-                JwtParseResponseDTO.class);
-
-        Objects.requireNonNull(responseDto);
-        return responseDto;
+        var temp = request.getHeader("id");
+        var temp2 = request.getHeader(AUTHORIZATION_HEADER);
+        Long employeeId = Long.parseLong(request.getHeaders("id").nextElement());
+        this.employee = employeeRepository.findById(employeeId).orElse(null);
     }
 }

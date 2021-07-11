@@ -2,6 +2,7 @@ package com.example.apigateawayservice.config;
 
 import com.example.apigateawayservice.dto.JwtParseRequestDto;
 import com.example.apigateawayservice.dto.JwtParseResponseDto;
+import com.netflix.zuul.context.RequestContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,6 +54,16 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                         null,
                         responseDto.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
                 );
+
+                RequestContext ctx = RequestContext.getCurrentContext();
+                if (responseDto.getAuthorities().size() == 2) {
+                    ctx.addZuulRequestHeader("id", responseDto.getAuthorities().get(0));
+                } else {
+                    ctx.addZuulRequestHeader("id", responseDto.getAuthorities().get(0));
+                    ctx.addZuulRequestHeader("email", responseDto.getAuthorities().get(1));
+                    ctx.addZuulRequestHeader("name", responseDto.getAuthorities().get(2));
+                }
+
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception ignore) {
                 SecurityContextHolder.clearContext();
@@ -60,11 +71,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
-/*    private Boolean isValidJwt(String token) {
-        String url = JWT_VALID_URL + "?token=" + token;
-        return restTemplate.getForObject(url, Boolean.class);
-    }*/
 
     private JwtParseResponseDto parseJwt(String token) {
         return restTemplate.postForObject(JWT_PARSE_URL, new JwtParseRequestDto(token),

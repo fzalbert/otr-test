@@ -1,5 +1,6 @@
 package com.example.autorizeservice.config;
 
+import com.example.autorizeservice.dto.ClientDto;
 import com.example.autorizeservice.dto.LoginDto;
 import com.example.autorizeservice.enums.UserType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,15 +45,17 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
             throws AuthenticationException, IOException {
 
         LoginDto loginDto = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
-        var clientId = CheckUser(loginDto.getUsername(), loginDto.getPassword());
+        var client = CheckUser(loginDto.getUsername(), loginDto.getPassword());
 
-        if (clientId == null) {
+        if (client == null) {
             response.sendError(401);
             return null;
         }
 
         List<GrantedAuthority> list = new ArrayList<>();
-        list.add(new SimpleGrantedAuthority(clientId.toString()));
+        list.add(new SimpleGrantedAuthority(client.getId().toString()));
+        list.add(new SimpleGrantedAuthority(client.getFullNameOrg()));
+        list.add(new SimpleGrantedAuthority(client.getEmail()));
         list.add(new SimpleGrantedAuthority("ROLE_" + UserType.CLIENT.name()));
 
         var user = new UsernamePasswordAuthenticationToken(
@@ -83,10 +86,10 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
     }
 
 
-    private Long CheckUser(String login, String password) {
+    private ClientDto CheckUser(String login, String password) {
         final String url = "http://localhost:5555/wh/clients/auth?login="+login+"&password="+password;
 
         var restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, Long.class);
+        return restTemplate.getForObject(url, ClientDto.class);
     }
 }

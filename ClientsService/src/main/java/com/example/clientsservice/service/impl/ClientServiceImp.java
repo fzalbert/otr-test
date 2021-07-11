@@ -5,6 +5,7 @@ import com.example.clientsservice.domain.User;
 import com.example.clientsservice.dto.request.AuthDto;
 import com.example.clientsservice.dto.request.ClientDto;
 import com.example.clientsservice.dto.request.CreateClientDto;
+import com.example.clientsservice.dto.responce.ClientModelDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
 import com.example.clientsservice.exception.ResourceNotFoundException;
 import com.example.clientsservice.repository.ClientRepository;
@@ -134,16 +135,15 @@ public class ClientServiceImp implements ClientService{
         return true;
     }
 
-    /**Авторизация*/
+    /** Авторизация */
     @Override
-    public long auth(AuthDto authRequest) {
+    public ClientModelDto auth(AuthDto authRequest) {
         authDtoValidator.validate(authRequest);
         var user = userRepository
                 .findByLogin(authRequest.getLogin())
                 .orElse(null);
 
-
-        return user.getClient().getId();
+        return new ClientModelDto(user.getClient());
     }
 
     /**Регистрация*/

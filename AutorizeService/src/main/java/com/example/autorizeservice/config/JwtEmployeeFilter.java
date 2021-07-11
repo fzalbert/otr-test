@@ -44,15 +44,15 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
             throws AuthenticationException, IOException {
 
         LoginDto loginDto = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
-        var clientId = CheckUser(loginDto.getUsername(), loginDto.getPassword());
+        var employeeId = CheckUser(loginDto.getUsername(), loginDto.getPassword());
 
-        if (clientId == null) {
+        if (employeeId == null) {
             response.sendError(401);
             return null;
         }
 
         List<GrantedAuthority> list = new ArrayList<>();
-        list.add(new SimpleGrantedAuthority(clientId.toString()));
+        list.add(new SimpleGrantedAuthority(employeeId.toString()));
         list.add(new SimpleGrantedAuthority("ROLE_" + UserType.EMPLOYEE.name()));
 
         var user = new UsernamePasswordAuthenticationToken(
