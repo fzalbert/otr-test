@@ -15,6 +15,7 @@ import com.example.appealsservice.repository.ReportRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.ReportService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,9 +42,9 @@ public class ReportServiceImpl implements ReportService {
         this.taskRepository = taskRepository;
     }
 
-    /** создание отчета и одобрение обращения  */
+    /** создание отчета и одобрение либо отклонение обращения  */
     @Override
-    public void approve(Long taskId, Long employeeId, String text) throws JsonProcessingException {
+    public void approveOrReject(Long taskId, Long employeeId, Boolean isApprove,  String text) throws JsonProcessingException {
 
         var task = taskRepository.findById(taskId).orElseThrow(()
                 -> new ResourceNotFoundException(taskId));
@@ -57,52 +58,26 @@ public class ReportServiceImpl implements ReportService {
         var report = new Report();
         report.setCreateDate(new Date());
         report.setAppeal(task.getAppeal());
-        report.setReportStatus(ReportStatus.Success);
+        report.setReportStatus(isApprove ? ReportStatus.Success : ReportStatus.Rejected);
         report.setText(text);
 
         task.setOver(true);
 
         reportRepository.save(report);
 
-        task.getAppeal().setStatusAppeal(StatusAppeal.Success);
+        task.getAppeal().setStatusAppeal(StatusAppeal.SUCCESS);
         appealRepository.save(task.getAppeal());
 
+        String subject = isApprove ? "APPEAL APPROVED" : "APPEAL REJECTED";
+
         ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
-                task.getAppeal().getNameClient(), "APPEAL APPROVED", MessageType.Accept);
+                task.getAppeal().getNameOrg(), subject, MessageType.Accept);
 
         apacheKafkaMsgSender.initializeKafkaProducer();
         apacheKafkaMsgSender.sendJson(model);
 
     }
 
-    /** создание отчета и отклонение обращения  */
-    @Override
-    public void reject(Long taskId, Long employeeId, String text) throws JsonProcessingException {
-
-        var task = taskRepository.findById(taskId).orElseThrow(()
-                -> new ResourceNotFoundException(taskId));
-
-        if(task.getEmployeeId() != employeeId)
-            throw  new NotRightsException("This task is not yours");
-
-        var report = new Report();
-        report.setCreateDate(new Date());
-        report.setReportStatus(ReportStatus.Rejected);
-        report.setText(text);
-
-        task.setOver(true);
-
-        reportRepository.save(report);
-
-        task.getAppeal().setStatusAppeal(StatusAppeal.Rejected);
-        appealRepository.save(task.getAppeal());
-
-        ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
-                task.getAppeal().getNameClient(), "APPEAL DECLINED ", MessageType.Reject);
-
-        apacheKafkaMsgSender.initializeKafkaProducer();
-        apacheKafkaMsgSender.sendJson(model);
-    }
 
     /** получить все отчеты  */
     @Override
@@ -134,5 +109,10 @@ public class ReportServiceImpl implements ReportService {
                 .sorted(Comparator.comparing(Report::getCreateDate, Comparator.reverseOrder()))
                 .map(ReportDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReportDto> getByFilter() {
+        return null;
     }
 }

@@ -19,7 +19,7 @@ public class ReportDto {
 
     private String text;
 
-    private Long appealId;
+    private ShortAppealDto appeal;
 
     private ReportStatus reportStatus;
 
@@ -35,7 +35,7 @@ public class ReportDto {
         id = report.getId();
         employeeId = report.getEmployeeId();
         text = report.getText();
-        appealId = report.getAppeal().getId();
+        this.appeal = new ShortAppealDto(report.getAppeal());
         reportStatus = report.getReportStatus();
         createDate = report.getCreateDate();
     }

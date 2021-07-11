@@ -19,39 +19,17 @@ public abstract class AuthorizeController {
     private final RestTemplate restTemplate = new RestTemplate();
     private final String JWT_PARSE_URL = "http://localhost:8090/v1/jwt/parse";
     protected ClientModel clientModel;
-    protected EmployeeModel employeeModel;
 
     public AuthorizeController(HttpServletRequest request) {
-        String token = request.getHeader(HEADER);
-        token = token.replace(HEADER_VALUE_PREFIX + " ", "");
-        JwtParseResponseDto response = parseJwt(token);
 
-        if(response == null)
-            throw new AuthorizeException();
+        var email = request.getHeader("email");
+        var name = request.getHeader("name");
 
-        if (response.getUserType() == UserType.CLIENT)
-            clientModel = getClient(response.getUserId());
+        clientModel = new ClientModel(
+                Long.parseLong(request.getHeader("id")),
+                email,name);
 
-        if (response.getUserType() == UserType.EMPLOYEE)
-            employeeModel = getEmployee(response.getUserId());
     }
 
-    private JwtParseResponseDto parseJwt(String token) {
-        JwtParseResponseDto responseDto = restTemplate.postForObject(JWT_PARSE_URL, new JwtParseRequestDto(token),
-                JwtParseResponseDto.class);
-
-        Objects.requireNonNull(responseDto);
-        return responseDto;
-    }
-
-    private ClientModel getClient(long id){
-        return restTemplate.postForObject(JWT_PARSE_URL, id,
-                ClientModel.class);
-    }
-
-    private EmployeeModel getEmployee(long id){
-        return restTemplate.postForObject(JWT_PARSE_URL, id,
-                EmployeeModel.class);
-    }
 }
 

@@ -17,5 +17,6 @@ public interface TaskService {
     //admin appoint appeals to employees
     void Appoint(Long employeeId, Long appealId) throws JsonProcessingException;
 
-    void returnAppeal(Long employeeId, Long taskId) throws JsonProcessingException;
+
+
 }

@@ -32,7 +32,7 @@ public class Appeal {
     private String email;
 
     @Column(name = "nameClient")
-    private String nameClient;
+    private String nameOrg;
 
     @Column(name = "updateDate")
     private Date updateDate;
@@ -46,14 +46,14 @@ public class Appeal {
     @Column(name = "endDate")
     private Date endDate;
 
-
     @Nullable
     @Column(name = "amount")
     private double amount;
 
+
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "tnvedId", referencedColumnName = "id")
-    private Tnved tnved;
+    @JoinColumn(name = "tnvedId", referencedColumnName = "id", nullable = true)
+    private TNVED tnved;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "themeId", referencedColumnName = "id")

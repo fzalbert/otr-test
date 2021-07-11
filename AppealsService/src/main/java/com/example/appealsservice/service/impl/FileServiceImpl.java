@@ -1,6 +1,7 @@
 package com.example.appealsservice.service.impl;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,17 +42,26 @@ public class FileServiceImpl implements FileService {
                 .path(file.getId().toString())
                 .toUriString();
 
-        return new FileDto(file.getAppealId(), file.getName(), fileDownloadUri, file.getType(), file.getData().length);
+        return new FileDto(
+                file.getId(),
+                file.getAppealId(),
+                file.getName(),
+                fileDownloadUri,
+                file.getType(),
+                file.getData().length);
     }
 
     public void store(MultipartFile file, Long appealId, Long clientId) throws IOException {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
+
         if(appeal.getClientId() != clientId)
             throw new NotRightsException("You can add files only to your appeals");
+        deleteFiles(appealId);
 
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         File fileDb = new File();
         fileDb.setName(fileName);
         fileDb.setAppealId(appealId);
@@ -75,7 +85,8 @@ public class FileServiceImpl implements FileService {
                     .path(dbFile.getId().toString())
                     .toUriString();
 
-            return new FileDto(appeal.getId(),
+            return new FileDto(dbFile.getId(),
+                    appeal.getId(),
                     dbFile.getName(),
                     fileDownloadUri,
                     dbFile.getType(),
@@ -95,6 +106,16 @@ public class FileServiceImpl implements FileService {
 
     }
 
+    private void deleteFiles(Long appealId)
+    {
+        var files = getFilesByAppealId(appealId);
+        for (var file:
+                files) {
+            deleteFile(file.getId());
+        }
+    }
+
+    @Override
     public File getFile(Long id) {
         return fileRepository.findById(id).get();
     }

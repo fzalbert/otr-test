@@ -5,10 +5,7 @@ import com.example.appealsservice.domain.Appeal;
 import com.example.appealsservice.domain.StatusAppeal;
 import com.example.appealsservice.domain.Theme;
 import lombok.*;
-import org.springframework.beans.BeanUtils;
-import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +25,8 @@ public class AppealDto {
 
     private Date endDate;
 
-    private String tradeCode;
+    private TNVEDDto tnved;
 
-    @Nullable
     private double amount;
 
     private Date createDate;
@@ -55,7 +51,7 @@ public class AppealDto {
         statusAppeal = appeal.getStatusAppeal();
         startDate = appeal.getStartDate();
         endDate = appeal.getEndDate();
-        tradeCode = appeal.getTradeCode();
+        tnved = new TNVEDDto(appeal.getTnved());
         this.files = files;
 
     }

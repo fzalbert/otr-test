@@ -1,55 +1,52 @@
 package com.example.appealsservice.controller;
 
 import com.example.appealsservice.domain.ReportStatus;
-import com.example.appealsservice.dto.request.AppealRequestDto;
-import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ReportDto;
-import com.example.appealsservice.service.impl.AppealServiceImpl;
+import com.example.appealsservice.exception.NotRightsException;
+import com.example.appealsservice.service.ReportService;
 import com.example.appealsservice.service.impl.ReportServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@Scope("prototype")
 @RestController
 @RequestMapping("reports")
 public class ReportController extends AuthorizeController {
 
-    private final ReportServiceImpl reportServiceImpl;
+    private final ReportService reportService;
 
     @Autowired
-    public ReportController(ReportServiceImpl reportServiceImpl, HttpServletRequest request) {
+    public ReportController(ReportService reportService, HttpServletRequest request) {
         super(request);
-        this.reportServiceImpl = reportServiceImpl;
+        this.reportService = reportService;
     }
 
     @GetMapping()
     public List<ReportDto> getAll() {
-        return reportServiceImpl.getAll();
+        return reportService.getAll();
     }
 
     @GetMapping("/{id}")
     public ReportDto byId(Long id) {
-        return reportServiceImpl.getById(id);
+        return reportService.getById(id);
     }
 
-    @GetMapping("/approve")
-    public void approve(long taskId, String text) throws JsonProcessingException {
+    @GetMapping("/approveOrReject")
+    public void approveOrReject(Long taskId, Boolean isApprove, String text) throws JsonProcessingException {
         if(employeeModel == null)
+            throw new NotRightsException("Not Rights");
 
-        reportServiceImpl.approve(taskId, employeeModel.getId(), text);
-    }
-
-    @GetMapping("/reject")
-    public void reject(long taskId, String text) throws JsonProcessingException {
-        reportServiceImpl.approve(taskId, employeeModel.getId(), text);
+        reportService.approveOrReject(taskId, employeeModel.getId(), isApprove, text);
     }
 
     @GetMapping("byStatus")
     public List<ReportDto> getByStatus(ReportStatus status) {
-        return reportServiceImpl.getByStatus(status);
+        return reportService.getByStatus(status);
     }
 
 }

@@ -47,7 +47,7 @@ public class TaskServiceImpl implements TaskService {
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
 
-        if (appeal.getStatusAppeal() != StatusAppeal.NotProcessed)
+        if (appeal.getStatusAppeal() != StatusAppeal.NOTPROCCESING)
             throw new NotRightsException("the employee is already fulfilling appeal");
 
         var task = taskRepository
@@ -68,11 +68,11 @@ public class TaskServiceImpl implements TaskService {
 
         taskRepository.save(taskDb);
 
-        appeal.setStatusAppeal(StatusAppeal.InProccesing);
+        appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
         appealRepository.save(appeal);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameClient(), "APPEAL TAKEN FOR CONSIDERATION ", MessageType.TakeAppeal);
+                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION ", MessageType.TakeAppeal);
 
         apacheKafkaMsgSender.initializeKafkaProducer();
         apacheKafkaMsgSender.sendJson(model);
@@ -111,7 +111,7 @@ public class TaskServiceImpl implements TaskService {
                 .findById(appealId).orElseThrow(()
                          -> new ResourceNotFoundException(appealId));
 
-        if(appeal.getStatusAppeal() != StatusAppeal.NotProcessed)
+        if(appeal.getStatusAppeal() != StatusAppeal.NOTPROCCESING)
             throw new NotRightsException("The employee is already fulfilling appeal");
 
         var task = taskRepository
@@ -131,39 +131,16 @@ public class TaskServiceImpl implements TaskService {
 
         taskRepository.save(taskDb);
 
-        appeal.setStatusAppeal(StatusAppeal.InProccesing);
+        appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
         appealRepository.save(appeal);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameClient(), "APPEAL TAKEN FOR CONSIDERATION", MessageType.TakeAppeal);
+                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION", MessageType.TakeAppeal);
 
         apacheKafkaMsgSender.initializeKafkaProducer();
         apacheKafkaMsgSender.sendJson(model);
 
     }
 
-    @Override
-    public void returnAppeal(Long employeeId, Long taskId) throws JsonProcessingException {
-
-        var task = taskRepository
-                .findById(taskId).orElseThrow(()
-                        -> new ResourceNotFoundException(taskId));
-
-        if(employeeId != task.getEmployeeId())
-            throw new NotRightsException("");
-
-        if(task.isOver())
-            throw new NotRightsException("Task is over");
-
-        task.getAppeal().setStatusAppeal(StatusAppeal.NeedUpdate);
-        appealRepository.save(task.getAppeal());
-
-        ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
-                task.getAppeal().getNameClient(), "APPEAL NEED UPDATE", MessageType.NeedUpdate);
-
-        apacheKafkaMsgSender.initializeKafkaProducer();
-        apacheKafkaMsgSender.sendJson(model);
-
-    }
 
 }

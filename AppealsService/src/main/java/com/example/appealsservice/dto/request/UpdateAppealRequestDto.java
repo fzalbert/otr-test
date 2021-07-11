@@ -1,14 +1,12 @@
 package com.example.appealsservice.dto.request;
 
-import com.sun.istack.NotNull;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.Email;
 import java.util.Date;
 
+public class UpdateAppealRequestDto {
 
-public class AppealRequestDto {
-
+    @Nullable
     public Long themeId;
 
     @Nullable
@@ -25,5 +23,4 @@ public class AppealRequestDto {
 
     @Nullable
     public String description;
-    
 }

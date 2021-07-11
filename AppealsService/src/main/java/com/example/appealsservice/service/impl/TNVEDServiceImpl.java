@@ -1,10 +1,10 @@
 package com.example.appealsservice.service.impl;
 
-import com.example.appealsservice.domain.Tnved;
-import com.example.appealsservice.dto.response.TnvedDto;
+import com.example.appealsservice.domain.TNVED;
+import com.example.appealsservice.dto.response.TNVEDDto;
 import com.example.appealsservice.exception.NotRightsException;
-import com.example.appealsservice.repository.TnvedRepository;
-import com.example.appealsservice.service.TnvedService;
+import com.example.appealsservice.repository.TNVEDRepository;
+import com.example.appealsservice.service.TNVEDService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -16,15 +16,14 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TnvedServiceImpl implements TnvedService {
+public class TNVEDServiceImpl implements TNVEDService {
 
-    private final TnvedRepository tnvedRepository;
+    private final TNVEDRepository tnvedRepository;
 
-    public TnvedServiceImpl(TnvedRepository tnvedRepository)
+    public TNVEDServiceImpl(TNVEDRepository tnvedRepository)
     {
         this.tnvedRepository = tnvedRepository;
     }
@@ -49,7 +48,7 @@ public class TnvedServiceImpl implements TnvedService {
             if (jsonArray != null) {
                 int len = jsonArray.size();
                 for (int i = 0; i < len; i++) {
-                    Tnved tnved = objectMapper.readValue(jsonArray.get(i).toString(), Tnved.class);
+                    TNVED tnved = objectMapper.readValue(jsonArray.get(i).toString(), TNVED.class);
                     tnvedRepository.save(tnved);
                 }
 
@@ -61,12 +60,12 @@ public class TnvedServiceImpl implements TnvedService {
     }
 
     @Override
-    public List<TnvedDto> getAll() {
+    public List<TNVEDDto> getAll() {
         return null;
     }
 
     @Override
-    public TnvedDto byId(Long id) {
+    public TNVEDDto byId(Long id) {
         return null;
     }
 }

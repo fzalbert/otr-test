@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Tnveds")
 @Data
-public class Tnved {
+public class TNVED {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
