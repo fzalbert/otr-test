@@ -39,15 +39,13 @@ public class Client {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private  User user;
+    private User user;
 
     public Client(ClientDto client) { BeanUtils.copyProperties(client, this);
     }
     public Client(CreateClientDto client) { BeanUtils.copyProperties(client, this);
     }
 
-    public Client() {
-
-    }
+    public Client() {}
 }
 
