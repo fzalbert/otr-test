@@ -38,10 +38,9 @@ public class ReportController extends AuthorizeController {
 
     @GetMapping("/approveOrReject")
     public void approveOrReject(Long taskId, Boolean isApprove, String text) throws JsonProcessingException {
-        if(employeeModel == null)
-            throw new NotRightsException("Not Rights");
+        Long a = 2L;
 
-        reportService.approveOrReject(taskId, employeeModel.getId(), isApprove, text);
+        reportService.approveOrReject(taskId, a, isApprove, text);
     }
 
     @GetMapping("byStatus")

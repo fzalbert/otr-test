@@ -26,13 +26,13 @@ public class TaskController extends AuthorizeController{
 
     @GetMapping("take")
     public void take(Long appealId) throws JsonProcessingException {
-        taskService.takeTask(appealId, employeeModel.getId());
+        taskService.takeTask(appealId, 1L);
 
     }
 
     @GetMapping("appoint")
     public void appoint( Long appealId) throws JsonProcessingException {
-        taskService.Appoint(employeeModel.getId(), appealId);
+        taskService.Appoint(2L, appealId);
 
     }
 

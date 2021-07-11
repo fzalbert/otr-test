@@ -37,10 +37,8 @@ public class AppealController  extends AuthorizeController{
         return appealService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public AppealDto byId(Long id){
-        if(employeeModel == null)
-            throw new NotRightsException("You are not employee");
+    @GetMapping("byId")
+    public AppealDto byId(@RequestParam Long id){
         return appealService.getById(id);
     }
 
@@ -57,6 +55,21 @@ public class AppealController  extends AuthorizeController{
     @DeleteMapping("/{id}")
     public void delete(Long id){
         appealService.delete(id);
+    }
+
+
+    @RequestMapping(value = "/updateMy", method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.MULTIPART_FORM_DATA_VALUE})
+    public AppealDto create( @RequestParam("request") String request,
+                             @RequestParam("appealId") Long appealId,
+                             @RequestParam(value = "file", required = false) List<MultipartFile> files) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        var appealRequest = objectMapper.readValue(request, AppealRequestDto.class);
+
+        return appealService.updateMyAppeal(files,clientModel.getId(), appealId, appealRequest);
     }
 
 

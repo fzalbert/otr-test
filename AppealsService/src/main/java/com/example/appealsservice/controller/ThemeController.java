@@ -26,7 +26,7 @@ public class ThemeController extends AuthorizeController{
         this.themeService = themeService;
     }
 
-    @GetMapping()
+    @GetMapping("/getAll")
     public List<ThemeDto> getAll() {
         return themeService.getAll();
     }
