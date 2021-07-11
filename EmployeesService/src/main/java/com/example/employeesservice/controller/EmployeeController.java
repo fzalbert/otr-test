@@ -27,11 +27,6 @@ public class EmployeeController extends AuthorizeController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("auth")
-    public Long auth(String login, String password) {
-        return employeeService.auth(login, password);
-    }
-
     @PostMapping("create")
     public boolean create(@Valid @RequestBody CreateEmployeeDTO request) {
         return employeeService.create(request);
@@ -54,7 +49,6 @@ public class EmployeeController extends AuthorizeController {
 
     @GetMapping("list")
     public List<ShortEmployeeDTO> getList() {
-        String name = employee.getLastName();
         return employeeService.getList();
     }
 

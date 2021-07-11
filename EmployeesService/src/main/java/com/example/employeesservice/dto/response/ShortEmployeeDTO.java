@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class ShortEmployeeDTO {
+public class ShortEmployeeDTO implements Serializable {
 
     public Long id;
     public String lastName;

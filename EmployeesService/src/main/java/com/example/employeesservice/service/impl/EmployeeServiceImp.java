@@ -15,10 +15,10 @@ import com.example.employeesservice.validation.CreateEmployeeDtoValidator;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -48,10 +48,7 @@ public class EmployeeServiceImp implements EmployeeService {
         var md5Password = DigestUtils.md5Hex(password);
 
         var user = personRepository
-                .findAll()
-                .stream()
-                .filter(x -> x.getLogin().equals(login) && md5Password.equals(x.getPassword()))
-                .findFirst()
+                .findByLoginAndPassword(login, md5Password)
                 .orElseThrow(MissingRequiredFieldException::new);
 
         return user.getEmployee().getId();
@@ -87,6 +84,7 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     /** Получить список всех сотрудников в системе */
+    @Cacheable(value = "itemCache")
     @Override
     public List<ShortEmployeeDTO> getList() {
         return employeeRepository
