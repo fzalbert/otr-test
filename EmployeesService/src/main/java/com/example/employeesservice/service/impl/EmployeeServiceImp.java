@@ -131,9 +131,6 @@ public class EmployeeServiceImp implements EmployeeService {
         person.setRegistrationDate(new Date());
         employee.setPerson(person);
 
-        var role = roleRepository.findById(request.getRoleId())
-                .orElseThrow(() -> new ResourceNotFoundException(request.getRoleId()));
-
         return employee;
     }
 }

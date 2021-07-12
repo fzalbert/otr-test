@@ -1,5 +1,6 @@
 package com.example.employeesservice.dto.request;
 
+import com.example.employeesservice.domain.enums.RoleType;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -24,5 +25,5 @@ public class CreateEmployeeDTO {
     private String email;
 
     @NotNull
-    private long roleId;
+    private RoleType roleType;
 }
