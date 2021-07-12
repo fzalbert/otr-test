@@ -1,5 +1,6 @@
 package com.example.employeesservice.controller;
 
+import com.example.employeesservice.dto.response.EmployeeModelDTO;
 import com.example.employeesservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -20,7 +21,7 @@ public class AccountController {
     }
 
     @GetMapping("auth")
-    public Long auth(String login, String password) {
+    public EmployeeModelDTO auth(String login, String password) {
         return employeeService.auth(login, password);
     }
 }

@@ -1,16 +1,15 @@
 package com.example.clientsservice.dto.responce;
 
-import com.example.clientsservice.domain.Client;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClientModelDto {
     private Long id;
     private String email;
-    private String fullNameOrg;
-
-    public ClientModelDto(Client client) {
-        BeanUtils.copyProperties(client, this);
-    }
+    private String name;
+    private String role;
 }

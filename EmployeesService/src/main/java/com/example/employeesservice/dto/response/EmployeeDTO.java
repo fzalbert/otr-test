@@ -20,6 +20,5 @@ public class EmployeeDTO {
 
     public EmployeeDTO(Employee employee) {
         BeanUtils.copyProperties(employee, this);
-        role = employee.getRole().getTitle();
     }
 }

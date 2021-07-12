@@ -10,13 +10,9 @@ import org.springframework.beans.BeanUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShortClientDto {
-
     private Long id;
-
     private String fio;
-
     private String fullNameOrg;
-
     private String shortNameOrg;
 
     public ShortClientDto(Client client) {

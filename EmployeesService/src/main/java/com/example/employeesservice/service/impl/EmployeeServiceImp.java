@@ -2,8 +2,10 @@ package com.example.employeesservice.service.impl;
 
 import com.example.employeesservice.domain.Employee;
 import com.example.employeesservice.domain.Person;
+import com.example.employeesservice.domain.enums.RoleType;
 import com.example.employeesservice.dto.request.CreateEmployeeDTO;
 import com.example.employeesservice.dto.response.EmployeeDTO;
+import com.example.employeesservice.dto.response.EmployeeModelDTO;
 import com.example.employeesservice.dto.response.ShortEmployeeDTO;
 import com.example.employeesservice.exception.MissingRequiredFieldException;
 import com.example.employeesservice.exception.ResourceNotFoundException;
@@ -44,14 +46,19 @@ public class EmployeeServiceImp implements EmployeeService {
 
     /** Авторизация */
     @Override
-    public Long auth(String login, String password) {
+    public EmployeeModelDTO auth(String login, String password) {
         var md5Password = DigestUtils.md5Hex(password);
 
         var user = personRepository
                 .findByLoginAndPassword(login, md5Password)
                 .orElseThrow(MissingRequiredFieldException::new);
 
-        return user.getEmployee().getId();
+        var employee = user.getEmployee();
+
+        return new EmployeeModelDTO(employee.getId(),
+                employee.getEmail(),
+                employee.getLastName(),
+                employee.getRoleType().name());
     }
 
     /** Создание сотрудника */
@@ -105,12 +112,11 @@ public class EmployeeServiceImp implements EmployeeService {
 
     /** Назначить роль сотруднику */
     @Override
-    public boolean appointRole(long employeeId, long roleId) {
+    public boolean appointRole(long employeeId, RoleType role) {
         var employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException(employeeId));
-        var role = roleRepository.getById(roleId);
 
-        employee.setRole(role);
+        employee.setRoleType(role);
         employeeRepository.save(employee);
         return true;
     }
@@ -127,7 +133,6 @@ public class EmployeeServiceImp implements EmployeeService {
 
         var role = roleRepository.findById(request.getRoleId())
                 .orElseThrow(() -> new ResourceNotFoundException(request.getRoleId()));
-        employee.setRole(role);
 
         return employee;
     }

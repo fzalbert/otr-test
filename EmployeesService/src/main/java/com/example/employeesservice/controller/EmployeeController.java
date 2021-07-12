@@ -1,5 +1,6 @@
 package com.example.employeesservice.controller;
 
+import com.example.employeesservice.domain.enums.RoleType;
 import com.example.employeesservice.dto.request.CreateEmployeeDTO;
 import com.example.employeesservice.dto.response.EmployeeDTO;
 import com.example.employeesservice.dto.response.ShortEmployeeDTO;
@@ -38,8 +39,8 @@ public class EmployeeController extends AuthorizeController {
     }
 
     @PutMapping("appoint-role")
-    public boolean appointRole(long employeeId, long roleId) {
-        return employeeService.appointRole(employeeId, roleId);
+    public boolean appointRole(long employeeId, RoleType role) {
+        return employeeService.appointRole(employeeId, role);
     }
 
     @GetMapping("{id}")

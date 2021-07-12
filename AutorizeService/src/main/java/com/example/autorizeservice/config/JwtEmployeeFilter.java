@@ -1,7 +1,8 @@
 package com.example.autorizeservice.config;
 
 import com.example.autorizeservice.dto.LoginDto;
-import com.example.autorizeservice.enums.UserType;
+import com.example.autorizeservice.dto.UserDto;
+import com.example.autorizeservice.enums.UserRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -44,16 +45,18 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
             throws AuthenticationException, IOException {
 
         LoginDto loginDto = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
-        var employeeId = CheckUser(loginDto.getUsername(), loginDto.getPassword());
+        var employee = CheckUser(loginDto.getUsername(), loginDto.getPassword());
 
-        if (employeeId == null) {
+        if (employee == null) {
             response.sendError(401);
             return null;
         }
 
         List<GrantedAuthority> list = new ArrayList<>();
-        list.add(new SimpleGrantedAuthority(employeeId.toString()));
-        list.add(new SimpleGrantedAuthority("ROLE_" + UserType.EMPLOYEE.name()));
+        list.add(new SimpleGrantedAuthority(employee.getId().toString()));
+        list.add(new SimpleGrantedAuthority(employee.getName()));
+        list.add(new SimpleGrantedAuthority(employee.getEmail()));
+        list.add(new SimpleGrantedAuthority("ROLE_" + employee.getRole()));
 
         var user = new UsernamePasswordAuthenticationToken(
                 loginDto.getUsername(),
@@ -82,10 +85,10 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
         response.addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + " " + token);
     }
 
-    private Long CheckUser(String login, String password) {
+    private UserDto CheckUser(String login, String password) {
         final String url = "http://localhost:7777/wh/account/auth?login="+login+"&password="+password;
 
         var restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, Long.class);
+        return restTemplate.getForObject(url, UserDto.class);
     }
 }

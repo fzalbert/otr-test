@@ -31,8 +31,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/auth/**")
                 .permitAll()
-                .antMatchers("/employee/**").hasRole(UserType.EMPLOYEE.name())
+                .antMatchers("/employee/**").hasAnyRole(UserType.EMPLOYEE.name(), UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
                 .antMatchers("/client/**").hasRole(UserType.CLIENT.name())
-                .antMatchers("/appeal/**").hasAnyRole(UserType.CLIENT.name(), UserType.EMPLOYEE.name());
+                .anyRequest().permitAll();
     }
 }

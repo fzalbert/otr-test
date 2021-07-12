@@ -1,8 +1,8 @@
 package com.example.autorizeservice.config;
 
-import com.example.autorizeservice.dto.ClientDto;
+import com.example.autorizeservice.dto.UserDto;
 import com.example.autorizeservice.dto.LoginDto;
-import com.example.autorizeservice.enums.UserType;
+import com.example.autorizeservice.enums.UserRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -54,9 +54,9 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
 
         List<GrantedAuthority> list = new ArrayList<>();
         list.add(new SimpleGrantedAuthority(client.getId().toString()));
-        list.add(new SimpleGrantedAuthority(client.getFullNameOrg()));
+        list.add(new SimpleGrantedAuthority(client.getName()));
         list.add(new SimpleGrantedAuthority(client.getEmail()));
-        list.add(new SimpleGrantedAuthority("ROLE_" + UserType.CLIENT.name()));
+        list.add(new SimpleGrantedAuthority("ROLE_" + client.getRole()));
 
         var user = new UsernamePasswordAuthenticationToken(
                 loginDto.getUsername(),
@@ -86,10 +86,10 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
     }
 
 
-    private ClientDto CheckUser(String login, String password) {
+    private UserDto CheckUser(String login, String password) {
         final String url = "http://localhost:5555/wh/clients/auth?login="+login+"&password="+password;
 
         var restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, ClientDto.class);
+        return restTemplate.getForObject(url, UserDto.class);
     }
 }

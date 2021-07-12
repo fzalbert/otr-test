@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class ClientServiceImp implements ClientService{
+public class ClientServiceImp implements ClientService {
 
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
@@ -35,8 +35,7 @@ public class ClientServiceImp implements ClientService{
 
     public ClientServiceImp(ClientRepository clientRepository, UserRepository userRepository,
                             ClientDtoValidator dtoValidator, CreateClientDtoValidator createClientDtoValidator,
-                            AuthDtoValidator authDtoValidator)
-    {
+                            AuthDtoValidator authDtoValidator) {
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
         this.dtoValidator = dtoValidator;
@@ -44,7 +43,9 @@ public class ClientServiceImp implements ClientService{
         this.authDtoValidator = authDtoValidator;
     }
 
-    /**Получение всех клиентов*/
+    /**
+     * Получение всех клиентов
+     */
     @Override
     public List<ShortClientDto> getAll() {
 
@@ -56,7 +57,9 @@ public class ClientServiceImp implements ClientService{
                 .collect(Collectors.toList());
     }
 
-    /**Получение клиента по id */
+    /**
+     * Получение клиента по id
+     */
     @Override
     public ClientDto getById(long id) {
 
@@ -65,7 +68,9 @@ public class ClientServiceImp implements ClientService{
         return new ClientDto(client);
     }
 
-    /**Заблокировать клиента по Id*/
+    /**
+     * Заблокировать клиента по Id
+     */
     @Override
     public void blockById(long id) {
 
@@ -80,7 +85,9 @@ public class ClientServiceImp implements ClientService{
         userRepository.save(user);
     }
 
-    /**Разблокировать клиента по id*/
+    /**
+     * Разблокировать клиента по id
+     */
     @Override
     public void unblockById(long id) {
         var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
@@ -95,13 +102,15 @@ public class ClientServiceImp implements ClientService{
         userRepository.save(user);
     }
 
-    /**Обновить клиента*/
+    /**
+     * Обновить клиента
+     */
     @NotNull
     @Override
     public ClientDto update(ClientDto clientRequest) {
         dtoValidator.validate(clientRequest);
         var client = clientRepository.findById(clientRequest.getId()).orElseThrow(() -> new ResourceNotFoundException(clientRequest.getId()));
-        if(client == null)
+        if (client == null)
             return null;
 
         Client updateClient = new Client(clientRequest);
@@ -109,22 +118,22 @@ public class ClientServiceImp implements ClientService{
         clientRepository.save(updateClient);
         ClientDto newDto = new ClientDto(updateClient);
 
-        return  newDto;
+        return newDto;
     }
 
-    /**Удалить клиента по id*/
+    /**
+     * Удалить клиента по id
+     */
     @Override
     public boolean deleteById(long id) {
         var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
-                if(client == null);
-
-                clientRepository.delete(client);
-
-                return true;
-
+        clientRepository.delete(client);
+        return true;
     }
 
-    /**Сменить пароль*/
+    /**
+     * Сменить пароль
+     */
     @Override
     public boolean changePassword(long id, String newPassword) {
         var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
@@ -135,7 +144,9 @@ public class ClientServiceImp implements ClientService{
         return true;
     }
 
-    /** Авторизация */
+    /**
+     * Авторизация
+     */
     @Override
     public ClientModelDto auth(AuthDto authRequest) {
         authDtoValidator.validate(authRequest);
@@ -143,10 +154,13 @@ public class ClientServiceImp implements ClientService{
                 .findByLogin(authRequest.getLogin())
                 .orElse(null);
 
-        return new ClientModelDto(user.getClient());
+        var client = user.getClient();
+        return new ClientModelDto(client.getId(), client.getEmail(), client.getFullNameOrg(), "CLIENT");
     }
 
-    /**Регистрация*/
+    /**
+     * Регистрация
+     */
     @Override
     public long register(CreateClientDto request) {
         createClientDtoValidator.validate(request);

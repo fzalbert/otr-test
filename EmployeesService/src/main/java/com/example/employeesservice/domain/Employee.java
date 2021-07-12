@@ -1,5 +1,6 @@
 package com.example.employeesservice.domain;
 
+import com.example.employeesservice.domain.enums.RoleType;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +28,7 @@ public class Employee {
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "roleType")
+    private RoleType roleType;
 }

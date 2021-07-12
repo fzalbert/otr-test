@@ -1,6 +1,6 @@
 package com.example.autorizeservice.config;
 
-import com.example.autorizeservice.enums.UserType;
+import com.example.autorizeservice.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,7 +25,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("username").password("password").roles(UserType.CLIENT.name(), UserType.EMPLOYEE.name());
+                .withUser("username").password("password").roles(UserRole.CLIENT.name(), UserRole.EMPLOYEE.name());
     }
 
     @Override

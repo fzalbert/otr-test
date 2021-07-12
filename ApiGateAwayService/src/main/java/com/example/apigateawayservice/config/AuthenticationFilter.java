@@ -56,13 +56,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 );
 
                 RequestContext ctx = RequestContext.getCurrentContext();
-                if (responseDto.getAuthorities().size() == 2) {
-                    ctx.addZuulRequestHeader("id", responseDto.getAuthorities().get(0));
-                } else {
-                    ctx.addZuulRequestHeader("id", responseDto.getAuthorities().get(0));
-                    ctx.addZuulRequestHeader("email", responseDto.getAuthorities().get(1));
-                    ctx.addZuulRequestHeader("name", responseDto.getAuthorities().get(2));
-                }
+                ctx.addZuulRequestHeader("id", responseDto.getAuthorities().get(0));
+                ctx.addZuulRequestHeader("name", responseDto.getAuthorities().get(1));
+                ctx.addZuulRequestHeader("email", responseDto.getAuthorities().get(2));
+                ctx.addZuulRequestHeader("role", responseDto.getAuthorities().get(3));
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception ignore) {
