@@ -19,7 +19,7 @@ class MessageSenderService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public void send(String m) {
+    public void send(Message<?> m) {
         try {
 
 //            // avoid too much magic and transform ourselves

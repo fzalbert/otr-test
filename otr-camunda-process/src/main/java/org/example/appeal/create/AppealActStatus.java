@@ -1,4 +1,4 @@
-package org.example;
+package org.example.appeal.create;
 
 public class AppealActStatus {
 

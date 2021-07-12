@@ -1,7 +1,8 @@
-package org.example;
+package org.example.appeal.create;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.example.LoggerDelegate;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
@@ -23,14 +24,6 @@ public class AppealsCreateDelegate implements JavaDelegate {
                 + ", businessKey=" + execution.getProcessBusinessKey()
                 + ", executionId=" + execution.getId()
                 + " \n\n");
-
-
-        execution.setVariable("appeals_id", "oaoioij ijsodfijoiasdjfo jjoiasjdfoijijaosdi");
-        execution.setVariable("appeal_client_name", "user@gmail.com");
-        execution.setVariable("appeal_status", "test_status");
-        execution.setVariable("created_at", DateTime.now().toDateTimeISO().toString());
-        execution.setVariable("appeal_theme", "Test theme");
-
     }
 
 }
