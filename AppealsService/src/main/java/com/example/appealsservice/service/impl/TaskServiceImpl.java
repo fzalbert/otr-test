@@ -1,9 +1,7 @@
 package com.example.appealsservice.service.impl;
 
-import com.example.appealsservice.domain.StatusAppeal;
+import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.Task;
-import com.example.appealsservice.domain.Theme;
-import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
 import com.example.appealsservice.exception.NotRightsException;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service

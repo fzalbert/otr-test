@@ -1,4 +1,4 @@
-package com.example.appealsservice.domain;
+package com.example.appealsservice.domain.enums;
 
 public enum StatusAppeal {
     NOTPROCCESING,

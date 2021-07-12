@@ -91,7 +91,6 @@ public class AppealController  extends AuthorizeController{
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         var appeal = objectMapper.readValue(request, AppealRequestDto.class);
 
-
         return appealService.create(files, userModel, appeal);
     }
 

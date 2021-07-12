@@ -1,14 +1,12 @@
 package com.example.appealsservice.dto.response;
 
 import com.example.appealsservice.domain.Appeal;
-import com.example.appealsservice.domain.StatusAppeal;
+import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.Theme;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter

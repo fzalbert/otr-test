@@ -48,7 +48,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     /** создать */
     @Override
-    public ThemeDto Create(String name) {
+    public ThemeDto Create(@NotNull String name) {
 
         Theme theme = new Theme();
         theme.setName(name);
@@ -71,7 +71,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     /** обновить  */
     @Override
-    public ThemeDto update(Long id, @NotNull String name) {
+    public ThemeDto update(long id, @NotNull String name) {
 
         var theme = themeRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));

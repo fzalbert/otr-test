@@ -41,6 +41,9 @@ public class FileServiceImpl implements FileService {
     }
 
 
+    /**
+     * получение файла по id
+     */
     @Override
     public FileDto getById(Long fileId) {
 
@@ -77,7 +80,7 @@ public class FileServiceImpl implements FileService {
 
 
     /**
-     * получение файла по id обращения
+     * получение файлов по id обращения
      */
     @Override
     public List<FileDto> getFilesByAppealId(Long appealId) {
@@ -93,6 +96,9 @@ public class FileServiceImpl implements FileService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * удалить файл
+     */
     @Override
     public void deleteFile(Long id) {
 
@@ -102,6 +108,10 @@ public class FileServiceImpl implements FileService {
         fileRepository.delete(file);
     }
 
+
+    /**
+     * удалить файлы по id обращения
+     */
     private void deleteFiles(Long appealId) {
 
         var files = getFilesByAppealId(appealId);
@@ -109,15 +119,6 @@ public class FileServiceImpl implements FileService {
                 files) {
             deleteFile(file.getId());
         }
-    }
-
-    @Override
-    public FileDto getFile(Long id) {
-        return new FileDto(fileRepository.getById(id));
-    }
-
-    private Stream<File> getAllFiles() {
-        return fileRepository.findAll().stream();
     }
 
 

@@ -16,7 +16,5 @@ public interface FileService {
 
     void deleteFile(Long Id);
 
-    FileDto getFile(Long id);
-
 }
 
