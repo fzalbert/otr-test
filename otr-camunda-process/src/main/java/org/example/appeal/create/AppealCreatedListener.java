@@ -42,7 +42,7 @@ public class AppealCreatedListener {
         System.out.println("appeal: " + appeal.getId());
 
         camunda.getRuntimeService().createMessageCorrelation(message.getType()) //
-                .processInstanceBusinessKey(message.getTraceid())
+                .processInstanceBusinessKey(appeal.getId().toString())
                 .setVariable("appeals_id", appeal.getId())
                 .setVariable("appeal_client_name", appeal.getClientId())
                 .setVariable("appeal_status", StatusAppealParser.toString(appeal.getStatusAppeal()))

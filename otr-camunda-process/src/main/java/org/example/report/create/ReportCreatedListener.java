@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.task.Task;
 import org.example.dto.appeal.Appeal;
 import org.example.dto.appeal.StatusAppealParser;
 import org.example.dto.report.Report;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 
 
 @Component
@@ -31,7 +33,7 @@ public class ReportCreatedListener {
     private ObjectMapper objectMapper;
 
     @StreamListener(target = Sink.INPUT,
-            condition="(headers['type']?:'')=='AppealApprovedCommand'")
+            condition="(headers['type']?:'')=='ReportCreatedCommand'")
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException {
 
@@ -40,7 +42,21 @@ public class ReportCreatedListener {
 
         System.out.println("report created: " + report.getId());
 
-        
+        List<Task> tasks = camunda.getTaskService()
+                .createTaskQuery()
+                .processInstanceBusinessKey(report.getAppeal().getId().toString())
+                .list();
+
+        if(tasks.size() < 1)
+            return;
+
+        Task task = tasks.get(0);
+
+        camunda.getRuntimeService().createMessageCorrelation()
+
+        camunda.getTaskService()
+                .complete(task.getId());
+
     }
 
 }
