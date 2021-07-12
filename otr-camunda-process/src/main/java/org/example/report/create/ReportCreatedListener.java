@@ -51,8 +51,7 @@ public class ReportCreatedListener {
             return;
 
         Task task = tasks.get(0);
-
-        camunda.getRuntimeService().createMessageCorrelation()
+        
 
         camunda.getTaskService()
                 .complete(task.getId());
