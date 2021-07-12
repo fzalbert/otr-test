@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @Scope("prototype")
 @RestController
-@RequestMapping("themes")
+@RequestMapping("tnved")
 public class TNVEDController extends AuthorizeController {
 
     private final TNVEDService tnvedService;
@@ -28,5 +30,10 @@ public class TNVEDController extends AuthorizeController {
     @GetMapping()
     public List<TNVEDDto> getAll() {
         return tnvedService.getAll();
+    }
+
+    @GetMapping("/init")
+    public void initTnveds() throws IOException, URISyntaxException {
+        tnvedService.init();
     }
 }

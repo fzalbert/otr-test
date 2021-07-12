@@ -15,7 +15,7 @@ import java.util.List;
 
 @Scope("prototype")
 @RestController
-@RequestMapping("themes")
+@RequestMapping("theme")
 public class ThemeController extends AuthorizeController{
 
     private final ThemeService themeService;
@@ -26,7 +26,7 @@ public class ThemeController extends AuthorizeController{
         this.themeService = themeService;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("list")
     public List<ThemeDto> getAll() {
         return themeService.getAll();
     }

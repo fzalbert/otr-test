@@ -5,8 +5,10 @@ import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.exception.NotRightsException;
+import com.example.appealsservice.httpModel.CheckUser;
 import com.example.appealsservice.service.AppealService;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +27,14 @@ import java.util.List;
 public class AppealController  extends AuthorizeController{
 
     private final AppealService appealService;
+    private final CheckUser checkUser;
 
     @Autowired
-    public AppealController(AppealService appealService, HttpServletRequest request) {
+    public AppealController(AppealService appealService, CheckUser checkUser,
+                            HttpServletRequest request) {
         super(request);
         this.appealService = appealService;
+        this.checkUser = checkUser;
     }
 
     @GetMapping()
@@ -49,6 +54,8 @@ public class AppealController  extends AuthorizeController{
 
     @GetMapping("/byClientId/{id}")
     public List<AppealDto> byClientId(Long clientId){
+        if(!checkUser.isClient(userModel))
+            throw new NotRightsException("");
         return appealService.myAppeals(clientId);
     }
 
@@ -59,17 +66,18 @@ public class AppealController  extends AuthorizeController{
 
 
     @RequestMapping(value = "/updateMy", method = RequestMethod.POST,
-            consumes = {MediaType.APPLICATION_JSON_VALUE,
-                    MediaType.MULTIPART_FORM_DATA_VALUE})
+                        consumes = {MediaType.APPLICATION_JSON_VALUE})
     public AppealDto create( @RequestParam("request") String request,
-                             @RequestParam("appealId") Long appealId,
-                             @RequestParam(value = "file", required = false) List<MultipartFile> files) throws IOException {
+                             @RequestParam("appealId") Long appealId) throws JsonProcessingException {
+
+        if(!checkUser.isClient(userModel))
+            throw new NotRightsException("This is not your appeal");
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         var appealRequest = objectMapper.readValue(request, AppealRequestDto.class);
 
-        return appealService.updateMyAppeal(files,clientModel.getId(), appealId, appealRequest);
+        return appealService.updateMyAppeal(userModel.getId(), appealId, appealRequest);
     }
 
 
@@ -83,7 +91,7 @@ public class AppealController  extends AuthorizeController{
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         var appeal = objectMapper.readValue(request, AppealRequestDto.class);
 
-        return appealService.create(files, clientModel, appeal);
+        return appealService.create(files, userModel, appeal);
     }
 
 

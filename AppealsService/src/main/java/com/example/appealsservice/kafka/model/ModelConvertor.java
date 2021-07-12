@@ -10,19 +10,19 @@ public class ModelConvertor {
         message.setSubject(subject);
 
         switch (type)    {
-            case TakeAppeal:
-                message.setContent("Уважаемый " + name + "!" + "Ваше обращение начали рассматривать.");
+            case TAKEAPPEAL:
+                message.setContent("Здравствуйте, " + name + "!" + "Ваше обращение начали рассматривать.");
                 return message;
 
-            case Accept:
-                message.setContent("Уважаемый " + name + "!" + "Ваше обращение одобрили.");
+            case ACCEPT:
+                message.setContent(" " + name + "!" + "Ваше обращение одобрили.");
                 return message;
 
-            case NeedUpdate:
-                message.setContent("Уважаемый " + name + "!" + "Ваше обращение необходимо переделать.");
+            case APPEALCREATE:
+                message.setContent(name + "! " + "Ваше обращение успешно создано.");
                 return message;
 
-            case Reject:
+            case REJECT:
                 message.setContent("Уважаемый " + name + "!" + "Ваше обращение отклонили.");
                 return message;
             default:

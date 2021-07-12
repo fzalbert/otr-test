@@ -3,6 +3,7 @@ package com.example.appealsservice.controller;
 import com.example.appealsservice.domain.ReportStatus;
 import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.exception.NotRightsException;
+import com.example.appealsservice.httpModel.CheckUser;
 import com.example.appealsservice.service.ReportService;
 import com.example.appealsservice.service.impl.ReportServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,28 +20,32 @@ import java.util.List;
 public class ReportController extends AuthorizeController {
 
     private final ReportService reportService;
+    private final CheckUser checkUser;
 
     @Autowired
-    public ReportController(ReportService reportService, HttpServletRequest request) {
+    public ReportController(ReportService reportService, CheckUser checkUser, HttpServletRequest request) {
         super(request);
+
         this.reportService = reportService;
+        this.checkUser = checkUser;
     }
 
-    @GetMapping()
+    @GetMapping("/list")
     public List<ReportDto> getAll() {
         return reportService.getAll();
     }
 
     @GetMapping("/{id}")
-    public ReportDto byId(Long id) {
+    public ReportDto byId(@PathVariable Long id) {
         return reportService.getById(id);
     }
 
     @GetMapping("/approveOrReject")
     public void approveOrReject(Long taskId, Boolean isApprove, String text) throws JsonProcessingException {
-        Long a = 2L;
+        if(!checkUser.isEmployee(userModel))
+            throw new NotRightsException("Not Rigthts");
 
-        reportService.approveOrReject(taskId, a, isApprove, text);
+        reportService.approveOrReject(taskId, userModel.getId(), isApprove, text);
     }
 
     @GetMapping("byStatus")

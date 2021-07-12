@@ -53,14 +53,6 @@ public class FileServiceImpl implements FileService {
 
     public void store(MultipartFile file, Long appealId, Long clientId) throws IOException {
 
-        var appeal = appealRepository.findById(appealId).orElseThrow(()
-                -> new ResourceNotFoundException(appealId));
-
-        if(appeal.getClientId() != clientId)
-            throw new NotRightsException("You can add files only to your appeals");
-        deleteFiles(appealId);
-
-
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         File fileDb = new File();
         fileDb.setName(fileName);

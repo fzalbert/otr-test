@@ -2,10 +2,9 @@ package com.example.appealsservice.service;
 
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
-import com.example.appealsservice.dto.request.UpdateAppealRequestDto;
 import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
-import com.example.appealsservice.httpModel.ClientModel;
+import com.example.appealsservice.httpModel.UserModel;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,13 +16,13 @@ public interface AppealService {
 
     AppealDto getById(Long id);
 
-    AppealDto create(List<MultipartFile> files, ClientModel client, AppealRequestDto request) throws IOException;
+    AppealDto create(List<MultipartFile> files, UserModel client, AppealRequestDto request) throws IOException;
 
     public void delete(Long id);
 
-    AppealDto updateMyAppeal(List<MultipartFile> files, Long clientId, Long id, AppealRequestDto request) throws IOException;
+    AppealDto updateMyAppeal( Long clientId, Long id, AppealRequestDto request);
 
-    AppealDto update(List<MultipartFile> files, Long id, AppealRequestDto request) throws IOException;
+    AppealDto update(Long id, AppealRequestDto request);
 
     List<AppealDto> filter(FilterAppealDto filter);
 

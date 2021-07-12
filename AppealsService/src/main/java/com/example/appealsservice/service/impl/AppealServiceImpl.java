@@ -2,7 +2,6 @@ package com.example.appealsservice.service.impl;
 
 import com.example.appealsservice.domain.Appeal;
 import com.example.appealsservice.domain.StatusAppeal;
-import com.example.appealsservice.domain.TNVED;
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
@@ -10,7 +9,11 @@ import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
-import com.example.appealsservice.httpModel.ClientModel;
+import com.example.appealsservice.httpModel.UserModel;
+import com.example.appealsservice.kafka.kafkamsg.ProducerApacheKafkaMsgSender;
+import com.example.appealsservice.kafka.model.MessageType;
+import com.example.appealsservice.kafka.model.ModelConvertor;
+import com.example.appealsservice.kafka.model.ModelMessage;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.FileRepository;
 import com.example.appealsservice.repository.ThemeRepository;
@@ -33,14 +36,16 @@ public class AppealServiceImpl implements AppealService {
     private final TNVEDRepository tnvedRepository;
     private final FileServiceImpl fileServiceImpl;
     private final ThemeRepository themeRepository;
+    private final ProducerApacheKafkaMsgSender apacheKafkaMsgSender;
 
     public AppealServiceImpl(AppealRepository appealRepository, ThemeRepository themeRepository,
                              FileRepository fileRepository, FileServiceImpl fileServiceImpl,
-                             TNVEDRepository tnvedRepository) {
+                             TNVEDRepository tnvedRepository, ProducerApacheKafkaMsgSender apacheKafkaMsgSender) {
         this.appealRepository = appealRepository;
         this.themeRepository = themeRepository;
         this.tnvedRepository = tnvedRepository;
         this.fileServiceImpl = fileServiceImpl;
+        this.apacheKafkaMsgSender = apacheKafkaMsgSender;
     }
 
     /**
@@ -74,7 +79,7 @@ public class AppealServiceImpl implements AppealService {
      * создание обращения
      */
     @Override
-    public AppealDto create(List<MultipartFile> files, ClientModel client, AppealRequestDto request) throws IOException {
+    public AppealDto create(List<MultipartFile> files, UserModel client, AppealRequestDto request) throws IOException {
 
         var theme = themeRepository.findById(request.themeId).orElseThrow(()
                 -> new ResourceNotFoundException(request.themeId));
@@ -116,6 +121,12 @@ public class AppealServiceImpl implements AppealService {
         }
         appealRepository.save(appeal);
 
+        ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
+                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION", MessageType.TAKEAPPEAL);
+
+        apacheKafkaMsgSender.initializeKafkaProducer();
+        apacheKafkaMsgSender.sendJson(model);
+
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()));
     }
 
@@ -136,13 +147,14 @@ public class AppealServiceImpl implements AppealService {
      * обновление обращения
      */
     @Override
-    public AppealDto updateMyAppeal(List<MultipartFile> files, Long clientId, Long id, AppealRequestDto request) throws IOException {
+    public AppealDto updateMyAppeal(Long clientId, Long id, AppealRequestDto request){
 
         var appeal = appealRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
 
         if(appeal.getClientId() != clientId)
             throw new NotRightsException("This appeal is not yours");
+
         if(appeal.getStatusAppeal() != StatusAppeal.NOTPROCCESING)
             throw new NotRightsException("This appeal have already begun to consider");
 
@@ -175,14 +187,6 @@ public class AppealServiceImpl implements AppealService {
         appeal.setUpdateDate(new Date());
         appeal.setDescription(request.description);
 
-        if (files != null && !files.isEmpty()) {
-
-            for (MultipartFile f :
-                    files) {
-                fileServiceImpl.store(f, appeal.getId(), appeal.getClientId());
-            }
-
-        }
         appealRepository.save(appeal);
 
 
@@ -191,7 +195,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
     @Override
-    public AppealDto update(List<MultipartFile> files, Long id, AppealRequestDto request) throws IOException {
+    public AppealDto update(Long id, AppealRequestDto request) {
         var appeal = appealRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
 
@@ -224,14 +228,6 @@ public class AppealServiceImpl implements AppealService {
         appeal.setUpdateDate(new Date());
         appeal.setDescription(request.description);
 
-        if (files != null && !files.isEmpty()) {
-
-            for (MultipartFile f :
-                    files) {
-                fileServiceImpl.store(f, appeal.getId(), appeal.getClientId());
-            }
-
-        }
 
         appealRepository.save(appeal);
 

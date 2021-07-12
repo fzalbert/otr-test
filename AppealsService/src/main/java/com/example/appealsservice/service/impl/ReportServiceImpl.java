@@ -70,8 +70,10 @@ public class ReportServiceImpl implements ReportService {
 
         String subject = isApprove ? "APPEAL APPROVED" : "APPEAL REJECTED";
 
+        MessageType messageType = isApprove? MessageType.ACCEPT : MessageType.REJECT;
+
         ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
-                task.getAppeal().getNameOrg(), subject, MessageType.Accept);
+                task.getAppeal().getNameOrg(), subject, messageType);
 
         apacheKafkaMsgSender.initializeKafkaProducer();
         apacheKafkaMsgSender.sendJson(model);

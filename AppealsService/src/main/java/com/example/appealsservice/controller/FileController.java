@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -24,25 +25,26 @@ import java.util.List;
 @Scope("prototype")
 @RestController
 @RequestMapping("files")
-public class FileController {
+public class FileController extends AuthorizeController {
 
     private final FileService fileService;
     private final TNVEDService tnvedService;
 
     @Autowired
-    public FileController(FileService fileService, TNVEDService tnvedService) {
+    public FileController(FileService fileService, TNVEDService tnvedService, HttpServletRequest request) {
+        super(request);
         this.fileService = fileService;
         this.tnvedService = tnvedService;
     }
 
 
     @GetMapping("/files{appealId}")
-    public List<FileDto> getFilesByIdAppealId(Long appealId) {
+    public List<FileDto> getFilesByIdAppealId(@PathVariable Long appealId) {
         return fileService.getFilesByAppealId(appealId);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(Long id) {
+    public void delete(@PathVariable Long id) {
         fileService.deleteFile(id);
     }
 
@@ -58,13 +60,12 @@ public class FileController {
 
     @PostMapping(value = "/upload")
     public ResponseEntity<ResponseMessage> uploadFile(@RequestPart("appealId") String appealId,
-                                                      @RequestPart("appealId") String clientId,
                                                       @RequestPart("file") List<MultipartFile> files) {
         String message = "";
         try {
             for (MultipartFile fileRequest :
                     files) {
-                fileService.store(fileRequest, Long.parseLong(appealId), Long.parseLong(clientId));
+                fileService.store(fileRequest, Long.parseLong(appealId), userModel.getId());
             }
 
             message = "Uploaded the file successfully";
@@ -77,8 +78,5 @@ public class FileController {
     }
 
 
-    @GetMapping("/init")
-    public void initTnveds() throws IOException, URISyntaxException {
-        tnvedService.init();
-    }
+
 }
