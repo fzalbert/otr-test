@@ -26,7 +26,10 @@ public class ClientController {
     }
 
     @PostMapping("register")
-    public long register(@RequestBody @Valid CreateClientDto request){return  this.clientService.register((request));}
+    public long register(@RequestBody @Valid CreateClientDto request){
+
+        return  this.clientService.register((request));
+    }
 
     @GetMapping("auth")
     public ClientModelDto auth(AuthDto request) {

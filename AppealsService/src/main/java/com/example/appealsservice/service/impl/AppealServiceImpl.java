@@ -93,7 +93,7 @@ public class AppealServiceImpl implements AppealService {
             throw new NotRightsException("Incorrect date");
         }
 
-        if(request.tnvedId != null || request.tnvedId != 0)
+        if(request.tnvedId != null)
         {
            var tnved = tnvedRepository.findById(request.tnvedId).orElseThrow(()
                     -> new ResourceNotFoundException(request.tnvedId));
@@ -111,15 +111,14 @@ public class AppealServiceImpl implements AppealService {
         appeal.setClientId(client.getId());
 
 
+        appealRepository.save(appeal);
         if (files != null && !files.isEmpty()) {
 
             for (MultipartFile f :
                     files) {
                 fileServiceImpl.store(f, appeal.getId(), appeal.getClientId());
             }
-
         }
-        appealRepository.save(appeal);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
                 appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION", MessageType.TAKEAPPEAL);

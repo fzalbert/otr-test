@@ -1,6 +1,8 @@
 package com.example.appealsservice.controller;
 
 import com.example.appealsservice.dto.response.ThemeDto;
+import com.example.appealsservice.exception.NotRightsException;
+import com.example.appealsservice.httpModel.CheckUser;
 import com.example.appealsservice.service.ThemeService;
 import com.example.appealsservice.service.impl.ThemeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +21,13 @@ import java.util.List;
 public class ThemeController extends AuthorizeController{
 
     private final ThemeService themeService;
+    private final CheckUser checkUser;
 
     @Autowired
-    public ThemeController(ThemeService themeService, HttpServletRequest request) {
+    public ThemeController(ThemeService themeService,CheckUser checkUser, HttpServletRequest request) {
         super(request);
         this.themeService = themeService;
+        this.checkUser = checkUser;
     }
 
     @GetMapping("list")
@@ -32,17 +36,19 @@ public class ThemeController extends AuthorizeController{
     }
 
     @GetMapping("/{name}")
-    public  ThemeDto create( String name){
+    public  ThemeDto create(@PathVariable String name){
+        if(!checkUser.isAdmin(userModel))
+            throw new NotRightsException("You not admin");
         return themeService.Create(name);
     }
 
     @GetMapping("/{id}")
-    public ThemeDto byId( Long id){
+    public ThemeDto byId( @PathVariable Long id){
         return themeService.getById(id);
     }
 
     @GetMapping("/{id},{name}")
-    public ThemeDto update( Long id, String name){
+    public ThemeDto update(@PathVariable Long id, @PathVariable String name){
         return themeService.update(id, name);
     }
 }

@@ -41,7 +41,7 @@ public class ReportController extends AuthorizeController {
     }
 
     @GetMapping("/approveOrReject")
-    public void approveOrReject(Long taskId, Boolean isApprove, String text) throws JsonProcessingException {
+    public void approveOrReject(@RequestParam Long taskId, @RequestParam Boolean isApprove, @RequestParam String text) throws JsonProcessingException {
         if(!checkUser.isEmployee(userModel))
             throw new NotRightsException("Not Rigthts");
 

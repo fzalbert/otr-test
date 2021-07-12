@@ -72,7 +72,7 @@ public class TaskServiceImpl implements TaskService {
         appealRepository.save(appeal);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION ", MessageType.TakeAppeal);
+                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION ", MessageType.TAKEAPPEAL);
 
         apacheKafkaMsgSender.initializeKafkaProducer();
         apacheKafkaMsgSender.sendJson(model);
@@ -135,7 +135,7 @@ public class TaskServiceImpl implements TaskService {
         appealRepository.save(appeal);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION", MessageType.TakeAppeal);
+                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION", MessageType.TAKEAPPEAL);
 
         apacheKafkaMsgSender.initializeKafkaProducer();
         apacheKafkaMsgSender.sendJson(model);
