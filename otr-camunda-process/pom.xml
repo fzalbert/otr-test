@@ -64,6 +64,7 @@
   </dependencyManagement>
 
   <dependencies>
+
     <dependency>
       <groupId>org.camunda.bpm.springboot</groupId>
       <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
