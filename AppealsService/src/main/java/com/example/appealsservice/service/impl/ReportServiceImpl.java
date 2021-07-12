@@ -58,7 +58,7 @@ public class ReportServiceImpl implements ReportService {
         var report = new Report();
         report.setCreateDate(new Date());
         report.setAppeal(task.getAppeal());
-        report.setReportStatus(isApprove ? ReportStatus.Success : ReportStatus.Rejected);
+        report.setReportStatus(isApprove ? ReportStatus.SUCCESS : ReportStatus.SUCCESS);
         report.setText(text);
 
         task.setOver(true);

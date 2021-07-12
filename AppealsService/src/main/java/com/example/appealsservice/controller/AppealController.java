@@ -31,8 +31,8 @@ public class AppealController  extends AuthorizeController{
 
     @Autowired
     public AppealController(AppealService appealService, CheckUser checkUser,
-                            HttpServletRequest request) {
-        super(request);
+                            HttpServletRequest servletRequestrequest) {
+        super(servletRequestrequest);
         this.appealService = appealService;
         this.checkUser = checkUser;
     }
@@ -61,7 +61,7 @@ public class AppealController  extends AuthorizeController{
 
     @DeleteMapping("/{id}")
     public void delete(Long id){
-        appealService.delete(id);
+        appealService.deleteById(id);
     }
 
 
@@ -90,6 +90,7 @@ public class AppealController  extends AuthorizeController{
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         var appeal = objectMapper.readValue(request, AppealRequestDto.class);
+
 
         return appealService.create(files, userModel, appeal);
     }

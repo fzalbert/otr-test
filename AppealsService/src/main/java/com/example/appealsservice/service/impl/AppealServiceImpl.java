@@ -120,11 +120,11 @@ public class AppealServiceImpl implements AppealService {
             }
         }
 
-        ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
+        /*ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
                 appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION", MessageType.TAKEAPPEAL);
 
         apacheKafkaMsgSender.initializeKafkaProducer();
-        apacheKafkaMsgSender.sendJson(model);
+        apacheKafkaMsgSender.sendJson(model);*/
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()));
     }
@@ -134,7 +134,7 @@ public class AppealServiceImpl implements AppealService {
      * удаление обращения
      */
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         var appeal = appealRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
 

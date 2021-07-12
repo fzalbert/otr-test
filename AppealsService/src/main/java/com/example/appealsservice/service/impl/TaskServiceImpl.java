@@ -40,7 +40,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    /** взять задачу */
+    /**
+     * взять задачу
+     */
     @Override
     public void takeTask(Long appealId, Long employeeId) throws JsonProcessingException {
 
@@ -78,7 +80,10 @@ public class TaskServiceImpl implements TaskService {
         apacheKafkaMsgSender.sendJson(model);
     }
 
-    /** получить список задач по id сотрудника */
+
+    /**
+     * получить список задач по id сотрудника
+     */
     @Override
     public List<TaskDto> getTasksByEmployeeId(Long employeeId) {
 
@@ -93,7 +98,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    /** получить задачу по id  */
+    /**
+     * получить задачу по id
+     */
     @Override
     public TaskDto geById(Long id) {
         var task = taskRepository
@@ -104,6 +111,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
+    /**
+     * создать задачу для другого сотрудника
+     */
     @Override
     public void Appoint(Long employeeId, Long appealId) throws JsonProcessingException {
 
@@ -141,6 +151,5 @@ public class TaskServiceImpl implements TaskService {
         apacheKafkaMsgSender.sendJson(model);
 
     }
-
 
 }
