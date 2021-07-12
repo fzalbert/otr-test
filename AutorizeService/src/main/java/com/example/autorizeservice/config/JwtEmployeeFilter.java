@@ -2,10 +2,10 @@ package com.example.autorizeservice.config;
 
 import com.example.autorizeservice.dto.LoginDto;
 import com.example.autorizeservice.dto.UserDto;
-import com.example.autorizeservice.enums.UserRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,6 +33,9 @@ import static com.example.autorizeservice.utils.SecurityConstants.BEARER_PREFIX;
 public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
 
     private final String signingKey;
+
+    @Value("${security.path.auth.employee}")
+    private String PATH_AUTH_EMPLOYEE;
 
     public JwtEmployeeFilter(AuthenticationManager authenticationManager, String signingKey) {
         super(new AntPathRequestMatcher("/v1/login/employee", "POST"));
@@ -86,7 +89,7 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
     }
 
     private UserDto CheckUser(String login, String password) {
-        final String url = "http://localhost:7777/wh/account/auth?login="+login+"&password="+password;
+        final String url = PATH_AUTH_EMPLOYEE + "?login=" + login + "&password=" + password;
 
         var restTemplate = new RestTemplate();
         return restTemplate.getForObject(url, UserDto.class);
