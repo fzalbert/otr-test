@@ -1,0 +1,71 @@
+@import '../../../common/styles/variables.scss';
+@import '../../../common/styles/mixins.scss';
+
+.appeal-component {
+    width: 100vw;
+    padding: 0 122px 80px;
+    box-sizing: border-box;
+
+    h1 {
+        margin-top: 29px;
+        font-weight: 500;
+        font-size: 48px;
+        color: #333E43;
+    }
+    
+    .status {
+        margin-top: 41px;
+        background: #6CB9FF;
+    }
+    
+    .creation-date {
+        display: block;
+        margin-top: 30px;
+        font-weight: 500;
+        font-size: 18px;
+        color: #9EA3A6;
+    }
+    
+    h5 {
+        margin-top: 30px;
+        max-width: 965px;
+        font-weight: 500;
+        font-size: 36px;
+        color: #333E43;    
+    }
+    
+    p {
+        margin-top: 40px;
+        max-width: 965px;
+        font-size: 18px;
+        color: #333E43;
+    }
+
+    .response-container {
+        padding-bottom: 48px;
+        border-bottom: 1px solid #D2D2D2;
+
+        .creation-date {
+            margin-top: 30px;
+        }
+    }
+}
+
+.data-list {
+    margin-top: 70px;
+    width: 400px;
+
+    .data-item {
+        margin-top: 35px;
+        @extend %display-flex-row;
+        font-weight: 500;
+        font-size: 18px;
+        color: #333E43;
+
+        &_value {
+            width: 120px;
+            font-size: 20px;
+            color: #333E43;
+        }
+    }
+}

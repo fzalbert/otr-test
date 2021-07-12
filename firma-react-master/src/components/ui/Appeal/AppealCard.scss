@@ -1,0 +1,36 @@
+@import '../../../common/styles/variables.scss';
+@import '../../../common/styles/mixins.scss';
+
+.appeal-card {
+    width: 405px;
+    height: 372px;
+    padding: 24px;
+    box-sizing: border-box;
+    @extend %display-flex-column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background: #FFFFFF;
+    border: 1px solid #D2D2D2;
+    border-radius: 20px;
+
+    h5 {
+        margin-top: 24px;
+        font-weight: 500;
+        font-size: 24px;
+        color: #333E43;
+    }
+
+    p {
+        margin-top: 40px;
+        font-size: 14px;
+        color: #9EA3A6;
+    }
+
+    button {
+        margin-top: 13px;
+        width: 135px;
+        height: 35px;
+        align-self: flex-end;
+        font-size: 14px;
+    }
+}

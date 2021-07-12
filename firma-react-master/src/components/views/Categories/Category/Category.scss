@@ -1,0 +1,37 @@
+@import '../../../../common/styles/variables.scss';
+
+.container {
+    width: 100%;
+    @extend %display-flex-row;
+    align-items: flex-start;
+}
+
+.category {
+    min-width: 300px;
+    width: 30%;
+    max-width: 400px;
+}
+
+.category-form,
+.task-form {
+    @extend %display-flex-column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    input, button {
+        margin-top: 15px;
+    }
+    a {
+        width: 312px;
+        margin-top: 15px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 400;
+        color: rgb(219, 69, 69);
+        vertical-align: middle;
+        cursor: pointer;
+    }
+}
+
+.subcategories-container {
+    width: calc(100% - 430px);
+}

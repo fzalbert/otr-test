@@ -1,0 +1,26 @@
+@import '../../../../common/styles/variables.scss';
+
+.auth-form {
+    margin: calc(50vh - 159px) auto;
+    width: 470px;
+    @extend %display-flex-column;
+    justify-content: flex-start;
+
+    input {
+        margin-top: 54px;
+
+        &:not(:first-child) {
+            margin-top: 23px;
+        }
+
+    }
+
+    .common-controls {
+        margin-top: 36px;
+    }
+
+    .common-btn {
+        width: 223px;
+        height: 57px;
+    }
+}

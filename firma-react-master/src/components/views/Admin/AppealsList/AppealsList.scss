@@ -1,0 +1,44 @@
+@import '../../../../common/styles/variables.scss';
+@import '../../../../common/styles/mixins.scss';
+
+.appeals-list {
+    width: 100vw;
+    padding: 0 122px;
+    box-sizing: border-box;
+
+    .update-btn {
+        margin-top: 28px;
+        width: 142px;
+        height: 32px;
+        font-weight: 600;
+        font-size: 14px;
+        color: #FFFFFF;        
+    }
+
+    .custom-table {
+        margin-top: 24px;
+        width: 100%;
+
+        .common-btn {
+            width: 142px;
+            height: 32px;
+            font-weight: 700;
+            font-size: 14px;
+            z-index: 3;
+            cursor: pointer;
+        }
+
+        th,
+        td {
+            &:last-child {
+                width: 162px;
+
+                button {
+                    position: absolute;
+                    top: 12px;
+                    left: 0;
+                }
+            }
+        }
+    }
+}
