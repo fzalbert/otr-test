@@ -7,7 +7,9 @@ import org.example.dto.TNVED;
 import org.example.dto.Theme;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -34,4 +36,18 @@ public class Appeal {
     private StatusAppeal statusAppeal;
 
     private List<FileDto> files;
+
+    public Map<String, Object> toVariableMap(){
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("appeals_id", getId());
+        result.put("appeal_client_name", getClientId());
+        result.put("appeal_status_text", StatusAppealParser.toString(getStatusAppeal()));
+        result.put("appeal_status", getStatusAppeal());
+        result.put("created_at", getCreateDate());
+        result.put("appeal_theme_name", getTheme().getName());
+        result.put("appeal_theme", getTheme());
+
+        return result;
+    }
 }

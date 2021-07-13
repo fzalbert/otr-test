@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class ShortAppealDto {
+public class ShortAppeal {
 
     private Long id;
 
@@ -23,9 +23,9 @@ public class ShortAppealDto {
     private StatusAppeal statusAppeal;
 
 
-    public ShortAppealDto() {}
+    public ShortAppeal() {}
 
-    public ShortAppealDto(Appeal appeal) {
+    public ShortAppeal(Appeal appeal) {
 
         if(appeal == null)
             return;
