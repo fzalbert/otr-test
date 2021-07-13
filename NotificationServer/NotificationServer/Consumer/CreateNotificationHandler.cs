@@ -26,16 +26,18 @@ namespace NotificationServer.Consumer
 
             // доделать под сохранение в базу не отправленный сообщений с полем IsSend 
 
-            await EmailService.SendMessage(model.Email, model.Subject, model.Content);
+            var isSend = await EmailService.SendMessage(model.Email, model.Subject, model.Content);
 
-            var mongoModel = new ModelMessage
+            if (isSend)
             {
-                RecipientName = model.Name,
-                Content = model.Content,
-                Email = model.Email
-            };
-            await MongoBase.Save(mongoModel);
-
+                var mongoModel = new ModelMessage
+                {
+                    RecipientName = model.Name,
+                    Content = model.Content,
+                    Email = model.Email
+                };
+                await MongoBase.Save(mongoModel);
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ namespace NotificationServer.EmailServices
                 Subject = subject,
                 Message = text
             };
-
+            
             return await SMTPHelper.SendMail(message);
         }
     }
