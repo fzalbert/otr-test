@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Newtonsoft.Json.Linq;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Mongo
@@ -12,21 +11,36 @@ namespace Mongo
 
     public class MongoBase : IMongoBase
     {
-        private static string ConnectionString = "mongodb://localhost:27017";
-        private static string DatabaseName = "EmailMessages";
+        public readonly static string CONNECTION_STRING;
+        public readonly static string DATABASE_NAME;
+
+
+       static MongoBase()
+        {
+            using (var r = new StreamReader("mongosettings.json"))
+            {
+                var json = r.ReadToEnd();
+                dynamic d = JObject.Parse(json);
+
+                CONNECTION_STRING = d.CONNECTION_STRING;
+                DATABASE_NAME = d.DATABASE_NAME;
+            }
+
+        }
 
         public async Task Save(ModelMessage model)
         {
-            IDatabaseContext databaseContext = new DatabaseContext(ConnectionString, DatabaseName);
+            IDatabaseContext databaseContext = new DatabaseContext(CONNECTION_STRING, DATABASE_NAME);
             ISaveInBaseRepository repository = new SaveInBaseRepository(databaseContext);
 
-            await repository.Add(new ModelMessage {
+            await repository.Add(new ModelMessage
+            {
                 Content = model.Content,
                 Email = model.Content,
                 IsSend = true,
                 RecipientName = model.RecipientName,
                 SenderName = model.SenderName
-            }); 
+            });
 
         }
     }

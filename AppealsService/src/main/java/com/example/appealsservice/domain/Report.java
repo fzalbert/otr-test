@@ -20,7 +20,7 @@ public class Report {
     @Column(name = "text", columnDefinition="TEXT")
     private String text;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "appeal_id", referencedColumnName = "id")
     private Appeal appeal;
 

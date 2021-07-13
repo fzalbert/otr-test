@@ -33,18 +33,20 @@ public class AppealDto {
 
     private StatusAppeal statusAppeal;
 
-
     private List<FileDto> files;
+
+    private ReportDto report;
 
     public AppealDto()
         {}
 
-    public AppealDto(Appeal appeal, List<FileDto> files) {
+    public AppealDto(Appeal appeal, List<FileDto> files, ReportDto report) {
 
         if(appeal == null)
             return;
         id = appeal.getId();
         clientId = appeal.getClientId();
+
         theme = appeal.getTheme();
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();
@@ -53,6 +55,7 @@ public class AppealDto {
         endDate = appeal.getEndDate();
         tnved = new TNVEDDto(appeal.getTnved());
         this.files = files;
+        this.report = report;
 
     }
 }

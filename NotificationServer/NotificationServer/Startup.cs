@@ -5,14 +5,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Linq;
 using NotificationServer.Consumer;
 using NotificationServer.DTO;
 using System;
+using System.IO;
+using Utils;
 
 namespace NotificationServer
 {
     public class Startup
     {
+        
+
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,15 +30,14 @@ namespace NotificationServer
         public void ConfigureServices(IServiceCollection services)
         {
 
-
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
 
             services.AddKafkaConsumer<string, CreateNotificationDto, CreateNotificationHandler>(p =>
             {
-                p.Topic = "EmailNotification";
-                p.GroupId = "emails";
-                p.BootstrapServers = "localhost:9092";
+                p.Topic = KafkaHelper.TOPIC;
+                p.GroupId = KafkaHelper.GROUP_ID;
+                p.BootstrapServers = KafkaHelper.SERVER;
             });
 
             services.AddCors();
