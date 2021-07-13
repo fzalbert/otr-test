@@ -24,13 +24,11 @@ import java.util.List;
 public class FileController extends AuthorizeController {
 
     private final FileService fileService;
-    private final TNVEDService tnvedService;
 
     @Autowired
-    public FileController(FileService fileService, TNVEDService tnvedService, HttpServletRequest request) {
+    public FileController(FileService fileService, HttpServletRequest request) {
         super(request);
         this.fileService = fileService;
-        this.tnvedService = tnvedService;
     }
 
 
