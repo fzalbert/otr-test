@@ -18,7 +18,7 @@ public interface AppealService {
 
     AppealDto create(List<MultipartFile> files, UserModel client, AppealRequestDto request) throws IOException;
 
-    public void delete(Long id);
+    public void deleteById(Long id);
 
     AppealDto updateMyAppeal( Long clientId, Long id, AppealRequestDto request);
 

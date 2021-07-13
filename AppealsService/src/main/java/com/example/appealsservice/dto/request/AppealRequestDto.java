@@ -10,9 +10,6 @@ public class AppealRequestDto {
     public Long themeId;
 
     @Nullable
-    public Date startDate;
-
-    @Nullable
     public Date endDate;
 
     @Nullable

@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TNVEDServiceImpl implements TNVEDService {
@@ -27,10 +28,12 @@ public class TNVEDServiceImpl implements TNVEDService {
     {
         this.tnvedRepository = tnvedRepository;
     }
+
+    /** создать коды ТН ВЭД   */
     @Override
     public void init() throws URISyntaxException {
 
-        if(tnvedRepository.findAll().stream().count() >=1)
+        if((long) tnvedRepository.findAll().size() >=1)
             throw new NotRightsException("Tnveds already created");
 
         URL res = getClass().getClassLoader().getResource("tnved.json");
@@ -59,11 +62,18 @@ public class TNVEDServiceImpl implements TNVEDService {
 
     }
 
+    /** получить лист коды ТН ВЭД   */
     @Override
     public List<TNVEDDto> getAll() {
-        return null;
+
+       return tnvedRepository
+               .findAll()
+               .stream()
+               .map(TNVEDDto::new)
+               .collect(Collectors.toList());
     }
 
+    /** получить по id   */
     @Override
     public TNVEDDto byId(Long id) {
         return null;

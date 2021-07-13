@@ -1,8 +1,7 @@
 package com.example.appealsservice.service;
 
-import com.example.appealsservice.domain.ReportStatus;
+import com.example.appealsservice.domain.enums.ReportStatus;
 import com.example.appealsservice.dto.response.ReportDto;
-import com.example.appealsservice.dto.response.TaskDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;

@@ -30,13 +30,6 @@ public class LoggerDelegate implements JavaDelegate {
             + ", executionId=" + execution.getId()
             + " \n\n");
 
-
-    execution.setVariable("appeals_id", "oaoioij ijsodfijoiasdjfo jjoiasjdfoijijaosdi");
-    execution.setVariable("appeal_client_name", "user@gmail.com");
-    execution.setVariable("appeal_status", "test_status");
-    execution.setVariable("created_at", DateTime.now().toDateTimeISO().toString());
-    execution.setVariable("appeal_theme", "Test theme");
-
   }
 
 }

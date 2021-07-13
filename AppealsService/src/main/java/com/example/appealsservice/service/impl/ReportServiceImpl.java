@@ -1,8 +1,8 @@
 package com.example.appealsservice.service.impl;
 
 import com.example.appealsservice.domain.Report;
-import com.example.appealsservice.domain.ReportStatus;
-import com.example.appealsservice.domain.StatusAppeal;
+import com.example.appealsservice.domain.enums.ReportStatus;
+import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
@@ -15,8 +15,6 @@ import com.example.appealsservice.repository.ReportRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.ReportService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.kafka.common.protocol.types.Field;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -58,28 +56,33 @@ public class ReportServiceImpl implements ReportService {
         var report = new Report();
         report.setCreateDate(new Date());
         report.setAppeal(task.getAppeal());
-        report.setReportStatus(isApprove ? ReportStatus.Success : ReportStatus.Rejected);
+        report.setReportStatus(isApprove ? ReportStatus.SUCCESS : ReportStatus.REJECTED);
         report.setText(text);
 
         task.setOver(true);
 
         reportRepository.save(report);
 
-        task.getAppeal().setStatusAppeal(StatusAppeal.SUCCESS);
+        task.getAppeal().setStatusAppeal(isApprove ? StatusAppeal.SUCCESS : StatusAppeal.REJECT);
+
         appealRepository.save(task.getAppeal());
+
 
         String subject = isApprove ? "APPEAL APPROVED" : "APPEAL REJECTED";
 
         MessageType messageType = isApprove? MessageType.ACCEPT : MessageType.REJECT;
 
-        ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
-                task.getAppeal().getNameOrg(), subject, messageType);
+        try {
+            ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
+                    task.getAppeal().getNameOrg(), subject, messageType);
 
-        apacheKafkaMsgSender.initializeKafkaProducer();
-        apacheKafkaMsgSender.sendJson(model);
+            apacheKafkaMsgSender.initializeKafkaProducer();
+            apacheKafkaMsgSender.sendJson(model);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
     }
-
 
     /** получить все отчеты  */
     @Override

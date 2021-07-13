@@ -1,11 +1,10 @@
 package com.example.appealsservice.controller;
 
-import com.example.appealsservice.domain.ReportStatus;
+import com.example.appealsservice.domain.enums.ReportStatus;
 import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.httpModel.CheckUser;
 import com.example.appealsservice.service.ReportService;
-import com.example.appealsservice.service.impl.ReportServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -29,6 +28,7 @@ public class ReportController extends AuthorizeController {
         this.reportService = reportService;
         this.checkUser = checkUser;
     }
+
 
     @GetMapping("/list")
     public List<ReportDto> getAll() {

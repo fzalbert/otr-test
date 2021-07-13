@@ -1,0 +1,42 @@
+@import '../../../common/styles/variables.scss';
+@import '../../../common/styles/mixins.scss';
+
+.appeals-component {
+    width: 100vw;
+    padding: 0 122px;
+
+    .heading {
+        width: 100%;
+        @extend %display-flex-row;
+        justify-content: flex-start;
+    
+        h1 {
+            margin-bottom: 0;
+            width: fit-content;
+            font-weight: 500;
+            font-size: 48px;
+            color: #333E43;
+        }
+    
+        button {
+            margin-left: 26px;
+            width: 300px;
+            height: 49px;
+        }
+    }
+    
+    .appeals-container {
+        margin-left: -20px;
+        margin-top: calc(56px -28px);
+        width: 100%;
+        @extend %display-flex-row;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    
+        .appeal-container {
+            margin-left: 20px;
+            margin-top: 28px;
+            width: 405px;
+        }
+    }
+}

@@ -1,9 +1,7 @@
 package com.example.appealsservice.service.impl;
 
-import com.example.appealsservice.domain.StatusAppeal;
+import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.Task;
-import com.example.appealsservice.domain.Theme;
-import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
 import com.example.appealsservice.exception.NotRightsException;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +37,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    /** взять задачу */
+    /**
+     * взять задачу
+     */
     @Override
     public void takeTask(Long appealId, Long employeeId) throws JsonProcessingException {
 
@@ -78,7 +77,10 @@ public class TaskServiceImpl implements TaskService {
         apacheKafkaMsgSender.sendJson(model);
     }
 
-    /** получить список задач по id сотрудника */
+
+    /**
+     * получить список задач по id сотрудника
+     */
     @Override
     public List<TaskDto> getTasksByEmployeeId(Long employeeId) {
 
@@ -93,7 +95,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    /** получить задачу по id  */
+    /**
+     * получить задачу по id
+     */
     @Override
     public TaskDto geById(Long id) {
         var task = taskRepository
@@ -104,6 +108,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
+    /**
+     * создать задачу для другого сотрудника
+     */
     @Override
     public void Appoint(Long employeeId, Long appealId) throws JsonProcessingException {
 
@@ -141,6 +148,5 @@ public class TaskServiceImpl implements TaskService {
         apacheKafkaMsgSender.sendJson(model);
 
     }
-
 
 }

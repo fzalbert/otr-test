@@ -1,15 +1,12 @@
 package com.example.appealsservice.domain;
 
+import com.example.appealsservice.domain.enums.StatusAppeal;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "appeals")
 @Data
@@ -51,11 +48,11 @@ public class Appeal {
     private double amount;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "tnvedId", referencedColumnName = "id", nullable = true)
     private TNVED tnved;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "themeId", referencedColumnName = "id")
     private Theme theme;
 }

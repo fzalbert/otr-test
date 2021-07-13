@@ -1,5 +1,14 @@
 package com.example.appealsservice.service.impl;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -7,11 +16,12 @@ import java.util.stream.Stream;
 
 import com.example.appealsservice.domain.File;
 import com.example.appealsservice.dto.response.FileDto;
-import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.FileRepository;
 import com.example.appealsservice.service.FileService;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,72 +32,73 @@ public class FileServiceImpl implements FileService {
 
     private final FileRepository fileRepository;
     private final AppealRepository appealRepository;
+    @Value("${path.file}")
+    private String pathFile;
 
-    public FileServiceImpl(FileRepository fileRepository, AppealRepository appealRepository)
-    {
+    public FileServiceImpl(FileRepository fileRepository, AppealRepository appealRepository) {
         this.fileRepository = fileRepository;
         this.appealRepository = appealRepository;
     }
 
 
+    /**
+     * получение файла по id
+     */
     @Override
     public FileDto getById(Long fileId) {
 
         var file = fileRepository.findById(fileId).orElseThrow(()
                 -> new ResourceNotFoundException(fileId));
-
-        String fileDownloadUri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path("/files/")
-                .path(file.getId().toString())
-                .toUriString();
-
-        return new FileDto(
-                file.getId(),
-                file.getAppealId(),
-                file.getName(),
-                fileDownloadUri,
-                file.getType(),
-                file.getData().length);
+        return new FileDto(file);
     }
 
-    public void store(MultipartFile file, Long appealId, Long clientId) throws IOException {
+    /**
+     * создание файла
+     */
+    public void store(MultipartFile fileRequest, Long appealId, Long clientId) throws IOException {
 
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        var filename = fileRequest.getOriginalFilename();
+        int lastIndexOf = filename.lastIndexOf(".");
+
+        String name = DigestUtils.md5Hex(StringUtils.cleanPath(Objects.requireNonNull(fileRequest.getOriginalFilename()))
+                + new SimpleDateFormat("dd-MM-yyyy").format(new Date())) + filename.substring(lastIndexOf);
+
+        var path = new java.io.File(pathFile + name).getAbsolutePath();
+        FileOutputStream outputStream = new FileOutputStream(path);
+        outputStream.write(fileRequest.getBytes());
+        outputStream.close();
+
         File fileDb = new File();
-        fileDb.setName(fileName);
+        fileDb.setName(name);
+        fileDb.setUrl(path);
         fileDb.setAppealId(appealId);
-        fileDb.setType(file.getContentType());
-        fileDb.setData(file.getBytes());
+        fileDb.setType(fileRequest.getContentType());
 
         fileRepository.save(fileDb);
 
     }
 
+
+    /**
+     * получение файлов по id обращения
+     */
     @Override
     public List<FileDto> getFilesByAppealId(Long appealId) {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
 
-        List<FileDto> files = getAllFiles().map(dbFile -> {
-            String fileDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/files/")
-                    .path(dbFile.getId().toString())
-                    .toUriString();
-
-            return new FileDto(dbFile.getId(),
-                    appeal.getId(),
-                    dbFile.getName(),
-                    fileDownloadUri,
-                    dbFile.getType(),
-                    dbFile.getData().length);
-        }).collect(Collectors.toList());
-
-        return files;
+        return fileRepository
+                .findAll()
+                .stream()
+                .filter(x -> x.getAppealId() == appealId)
+                .map(FileDto::new)
+                .collect(Collectors.toList());
     }
 
+    /**
+     * удалить файл
+     */
     @Override
     public void deleteFile(Long id) {
 
@@ -95,25 +106,20 @@ public class FileServiceImpl implements FileService {
                 -> new ResourceNotFoundException(id));
 
         fileRepository.delete(file);
-
     }
 
-    private void deleteFiles(Long appealId)
-    {
+
+    /**
+     * удалить файлы по id обращения
+     */
+    private void deleteFiles(Long appealId) {
+
         var files = getFilesByAppealId(appealId);
-        for (var file:
+        for (var file :
                 files) {
             deleteFile(file.getId());
         }
     }
 
-    @Override
-    public File getFile(Long id) {
-        return fileRepository.findById(id).get();
-    }
-
-    private Stream<File> getAllFiles() {
-        return fileRepository.findAll().stream();
-    }
 
 }

@@ -1,7 +1,7 @@
 package com.example.appealsservice.service.impl;
 
 import com.example.appealsservice.domain.Appeal;
-import com.example.appealsservice.domain.StatusAppeal;
+import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
@@ -19,6 +19,7 @@ import com.example.appealsservice.repository.FileRepository;
 import com.example.appealsservice.repository.ThemeRepository;
 import com.example.appealsservice.repository.TNVEDRepository;
 import com.example.appealsservice.service.AppealService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,9 +88,10 @@ public class AppealServiceImpl implements AppealService {
         var appeal = new Appeal();
         appeal.setTheme(theme);
 
-        if(request.startDate != null && request.endDate != null)
+        if(request.endDate != null)
         {
-            if(request.startDate.after(request.endDate))
+            var date = new Date();
+            if(!date.after(request.endDate))
             throw new NotRightsException("Incorrect date");
         }
 
@@ -101,8 +103,6 @@ public class AppealServiceImpl implements AppealService {
         }
         appeal.setCreateDate(new Date());
         appeal.setTheme(theme);
-        appeal.setStartDate(request.startDate);
-        appeal.setEndDate(request.endDate);
         appeal.setAmount(request.amount);
         appeal.setEmail(client.getEmail());
         appeal.setNameOrg(client.getName());
@@ -120,11 +120,16 @@ public class AppealServiceImpl implements AppealService {
             }
         }
 
-        ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION", MessageType.TAKEAPPEAL);
+        try {
+            ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
+                    appeal.getNameOrg(), "APPEAL SUCCESSFULLY CREATED", MessageType.APPEALCREATE);
 
-        apacheKafkaMsgSender.initializeKafkaProducer();
-        apacheKafkaMsgSender.sendJson(model);
+            apacheKafkaMsgSender.initializeKafkaProducer();
+            apacheKafkaMsgSender.sendJson(model);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()));
     }
@@ -134,7 +139,7 @@ public class AppealServiceImpl implements AppealService {
      * удаление обращения
      */
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         var appeal = appealRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
 
@@ -143,7 +148,7 @@ public class AppealServiceImpl implements AppealService {
 
 
     /**
-     * обновление обращения
+     * обновление обращения клиентом(до того как возьмет сотрудник)
      */
     @Override
     public AppealDto updateMyAppeal(Long clientId, Long id, AppealRequestDto request){
@@ -165,12 +170,12 @@ public class AppealServiceImpl implements AppealService {
         }
 
 
-        if(request.startDate != null && request.endDate != null)
+        if(request.endDate != null)
         {
-            if(request.startDate.after(request.endDate))
+            var date = new Date();
+            if(!date.after(request.endDate))
                 throw new NotRightsException("Incorrect date");
 
-            appeal.setStartDate(request.startDate);
             appeal.setEndDate(request.endDate);
         }
 
@@ -193,6 +198,9 @@ public class AppealServiceImpl implements AppealService {
 
     }
 
+    /**
+     * обновление обращения сотрудником
+     */
     @Override
     public AppealDto update(Long id, AppealRequestDto request) {
         var appeal = appealRepository.findById(id).orElseThrow(()
@@ -206,12 +214,12 @@ public class AppealServiceImpl implements AppealService {
         }
 
 
-        if(request.startDate != null && request.endDate != null)
+        if(request.endDate != null)
         {
-            if(request.startDate.after(request.endDate))
+            var date = new Date();
+            if(!date.after(request.endDate))
                 throw new NotRightsException("Incorrect date");
 
-            appeal.setStartDate(request.startDate);
             appeal.setEndDate(request.endDate);
         }
 

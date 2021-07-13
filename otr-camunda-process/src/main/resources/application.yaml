@@ -23,5 +23,4 @@ camunda.bpm.job-execution:
   max-wait: 10000
 
 
-spring.cloud.stream.kafka.binder.zkNodes: localhost:2181
 spring.cloud.stream.kafka.binder.brokers: localhost:9092

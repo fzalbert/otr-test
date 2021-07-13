@@ -1,0 +1,36 @@
+@import '../../../common/styles/variables.scss';
+@import '../../../common/styles/mixins.scss';
+
+.view-container {
+    position: absolute;
+    top: 97px;
+    width: 100vw;
+    height: calc(100vh - 97px);
+    // box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    // not-adaptive
+    @include sm-down {
+        right: 0;
+        width: 1200px;
+        height: 703px;
+    }
+}
+
+// not-adaptive
+// @media screen and (max-width: 768px) {
+//     .view-container {
+//         left: 120px;
+//     }
+// }
+
+// @media screen and (max-width: 600px) {
+//     .view-container {
+//         padding-right: 5px;
+//         box-sizing: border-box;
+//         width: 90vw;
+//         left: 5vw;
+//         right: 5vw;
+//     }
+// }
