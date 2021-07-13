@@ -7,13 +7,14 @@ import com.example.clientsservice.dto.responce.ClientModelDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
 import com.example.clientsservice.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
-
+@Scope("prototype")
 @RestController
 @RequestMapping("clients")
 public class ClientController {
@@ -26,25 +27,25 @@ public class ClientController {
     }
 
 
-    @GetMapping("/list")
+    @GetMapping("list")
     public List<ShortClientDto> geAll() {
 
         return this.clientService.getAll();
     }
 
-    @GetMapping("/block")
+    @GetMapping("block")
     public void blockById(@RequestParam long id) {
 
         this.clientService.blockById(id);
     }
 
-    @PutMapping("/unblock")
+    @PutMapping("unblock")
     public void unblockById(@RequestParam long id) {
 
         this.clientService.unblockById(id);
     }
 
-    @GetMapping("id")
+    @GetMapping("by-id")
     public ClientDto getById(@RequestParam long id){
 
         return this.clientService.getById(id);
@@ -56,7 +57,7 @@ public class ClientController {
         return  this.clientService.update(clientrequest);
     }
 
-    @DeleteMapping("id")
+    @DeleteMapping("delete")
     public boolean deleteById(@RequestParam long id){
 
         return this.clientService.deleteById(id);

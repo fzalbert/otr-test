@@ -7,10 +7,7 @@ import com.example.appealsservice.service.TaskService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,8 +26,8 @@ public class TaskController extends AuthorizeController{
         this.checkUser = checkUser;
     }
 
-    @GetMapping("take/{appealId}")
-    public void take(@PathVariable Long appealId) throws JsonProcessingException {
+    @GetMapping("take")
+    public void take(@RequestParam Long appealId) throws JsonProcessingException {
         if(!checkUser.isEmployee(userModel))
             throw new NotRightsException("No rights");
 
@@ -38,16 +35,16 @@ public class TaskController extends AuthorizeController{
 
     }
 
-    @GetMapping("appoint{appealId}")
-    public void appoint(@PathVariable Long appealId) throws JsonProcessingException {
+    @GetMapping("appoint")
+    public void appoint(@RequestParam Long appealId) throws JsonProcessingException {
         if(!checkUser.isEmployee(userModel))
             throw new NotRightsException("No rights");
         taskService.Appoint(userModel.getId(), appealId);
 
     }
 
-    @GetMapping("{id}")
-    public TaskDto byId(@PathVariable Long id) {
+    @GetMapping("by-id")
+    public TaskDto byId(@RequestParam Long id) {
        return taskService.geById(id);
     }
 

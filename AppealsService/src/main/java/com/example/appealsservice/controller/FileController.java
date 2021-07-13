@@ -32,18 +32,18 @@ public class FileController extends AuthorizeController {
     }
 
 
-    @GetMapping("/files{appealId}")
-    public List<FileDto> getFilesByIdAppealId(@PathVariable Long appealId) {
+    @GetMapping("files")
+    public List<FileDto> getFilesByIdAppealId(@RequestParam Long appealId) {
         return fileService.getFilesByAppealId(appealId);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    @DeleteMapping("delete")
+    public void delete(@RequestParam Long id) {
         fileService.deleteFile(id);
     }
 
 
-    @PostMapping(value = "/upload")
+    @PostMapping(value = "upload")
     public ResponseEntity<ResponseMessage> uploadFile(@RequestPart("appealId") String appealId,
                                                       @RequestPart("file") List<MultipartFile> files) {
         String message = "";

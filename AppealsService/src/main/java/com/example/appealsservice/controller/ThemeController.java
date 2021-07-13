@@ -7,10 +7,7 @@ import com.example.appealsservice.service.ThemeService;
 import com.example.appealsservice.service.impl.ThemeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -35,20 +32,20 @@ public class ThemeController extends AuthorizeController{
         return themeService.getAll();
     }
 
-    @GetMapping("/{name}")
-    public  ThemeDto create(@PathVariable String name){
+    @GetMapping("create")
+    public  ThemeDto create(@RequestParam String name){
         if(!checkUser.isAdmin(userModel))
             throw new NotRightsException("You not admin");
         return themeService.Create(name);
     }
 
-    @GetMapping("/{id}")
-    public ThemeDto byId( @PathVariable Long id){
+    @GetMapping("by-id")
+    public ThemeDto byId( @RequestParam Long id){
         return themeService.getById(id);
     }
 
-    @GetMapping("/{id},{name}")
-    public ThemeDto update(@PathVariable Long id, @PathVariable String name){
+    @GetMapping("update")
+    public ThemeDto update(@RequestParam Long id, @RequestParam String name){
         return themeService.update(id, name);
     }
 }

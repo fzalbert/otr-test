@@ -30,17 +30,17 @@ public class ReportController extends AuthorizeController {
     }
 
 
-    @GetMapping("/list")
+    @GetMapping("list")
     public List<ReportDto> getAll() {
         return reportService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public ReportDto byId(@PathVariable Long id) {
+    @GetMapping("by-id")
+    public ReportDto byId(@RequestParam Long id) {
         return reportService.getById(id);
     }
 
-    @GetMapping("/approveOrReject")
+    @GetMapping("approve-or-reject")
     public void approveOrReject(@RequestParam Long taskId, @RequestParam Boolean isApprove, @RequestParam String text) throws JsonProcessingException {
         if(!checkUser.isEmployee(userModel))
             throw new NotRightsException("Not Rigthts");
@@ -48,7 +48,7 @@ public class ReportController extends AuthorizeController {
         reportService.approveOrReject(taskId, userModel.getId(), isApprove, text);
     }
 
-    @GetMapping("byStatus")
+    @GetMapping("by-status")
     public List<ReportDto> getByStatus(ReportStatus status) {
         return reportService.getByStatus(status);
     }

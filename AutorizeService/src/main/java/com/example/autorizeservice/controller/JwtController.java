@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/jwt")
+@RequestMapping("api/jwt")
 public class JwtController {
 
     private final JwtService jwtService;
@@ -23,13 +23,13 @@ public class JwtController {
     }
 
 
-    @RequestMapping(value = "/parse", method = RequestMethod.POST)
+    @RequestMapping(value = "parse", method = RequestMethod.POST)
     public ResponseEntity<?> getSomeSensitiveData(@RequestBody JwtParseRequestDto requestDto) {
             JwtParseResponseDto jwtParseResponseDto = jwtService.parseJwt(requestDto.getToken());
             return new ResponseEntity<>(jwtParseResponseDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/is-valid", method = RequestMethod.GET)
+    @RequestMapping(value = "is-valid", method = RequestMethod.GET)
     public boolean isValid(String token) {
         return jwtService.isValidToken(token);
     }

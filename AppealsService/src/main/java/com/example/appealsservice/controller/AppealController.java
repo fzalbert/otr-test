@@ -37,38 +37,38 @@ public class AppealController  extends AuthorizeController{
         this.checkUser = checkUser;
     }
 
-    @GetMapping()
+    @GetMapping("short-list")
     public List<ShortAppealDto> getAll() {
         return appealService.getAll();
     }
 
-    @GetMapping("byId")
+    @GetMapping("by-id")
     public AppealDto byId(@RequestParam Long id){
         return appealService.getById(id);
     }
 
-    @PostMapping("/filter")
+    @PostMapping("filter")
     public List<AppealDto> byId(@RequestBody FilterAppealDto request){
         return appealService.filter(request);
     }
 
-    @GetMapping("/byClientId/{id}")
-    public List<AppealDto> byClientId(Long clientId){
+    @GetMapping("by-client-id")
+    public List<AppealDto> byClientId(@RequestParam Long clientId){
         if(!checkUser.isClient(userModel))
             throw new NotRightsException("");
         return appealService.myAppeals(clientId);
     }
 
-    @DeleteMapping()
+    @DeleteMapping("delete")
     public void delete(@RequestParam Long id){
         appealService.deleteById(id);
     }
 
 
-    @RequestMapping(value = "/updateMy", method = RequestMethod.POST,
+    @RequestMapping(value = "update-my", method = RequestMethod.POST,
                         consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public AppealDto create( @RequestParam("request") String request,
-                             @RequestParam("appealId") Long appealId) throws JsonProcessingException {
+    public AppealDto update( @RequestParam("request") String request,
+                             @RequestParam("appeal-id") Long appealId) throws JsonProcessingException {
 
         if(!checkUser.isClient(userModel))
             throw new NotRightsException("This is not your appeal");
@@ -81,7 +81,7 @@ public class AppealController  extends AuthorizeController{
     }
 
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST,
+    @RequestMapping(value = "create", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE,
                         MediaType.MULTIPART_FORM_DATA_VALUE})
     public AppealDto create( @RequestParam("request") String request,

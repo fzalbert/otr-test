@@ -34,17 +34,17 @@ public class EmployeeController extends AuthorizeController {
     }
 
     @PutMapping("update")
-    public EmployeeDTO update(@RequestBody CreateEmployeeDTO request, long employeeId) {
+    public EmployeeDTO update(@RequestBody CreateEmployeeDTO request, @RequestParam long employeeId) {
         return employeeService.update(request, employeeId);
     }
 
     @PutMapping("appoint-role")
-    public boolean appointRole(long employeeId, RoleType role) {
+    public boolean appointRole(@RequestParam long employeeId, RoleType role) {
         return employeeService.appointRole(employeeId, role);
     }
 
-    @GetMapping("{id}")
-    public EmployeeDTO getById(long id) {
+    @GetMapping("by-id")
+    public EmployeeDTO getById(@RequestParam long id) {
         return employeeService.getById(id);
     }
 
@@ -53,8 +53,8 @@ public class EmployeeController extends AuthorizeController {
         return employeeService.getList();
     }
 
-    @DeleteMapping("{id}")
-    public boolean delete(long id) {
+    @DeleteMapping("delete")
+    public boolean delete(@RequestParam long id) {
         return employeeService.delete(id);
     }
 }
