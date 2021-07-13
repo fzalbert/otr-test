@@ -1,7 +1,9 @@
 package org.example.service.appeals;
 
+import org.camunda.bpm.engine.task.Task;
 import org.example.dto.appeal.Appeal;
 import org.example.dto.appeal.StatusAppealParser;
+import org.example.dto.user.Employee;
 import org.example.service.BaseCamundaService;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,21 @@ public class CamundaAppealService extends BaseCamundaService implements AppealSe
     @Override
     public void update(Appeal appeal) {
 
+    }
+
+    @Override
+    public void appoint(Employee employee, Long appealId) {
+        Task task = camunda.getTaskService()
+                .createTaskQuery()
+                .processInstanceBusinessKey(appealId.toString())
+                .singleResult();
+
+
+        if(task == null)
+            return;
+
+        camunda.getTaskService()
+                .setAssignee(task.getId(), employee.getEmail());
     }
 
 }
