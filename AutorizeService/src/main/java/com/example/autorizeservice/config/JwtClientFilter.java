@@ -92,6 +92,13 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
                 .compact();
 
         response.addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + " " + token);
+
+        try {
+            response.getWriter().write(token);
+            response.getWriter().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

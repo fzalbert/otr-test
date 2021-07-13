@@ -5,6 +5,7 @@ import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.Theme;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.util.Date;
 
@@ -24,15 +25,18 @@ public class ShortAppealDto {
 
     private StatusAppeal statusAppeal;
 
+    private Long employeeId;
+
 
     public ShortAppealDto() {}
 
-    public ShortAppealDto(Appeal appeal) {
+    public ShortAppealDto(Appeal appeal ) {
 
         if(appeal == null)
             return;
         id = appeal.getId();
         clientId = appeal.getClientId();
+        employeeId = appeal.getEmployeeId();
         theme = appeal.getTheme();
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();

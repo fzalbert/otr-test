@@ -1,5 +1,6 @@
 package com.example.autorizeservice.config;
 
+import com.example.autorizeservice.dto.AuthDto;
 import com.example.autorizeservice.dto.LoginDto;
 import com.example.autorizeservice.dto.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,12 +89,17 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
                 .compact();
 
         response.addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + " " + token);
+        try {
+            response.getWriter().write(token);
+            response.getWriter().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private UserDto CheckUser(String login, String password) {
-        final String url = urlEmployee + "?login=" + login + "&password=" + password;
-
+        AuthDto body = new AuthDto(login, password);
         var restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, UserDto.class);
+        return restTemplate.postForObject(urlEmployee, body, UserDto.class);
     }
 }

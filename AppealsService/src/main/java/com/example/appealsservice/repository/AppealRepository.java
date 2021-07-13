@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface AppealRepository extends JpaRepository<Appeal, Long> {
 
     List<Appeal> findByClientId(Long clientId, Sort sort);
+
 }

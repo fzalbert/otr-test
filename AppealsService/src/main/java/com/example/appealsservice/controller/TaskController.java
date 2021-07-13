@@ -36,10 +36,10 @@ public class TaskController extends AuthorizeController{
     }
 
     @GetMapping("appoint")
-    public void appoint(@RequestParam Long appealId) throws JsonProcessingException {
-        if(!checkUser.isEmployee(userModel))
+    public void appoint(@RequestParam Long appealId, @RequestParam Long employeeId) throws JsonProcessingException {
+        if(!checkUser.isAdmin(userModel))
             throw new NotRightsException("No rights");
-        taskService.Appoint(userModel.getId(), appealId);
+        taskService.Appoint(employeeId, appealId);
 
     }
 

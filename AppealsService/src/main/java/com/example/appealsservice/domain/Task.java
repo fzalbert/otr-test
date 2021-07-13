@@ -19,7 +19,7 @@ public class Task {
     @Column(name = "employee_id")
     private long employeeId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "appeal_id", referencedColumnName = "id")
     private Appeal appeal;
 

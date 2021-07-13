@@ -6,6 +6,7 @@ import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
 
+import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
@@ -14,10 +15,7 @@ import com.example.appealsservice.kafka.kafkamsg.ProducerApacheKafkaMsgSender;
 import com.example.appealsservice.kafka.model.MessageType;
 import com.example.appealsservice.kafka.model.ModelConvertor;
 import com.example.appealsservice.kafka.model.ModelMessage;
-import com.example.appealsservice.repository.AppealRepository;
-import com.example.appealsservice.repository.FileRepository;
-import com.example.appealsservice.repository.ThemeRepository;
-import com.example.appealsservice.repository.TNVEDRepository;
+import com.example.appealsservice.repository.*;
 import com.example.appealsservice.service.AppealService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Sort;
@@ -37,16 +35,19 @@ public class AppealServiceImpl implements AppealService {
     private final TNVEDRepository tnvedRepository;
     private final FileServiceImpl fileServiceImpl;
     private final ThemeRepository themeRepository;
+    private final ReportRepository reportRepository;
     private final ProducerApacheKafkaMsgSender apacheKafkaMsgSender;
 
     public AppealServiceImpl(AppealRepository appealRepository, ThemeRepository themeRepository,
                              FileRepository fileRepository, FileServiceImpl fileServiceImpl,
-                             TNVEDRepository tnvedRepository, ProducerApacheKafkaMsgSender apacheKafkaMsgSender) {
+                             TNVEDRepository tnvedRepository, ProducerApacheKafkaMsgSender apacheKafkaMsgSender,
+                             ReportRepository reportRepository) {
         this.appealRepository = appealRepository;
         this.themeRepository = themeRepository;
         this.tnvedRepository = tnvedRepository;
         this.fileServiceImpl = fileServiceImpl;
         this.apacheKafkaMsgSender = apacheKafkaMsgSender;
+        this.reportRepository = reportRepository;
     }
 
     /**
@@ -73,7 +74,11 @@ public class AppealServiceImpl implements AppealService {
 
         var files = fileServiceImpl.getFilesByAppealId(id);
 
-        return new AppealDto(appeal, files);
+        var report = reportRepository
+                .findByAppealId(appeal.getId());
+
+
+        return new AppealDto(appeal, files, new ReportDto(report));
     }
 
     /**
@@ -131,7 +136,7 @@ public class AppealServiceImpl implements AppealService {
         }
 
 
-        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()));
+        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
     }
 
 
@@ -194,7 +199,7 @@ public class AppealServiceImpl implements AppealService {
         appealRepository.save(appeal);
 
 
-        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()));
+        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
 
     }
 
@@ -238,7 +243,7 @@ public class AppealServiceImpl implements AppealService {
 
         appealRepository.save(appeal);
 
-        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()));
+        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
 
     }
 
@@ -246,7 +251,7 @@ public class AppealServiceImpl implements AppealService {
      * получение списка обращений с помощью фильтра
      */
     @Override
-    public List<AppealDto> filter(FilterAppealDto filter) {
+    public List<ShortAppealDto> filter(FilterAppealDto filter) {
 
         var appeals = appealRepository
                 .findAll()
@@ -264,9 +269,10 @@ public class AppealServiceImpl implements AppealService {
             appeals.filter(x -> x.getCreateDate().after(filter.date));
 
 
+
         return appeals.collect(Collectors.toList())
                 .stream()
-                .map(x -> new AppealDto(x, fileServiceImpl.getFilesByAppealId(x.getId())))
+                .map(ShortAppealDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -274,12 +280,12 @@ public class AppealServiceImpl implements AppealService {
      * получение списка обращений клиента
      */
     @Override
-    public List<AppealDto> myAppeals(Long clientId) {
+    public List<ShortAppealDto> myAppeals(Long clientId) {
 
         return appealRepository
                 .findByClientId(clientId, Sort.by(Sort.Direction.DESC, "createDate") )
                 .stream()
-                .map(x -> new AppealDto(x, fileServiceImpl.getFilesByAppealId(x.getId())))
+                .map(ShortAppealDto::new)
                 .collect(Collectors.toList());
     }
 }

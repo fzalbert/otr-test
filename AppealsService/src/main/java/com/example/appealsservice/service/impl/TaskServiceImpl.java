@@ -41,7 +41,7 @@ public class TaskServiceImpl implements TaskService {
      * взять задачу
      */
     @Override
-    public void takeTask(Long appealId, Long employeeId) throws JsonProcessingException {
+    public void takeTask(Long appealId,  Long employeeId) throws JsonProcessingException {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
@@ -68,6 +68,7 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(taskDb);
 
         appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
+        appeal.setEmployeeId(employeeId);
         appealRepository.save(appeal);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
@@ -139,6 +140,7 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(taskDb);
 
         appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
+        appeal.setEmployeeId(employeeId);
         appealRepository.save(appeal);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),

@@ -19,6 +19,9 @@ public class Appeal {
     @Column(name = "clientId")
     private Long clientId;
 
+    @Column(name = "employeeId")
+    private Long employeeId;
+
     @Column(name = "description", columnDefinition="TEXT")
     private String description;
 

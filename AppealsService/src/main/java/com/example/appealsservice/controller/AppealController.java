@@ -48,12 +48,12 @@ public class AppealController  extends AuthorizeController{
     }
 
     @PostMapping("filter")
-    public List<AppealDto> byId(@RequestBody FilterAppealDto request){
+    public List<ShortAppealDto> byId(@RequestBody FilterAppealDto request){
         return appealService.filter(request);
     }
 
     @GetMapping("by-client-id")
-    public List<AppealDto> byClientId(@RequestParam Long clientId){
+    public List<ShortAppealDto> byClientId(@RequestParam Long clientId){
         if(!checkUser.isClient(userModel))
             throw new NotRightsException("");
         return appealService.myAppeals(clientId);
