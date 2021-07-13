@@ -37,7 +37,7 @@ public class ReportCreatedListener {
     @StreamListener(target = Sink.INPUT,
             condition="(headers['type']?:'')=='ReportCreatedCommand'")
     @Transactional
-    public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException {
+    public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException, Exception {
 
         Message<Report> message = objectMapper.readValue(messageJson, new TypeReference<Message<Report>>(){});
         Report report = message.getData();
