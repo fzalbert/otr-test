@@ -32,10 +32,10 @@ public class AuthDtoValidator implements BaseValidator<AuthDto> {
         if(user != null) {
             var checkPassword = DigestUtils.md5Hex(authDto.getPassword()).equals(user.getPassword());
 
-            if(user.isActive() == false)
+            if(!user.isActive())
                 throw new TemplateException("You are blocked");
 
-            if(checkPassword == false) {
+            if(!checkPassword) {
                 var countAttempts = user.getAttemptsBlocking() +1;
                 user.setAttemptsBlocking(countAttempts);
                 userRepository.save(user);

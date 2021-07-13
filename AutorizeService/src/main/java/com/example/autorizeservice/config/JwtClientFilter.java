@@ -7,6 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,14 +39,13 @@ import static com.example.autorizeservice.utils.SecurityConstants.BEARER_PREFIX;
 public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
 
     private final String signingKey;
+    private final String urlClient;
 
-    @Value("${security.path.auth.client}")
-    private String PATH_AUTH_CLIENT;
-
-    public JwtClientFilter(AuthenticationManager authenticationManager, String signingKey) {
+    public JwtClientFilter(AuthenticationManager authenticationManager, String signingKey, String urlClient) {
         super(new AntPathRequestMatcher("/v1/login/client", "POST"));
         setAuthenticationManager(authenticationManager);
         this.signingKey = signingKey;
+        this.urlClient = urlClient;
     }
 
     @Override
@@ -91,7 +95,7 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
 
 
     private UserDto CheckUser(String login, String password) {
-        final String url = PATH_AUTH_CLIENT + "?login=" + login + "&password=" + password;
+        final String url = urlClient + "?login=" + login + "&password=" + password;
 
         var restTemplate = new RestTemplate();
         return restTemplate.getForObject(url, UserDto.class);

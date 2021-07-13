@@ -16,10 +16,16 @@ import javax.servlet.http.HttpServletResponse;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final String signingKey;
+    private final String urlClient;
+    private final String urlEmployee;
 
     @Autowired
-    public WebSecurityConfiguration(@Value("${security.jwt.signing-key}") String signingKey) {
+    public WebSecurityConfiguration(@Value("${security.jwt.signing-key}") String signingKey,
+                                    @Value("${url.auth.client}") String urlClient,
+                                    @Value("${url.auth.employee}") String urlEmployee)  {
         this.signingKey = signingKey;
+        this.urlClient = urlClient;
+        this.urlEmployee = urlEmployee;
     }
 
     @Autowired
@@ -37,8 +43,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, ex) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                 .and()
-                .addFilterAfter(new JwtClientFilter(authenticationManager(), signingKey), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new JwtEmployeeFilter(authenticationManager(), signingKey), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtClientFilter(authenticationManager(), signingKey, urlClient), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtEmployeeFilter(authenticationManager(), signingKey, urlEmployee), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/v1/login/client").permitAll()
                 .antMatchers("/v1/login/employee").permitAll()
