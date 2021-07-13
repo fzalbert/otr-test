@@ -18,5 +18,5 @@ public interface ClientService {
     boolean deleteById(long id);
     boolean changePassword(long id, String newPassword);
     ClientModelDto auth(AuthDto request);
-    long register(CreateClientDto request);
+    void register(CreateClientDto request);
 }

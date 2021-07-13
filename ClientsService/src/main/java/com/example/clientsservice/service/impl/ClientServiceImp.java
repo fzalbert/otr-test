@@ -162,7 +162,7 @@ public class ClientServiceImp implements ClientService {
      * Регистрация
      */
     @Override
-    public long register(CreateClientDto request) {
+    public void register(CreateClientDto request) {
         createClientDtoValidator.validate(request);
         var client = new Client(request);
 
@@ -174,8 +174,6 @@ public class ClientServiceImp implements ClientService {
 
         client.setUser(user);
         clientRepository.save(client);
-
-        return client.getId();
     }
 
 

@@ -25,37 +25,45 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @PostMapping("register")
-    public long register(@RequestBody @Valid CreateClientDto request){
 
-        return  this.clientService.register((request));
-    }
+    @GetMapping("/list")
+    public List<ShortClientDto> geAll() {
 
-    @GetMapping("auth")
-    public ClientModelDto auth(AuthDto request) {
-        return this.clientService.auth(request);
-    }
-
-    @GetMapping("get-all")
-    public List<ShortClientDto> geAll(HttpServletRequest request) {
         return this.clientService.getAll();
     }
 
-    @PutMapping("block_by_id")
-    public void blockById(long id){ this.clientService.blockById(id);};
+    @GetMapping("/block")
+    public void blockById(@RequestParam long id) {
 
-    @PutMapping("un_block_by_id")
-    public void unblockById(long id){this.clientService.unblockById(id);}
+        this.clientService.blockById(id);
+    }
 
-    @GetMapping("get_by_id")
-    public ClientDto getById(long id){return this.clientService.getById(id);}
+    @PutMapping("/unblock")
+    public void unblockById(@RequestParam long id) {
+
+        this.clientService.unblockById(id);
+    }
+
+    @GetMapping("id")
+    public ClientDto getById(@RequestParam long id){
+
+        return this.clientService.getById(id);
+    }
 
     @PutMapping("update")
-    public ClientDto update(@RequestBody @Valid ClientDto clientrequest) {return  this.clientService.update(clientrequest);}
+    public ClientDto update(@RequestBody @Valid ClientDto clientrequest) {
 
-    @DeleteMapping("delete_by_id")
-    public boolean deleteById(long id){return this.clientService.deleteById(id);}
+        return  this.clientService.update(clientrequest);
+    }
 
-    @PutMapping("change_password")
-    public boolean changePassword(long id, String newPassword){return this.clientService.changePassword(id, newPassword);}
+    @DeleteMapping("id")
+    public boolean deleteById(@RequestParam long id){
+
+        return this.clientService.deleteById(id);
+    }
+
+    @PutMapping("change-password")
+    public boolean changePassword(@RequestParam long id, @RequestParam(required = true)String newPassword){
+        return this.clientService.changePassword(id, newPassword);
+    }
 }
