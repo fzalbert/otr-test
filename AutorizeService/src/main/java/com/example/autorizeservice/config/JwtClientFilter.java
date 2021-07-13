@@ -72,8 +72,9 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
                 loginDto.getPassword(),
                 list
         );
-
         SecurityContextHolder.getContext().setAuthentication(user);
+/*        response.getWriter().write(client.getRole()+" ");
+        response.getWriter().flush();*/
         return user;
     }
 

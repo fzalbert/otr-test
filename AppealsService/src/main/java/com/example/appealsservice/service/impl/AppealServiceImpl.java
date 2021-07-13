@@ -253,27 +253,25 @@ public class AppealServiceImpl implements AppealService {
     @Override
     public List<ShortAppealDto> filter(FilterAppealDto filter) {
 
-        var appeals = appealRepository
-                .findAll()
+        var appeals =  appealRepository.findAll()
                 .stream()
-                .collect(Collectors.toList())
-                .stream();
+                .sorted(Comparator.comparing(Appeal::getCreateDate, Comparator.reverseOrder()))
+                .collect(Collectors.toList());
+
+        if (filter != null && filter.themeId != null )
+            appeals = appeals.stream().filter(x -> x.getTheme().getId() == (filter.themeId))
+                    .collect(Collectors.toList());
 
 
-        if (filter.themeId != null && filter.themeId != 0)
-            appeals.filter(x -> x.getTheme().getId().equals(filter.themeId));
+        if (filter != null && filter.statusAppeal != null)
+            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == filter.statusAppeal)
+                    .collect(Collectors.toList());
 
+        if (filter != null && filter.date != null)
+            appeals = appeals.stream().filter(x -> x.getCreateDate().after(filter.date))
+                    .collect(Collectors.toList());
 
-        if (filter.statusAppeal != null)
-            appeals.filter(x -> x.getStatusAppeal() == filter.statusAppeal);
-
-        if (filter.date != null)
-            appeals.filter(x -> x.getCreateDate().after(filter.date));
-
-
-
-        return appeals
-                .map(ShortAppealDto::new)
+        return appeals.stream().map(ShortAppealDto::new)
                 .collect(Collectors.toList());
     }
 

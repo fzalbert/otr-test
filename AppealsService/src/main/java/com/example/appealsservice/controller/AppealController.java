@@ -48,7 +48,7 @@ public class AppealController  extends AuthorizeController{
     }
 
     @PostMapping("filter")
-    public List<ShortAppealDto> filer(@RequestBody FilterAppealDto request){
+    public List<ShortAppealDto> filer(@RequestBody(required = false) FilterAppealDto request){
         return appealService.filter(request);
     }
 
