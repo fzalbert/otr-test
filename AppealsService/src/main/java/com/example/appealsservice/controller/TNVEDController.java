@@ -2,7 +2,6 @@ package com.example.appealsservice.controller;
 
 import com.example.appealsservice.dto.response.TNVEDDto;
 import com.example.appealsservice.service.TNVEDService;
-import com.example.appealsservice.service.impl.TNVEDServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +26,16 @@ public class TNVEDController extends AuthorizeController {
         this.tnvedService = tnvedService;
     }
 
-    @GetMapping()
+    @GetMapping("/list")
     public List<TNVEDDto> getAll() {
+
         return tnvedService.getAll();
+    }
+
+    @GetMapping("/list")
+    public TNVEDDto byId(Long id) {
+
+        return tnvedService.byId(id);
     }
 
     @GetMapping("/init")

@@ -3,6 +3,7 @@ package com.example.appealsservice.service.impl;
 import com.example.appealsservice.domain.TNVED;
 import com.example.appealsservice.dto.response.TNVEDDto;
 import com.example.appealsservice.exception.NotRightsException;
+import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.repository.TNVEDRepository;
 import com.example.appealsservice.service.TNVEDService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,6 +77,10 @@ public class TNVEDServiceImpl implements TNVEDService {
     /** получить по id   */
     @Override
     public TNVEDDto byId(Long id) {
-        return null;
+
+        var tnved = tnvedRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException(id));
+
+        return new TNVEDDto(tnved);
     }
 }

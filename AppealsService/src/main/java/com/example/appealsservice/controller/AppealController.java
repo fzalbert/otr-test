@@ -59,8 +59,8 @@ public class AppealController  extends AuthorizeController{
         return appealService.myAppeals(clientId);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(Long id){
+    @DeleteMapping()
+    public void delete(@RequestParam Long id){
         appealService.deleteById(id);
     }
 
@@ -93,6 +93,4 @@ public class AppealController  extends AuthorizeController{
 
         return appealService.create(files, userModel, appeal);
     }
-
-
 }
