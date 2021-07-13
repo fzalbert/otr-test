@@ -11,13 +11,13 @@ import javax.validation.Valid;
 
 @RestController
 @Scope("prototype")
-@RequestMapping("account")
-public class AccountController {
+@RequestMapping("employee-account")
+public class EmployeeAccountController {
 
     private final EmployeeService employeeService;
 
     @Autowired
-    public AccountController(EmployeeService employeeService) {
+    public EmployeeAccountController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
