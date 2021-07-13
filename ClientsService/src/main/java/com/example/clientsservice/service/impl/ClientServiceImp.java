@@ -11,11 +11,14 @@ import com.example.clientsservice.exception.ResourceNotFoundException;
 import com.example.clientsservice.repository.ClientRepository;
 import com.example.clientsservice.repository.UserRepository;
 import com.example.clientsservice.service.ClientService;
+import com.example.clientsservice.util.CryptoHelper;
 import com.example.clientsservice.validation.AuthDtoValidator;
 import com.example.clientsservice.validation.ClientDtoValidator;
 import com.example.clientsservice.validation.CreateClientDtoValidator;
 import com.sun.istack.NotNull;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -32,6 +35,9 @@ public class ClientServiceImp implements ClientService {
     private final ClientDtoValidator dtoValidator;
     private final CreateClientDtoValidator createClientDtoValidator;
     private final AuthDtoValidator authDtoValidator;
+
+    @Value("${secret}")
+    private String secretKey;
 
     public ClientServiceImp(ClientRepository clientRepository, UserRepository userRepository,
                             ClientDtoValidator dtoValidator, CreateClientDtoValidator createClientDtoValidator,
@@ -163,13 +169,15 @@ public class ClientServiceImp implements ClientService {
      */
     @Override
     public void register(CreateClientDto request) {
+
+        CryptoHelper.setSecretKey(secretKey);
         createClientDtoValidator.validate(request);
         var client = new Client(request);
 
         User user = new User();
         user.setActive(true);
         user.setLogin(request.getLogin());
-        user.setPassword(DigestUtils.md5Hex(request.getPassword()));
+        user.setPassword(CryptoHelper.HMAC(request.getPassword()));
         user.setRegistrationDate(new Date());
 
         client.setUser(user);

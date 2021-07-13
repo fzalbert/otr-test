@@ -4,14 +4,19 @@ import com.example.clientsservice.common.validation.BaseValidator;
 import com.example.clientsservice.dto.request.AuthDto;
 import com.example.clientsservice.exception.TemplateException;
 import com.example.clientsservice.repository.UserRepository;
+import com.example.clientsservice.util.CryptoHelper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuthDtoValidator implements BaseValidator<AuthDto> {
 
     private final UserRepository userRepository;
+
+    @Value("${secret}")
+    private String secretKey;
 
     @Autowired
     public AuthDtoValidator(
@@ -30,7 +35,8 @@ public class AuthDtoValidator implements BaseValidator<AuthDto> {
                 .orElse(null);
 
         if(user != null) {
-            var checkPassword = DigestUtils.md5Hex(authDto.getPassword()).equals(user.getPassword());
+            CryptoHelper.setSecretKey(secretKey);
+            var checkPassword =  CryptoHelper.HMAC(authDto.getPassword()).equals(user.getPassword());
 
             if(!user.isActive())
                 throw new TemplateException("You are blocked");
