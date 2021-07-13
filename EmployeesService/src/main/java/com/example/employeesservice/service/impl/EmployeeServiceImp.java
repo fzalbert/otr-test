@@ -14,10 +14,12 @@ import com.example.employeesservice.repository.EmployeeRepository;
 import com.example.employeesservice.repository.PersonRepository;
 import com.example.employeesservice.repository.RoleRepository;
 import com.example.employeesservice.service.EmployeeService;
+import com.example.employeesservice.utils.CryptoHelper;
 import com.example.employeesservice.validation.CreateEmployeeDtoValidator;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ import java.util.stream.Collectors;
 @Scope("prototype")
 public class EmployeeServiceImp implements EmployeeService {
 
+    @Value("${secret}")
+    private String secretKey;
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final CreateEmployeeDtoValidator dtoValidator;
@@ -48,10 +52,11 @@ public class EmployeeServiceImp implements EmployeeService {
     /** Авторизация */
     @Override
     public EmployeeModelDTO auth(AuthDto request) {
-        var md5Password = DigestUtils.md5Hex(request.getPassword());
+        CryptoHelper.setSecretKey(secretKey);
+        var hmacPassword = CryptoHelper.HMAC(request.getPassword());
 
         var user = personRepository
-                .findByLoginAndPassword(request.getLogin(), md5Password)
+                .findByLoginAndPassword(request.getLogin(), hmacPassword)
                 .orElseThrow(MissingRequiredFieldException::new);
 
         var employee = user.getEmployee();
@@ -124,11 +129,12 @@ public class EmployeeServiceImp implements EmployeeService {
 
     /** Преобразовать из dto в сущность employee */
     private Employee dtoToEntity(CreateEmployeeDTO request, Employee employee) {
+        CryptoHelper.setSecretKey(secretKey);
         BeanUtils.copyProperties(request, employee);
 
         var person = new Person();
         BeanUtils.copyProperties(request, person, "password");
-        person.setPassword(DigestUtils.md5Hex(request.getPassword()));
+        person.setPassword(CryptoHelper.HMAC(request.getPassword()));
         person.setRegistrationDate(new Date());
         employee.setPerson(person);
 

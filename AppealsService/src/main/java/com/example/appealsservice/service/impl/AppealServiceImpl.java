@@ -255,6 +255,8 @@ public class AppealServiceImpl implements AppealService {
 
         var appeals = appealRepository
                 .findAll()
+                .stream()
+                .collect(Collectors.toList())
                 .stream();
 
 
@@ -270,8 +272,7 @@ public class AppealServiceImpl implements AppealService {
 
 
 
-        return appeals.collect(Collectors.toList())
-                .stream()
+        return appeals
                 .map(ShortAppealDto::new)
                 .collect(Collectors.toList());
     }

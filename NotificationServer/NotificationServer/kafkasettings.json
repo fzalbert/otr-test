@@ -1,7 +1,5 @@
 {
-  {
-    "TOPIC": "EmailNotification",
-    "GROUP_ID": "emails",
-    "SERVER": "localhost:9092"
-  }
+  "TOPIC": "EmailNotification",
+  "GROUP_ID": "emails",
+  "SERVER": "localhost:9092"
 }

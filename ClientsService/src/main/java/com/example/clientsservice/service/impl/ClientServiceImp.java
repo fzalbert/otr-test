@@ -142,9 +142,10 @@ public class ClientServiceImp implements ClientService {
      */
     @Override
     public boolean changePassword(long id, String newPassword) {
+        CryptoHelper.setSecretKey(secretKey);
         var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
 
-        client.getUser().setPassword(newPassword);
+        client.getUser().setPassword(CryptoHelper.HMAC(newPassword));
         clientRepository.save(client);
 
         return true;
