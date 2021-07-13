@@ -17,8 +17,10 @@ public class EmployeeDTO {
     public String lastName;
     public String email;
     public String role;
+    public String login;
 
     public EmployeeDTO(Employee employee) {
         BeanUtils.copyProperties(employee, this);
+        this.login = employee.getPerson().getLogin();
     }
 }

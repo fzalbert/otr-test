@@ -15,7 +15,7 @@ public interface EmployeeService {
     boolean create(CreateEmployeeDTO request);
     EmployeeDTO update (CreateEmployeeDTO request, long id);
     boolean delete (long id);
-    List<ShortEmployeeDTO> getList();
+    List<EmployeeDTO> getList();
     EmployeeDTO getById(long id);
     boolean appointRole(long id, RoleType role);
 

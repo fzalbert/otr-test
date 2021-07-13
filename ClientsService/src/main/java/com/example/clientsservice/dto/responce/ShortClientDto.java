@@ -13,9 +13,10 @@ public class ShortClientDto {
     private Long id;
     private String fio;
     private String fullNameOrg;
-    private String shortNameOrg;
+    private String email;
 
     public ShortClientDto(Client client) {
         BeanUtils.copyProperties(client, this);
+        this.email = client.getUser().getLogin();
     }
 }

@@ -99,12 +99,12 @@ public class EmployeeServiceImp implements EmployeeService {
     /** Получить список всех сотрудников в системе */
     @Cacheable(value = "itemCache")
     @Override
-    public List<ShortEmployeeDTO> getList() {
+    public List<EmployeeDTO> getList() {
         return employeeRepository
                 .findAll()
                 .stream()
                 .sorted(Comparator.comparing(Employee::getLastName, Comparator.reverseOrder()))
-                .map(ShortEmployeeDTO::new)
+                .map(EmployeeDTO::new)
                 .collect(Collectors.toList());
     }
 

@@ -49,7 +49,7 @@ public class EmployeeController extends AuthorizeController {
     }
 
     @GetMapping("list")
-    public List<ShortEmployeeDTO> getList() {
+    public List<EmployeeDTO> getList() {
         return employeeService.getList();
     }
 
