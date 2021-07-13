@@ -5,6 +5,7 @@ import com.example.appealsservice.service.TNVEDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,8 +33,8 @@ public class TNVEDController extends AuthorizeController {
         return tnvedService.getAll();
     }
 
-    @GetMapping("/list")
-    public TNVEDDto byId(Long id) {
+    @GetMapping("/{id}")
+    public TNVEDDto byId(@PathVariable Long id) {
 
         return tnvedService.byId(id);
     }

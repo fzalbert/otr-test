@@ -1,12 +1,13 @@
 package com.example.employeesservice.controller;
 
+import com.example.employeesservice.dto.request.AuthDto;
 import com.example.employeesservice.dto.response.EmployeeModelDTO;
 import com.example.employeesservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @Scope("prototype")
@@ -20,8 +21,8 @@ public class AccountController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("auth")
-    public EmployeeModelDTO auth(String login, String password) {
-        return employeeService.auth(login, password);
+    @PostMapping("auth")
+    public EmployeeModelDTO auth(@RequestBody @Valid AuthDto request) {
+        return employeeService.auth(request);
     }
 }

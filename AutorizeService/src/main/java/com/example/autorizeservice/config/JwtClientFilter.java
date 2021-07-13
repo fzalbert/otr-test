@@ -1,5 +1,6 @@
 package com.example.autorizeservice.config;
 
+import com.example.autorizeservice.dto.AuthDto;
 import com.example.autorizeservice.dto.UserDto;
 import com.example.autorizeservice.dto.LoginDto;
 import com.example.autorizeservice.enums.UserRole;
@@ -42,7 +43,7 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
     private final String urlClient;
 
     public JwtClientFilter(AuthenticationManager authenticationManager, String signingKey, String urlClient) {
-        super(new AntPathRequestMatcher("/v1/login/client", "POST"));
+        super(new AntPathRequestMatcher("/api/login/client", "POST"));
         setAuthenticationManager(authenticationManager);
         this.signingKey = signingKey;
         this.urlClient = urlClient;
@@ -95,9 +96,8 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
 
 
     private UserDto CheckUser(String login, String password) {
-        final String url = urlClient + "?login=" + login + "&password=" + password;
-
+        AuthDto body = new AuthDto(login, password);
         var restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, UserDto.class);
+        return restTemplate.postForObject(urlClient, body, UserDto.class);
     }
 }

@@ -27,7 +27,7 @@ public class AccountController {
     }
 
     @PostMapping("auth")
-    public ClientModelDto auth(AuthDto request) {
+    public ClientModelDto auth(@RequestBody @Valid AuthDto request) {
         return this.clientService.auth(request);
     }
 }

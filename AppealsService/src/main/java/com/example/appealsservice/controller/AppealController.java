@@ -31,8 +31,8 @@ public class AppealController  extends AuthorizeController{
 
     @Autowired
     public AppealController(AppealService appealService, CheckUser checkUser,
-                            HttpServletRequest servletRequestrequest) {
-        super(servletRequestrequest);
+                            HttpServletRequest servletRequest) {
+        super(servletRequest);
         this.appealService = appealService;
         this.checkUser = checkUser;
     }

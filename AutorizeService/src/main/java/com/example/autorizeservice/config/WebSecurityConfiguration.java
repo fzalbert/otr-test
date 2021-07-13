@@ -43,13 +43,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, ex) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                 .and()
-                .addFilterAfter(new JwtClientFilter(authenticationManager(), signingKey, urlClient ), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new JwtEmployeeFilter(authenticationManager(), signingKey, urlEmployee ), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtClientFilter(authenticationManager(), signingKey, urlClient), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtEmployeeFilter(authenticationManager(), signingKey, urlEmployee), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/v1/login/client").permitAll()
-                .antMatchers("/v1/login/employee").permitAll()
-                .antMatchers("/v1/jwt/parse").permitAll()
-                .antMatchers("/v1/jwt/is-valid").permitAll()
+                .antMatchers("/api/login/client").permitAll()
+                .antMatchers("/api/login/employee").permitAll()
+                .antMatchers("/api/jwt/parse").permitAll()
+                .antMatchers("/api/jwt/is-valid").permitAll()
                 .anyRequest().authenticated();
     }
 }
