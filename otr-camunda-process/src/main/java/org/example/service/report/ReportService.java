@@ -5,7 +5,7 @@ import org.example.dto.report.Report;
 
 public interface ReportService {
 
-    void create(Report report);
+    void create(Report report) throws Exception;
 
 
 }
