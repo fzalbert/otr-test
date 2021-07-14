@@ -4,6 +4,7 @@ import com.example.appealsservice.domain.TNVED;
 import com.example.appealsservice.dto.response.TNVEDDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.repository.TNVEDRepository;
 import com.example.appealsservice.service.TNVEDService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,16 +28,16 @@ public class TNVEDServiceImpl implements TNVEDService {
 
     private final TNVEDRepository tnvedRepository;
 
-    public TNVEDServiceImpl(TNVEDRepository tnvedRepository)
-    {
+    public TNVEDServiceImpl(TNVEDRepository tnvedRepository) {
         this.tnvedRepository = tnvedRepository;
     }
 
-    /** создать коды ТН ВЭД   */
+    /**
+     * создать коды ТН ВЭД
+     */
     @Override
     public void init() throws URISyntaxException {
-
-        if((long) tnvedRepository.findAll().size() >=1)
+        if ((long) tnvedRepository.findAll().size() >= 1)
             throw new NotRightsException("Tnveds already created");
 
         URL res = getClass().getClassLoader().getResource("tnved.json");
@@ -44,7 +45,6 @@ public class TNVEDServiceImpl implements TNVEDService {
         String absolutePath = file.getAbsolutePath();
 
         JSONParser jsonParser = new JSONParser();
-
         ObjectMapper objectMapper = new ObjectMapper();
 
         try (FileReader reader = new FileReader(absolutePath)) {
@@ -65,23 +65,25 @@ public class TNVEDServiceImpl implements TNVEDService {
 
     }
 
-    /** получить лист коды ТН ВЭД   */
+    /**
+     * получить лист коды ТН ВЭД
+     */
     @Override
     public List<TNVEDDto> getAll() {
-
-       return tnvedRepository
-               .findAll()
-               .stream()
-               .map(TNVEDDto::new)
-               .collect(Collectors.toList());
+        return tnvedRepository
+                .findAll()
+                .stream()
+                .map(TNVEDDto::new)
+                .collect(Collectors.toList());
     }
 
-    /** получить по id   */
+    /**
+     * получить по id
+     */
     @Override
     public TNVEDDto byId(Long id) {
-
         var tnved = tnvedRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("ТН ВЭД не найден"));
 
         return new TNVEDDto(tnved);
     }
