@@ -26,12 +26,14 @@ public class CamundaAppealService implements AppealService {
     public void create(Appeal appeal) {
         System.out.println("appeal: " + appeal.getId());
 
-        runtimeService
+       runtimeService
                 .startProcessInstanceByKey(
                         "otr-camunda-process",
                         appeal.getId().toString(),
                         appeal.toVariableMap()
                 );
+
+
 
     }
 
@@ -90,7 +92,7 @@ public class CamundaAppealService implements AppealService {
             return;
 
         taskService
-                .setAssignee(task.getId(), employee.getEmail());
+                .setAssignee(task.getId(), employee.getLogin());
     }
 
     private void update(Appeal appeal, Task task) {

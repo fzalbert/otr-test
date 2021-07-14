@@ -18,41 +18,41 @@
       <bpmn:incoming>Flow_05sce8x</bpmn:incoming>
       <bpmn:outgoing>Flow_179ok36</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_179ok36" sourceRef="Gateway_0rhice7" targetRef="Activity_04o5jiw" />
+    <bpmn:sequenceFlow id="Flow_179ok36" sourceRef="Gateway_0rhice7" targetRef="check_appeal_key" />
     <bpmn:exclusiveGateway id="Gateway_0preja8">
       <bpmn:incoming>Flow_0nsbk0y</bpmn:incoming>
       <bpmn:outgoing>Flow_0jhokdt</bpmn:outgoing>
       <bpmn:outgoing>Flow_13n1j7y</bpmn:outgoing>
       <bpmn:outgoing>Flow_0aswt1l</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0jhokdt" sourceRef="Gateway_0preja8" targetRef="Activity_04v2843">
+    <bpmn:sequenceFlow id="Flow_0jhokdt" sourceRef="Gateway_0preja8" targetRef="report_approved_key">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${status == 0}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Activity_1jwxyga" name="Исправить обращение" camunda:formKey="embedded:app:forms/change-appeal-form.html">
+    <bpmn:userTask id="change_appeal_key" name="Исправить обращение" camunda:formKey="embedded:app:forms/change-appeal-form.html">
       <bpmn:incoming>Flow_13n1j7y</bpmn:incoming>
       <bpmn:outgoing>Flow_05sce8x</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_13n1j7y" sourceRef="Gateway_0preja8" targetRef="Activity_1jwxyga">
+    <bpmn:sequenceFlow id="Flow_13n1j7y" sourceRef="Gateway_0preja8" targetRef="change_appeal_key">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${status == 2}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_05sce8x" sourceRef="Activity_1jwxyga" targetRef="Gateway_0rhice7" />
-    <bpmn:sequenceFlow id="Flow_0fazy61" sourceRef="Activity_04v2843" targetRef="EndEvent" />
-    <bpmn:userTask id="Activity_04v2843" name="Создать отчет на обращение" camunda:formKey="embedded:app:forms/create-report-form.html">
+    <bpmn:sequenceFlow id="Flow_05sce8x" sourceRef="change_appeal_key" targetRef="Gateway_0rhice7" />
+    <bpmn:sequenceFlow id="Flow_0fazy61" sourceRef="report_approved_key" targetRef="EndEvent" />
+    <bpmn:userTask id="report_approved_key" name="Создать отчет на обращение" camunda:formKey="embedded:app:forms/create-report-form.html">
       <bpmn:incoming>Flow_0jhokdt</bpmn:incoming>
       <bpmn:outgoing>Flow_0fazy61</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0aswt1l" sourceRef="Gateway_0preja8" targetRef="Activity_0f2szuv">
+    <bpmn:sequenceFlow id="Flow_0aswt1l" sourceRef="Gateway_0preja8" targetRef="report_denied_key">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${status == 1}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_0aepv2g">
       <bpmn:incoming>Flow_1ndoway</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1ndoway" sourceRef="Activity_0f2szuv" targetRef="Event_0aepv2g" />
-    <bpmn:userTask id="Activity_0f2szuv" name="Создать отчет на отклонение" camunda:formKey="embedded:app:forms/create-report-form.html">
+    <bpmn:sequenceFlow id="Flow_1ndoway" sourceRef="report_denied_key" targetRef="Event_0aepv2g" />
+    <bpmn:userTask id="report_denied_key" name="Создать отчет на отклонение" camunda:formKey="embedded:app:forms/create-report-form.html">
       <bpmn:incoming>Flow_0aswt1l</bpmn:incoming>
       <bpmn:outgoing>Flow_1ndoway</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_04o5jiw" name="Проверить обращение" camunda:formKey="embedded:app:forms/check-appeal-form.html">
+    <bpmn:userTask id="check_appeal_key" name="Проверить обращение" camunda:formKey="embedded:app:forms/check-appeal-form.html">
       <bpmn:extensionElements>
         <camunda:executionListener class="org.example.TestEndedListener" event="end" />
         <camunda:taskListener class="org.example.CheckAppealCompletedListener" event="complete" />
@@ -60,10 +60,45 @@
       <bpmn:incoming>Flow_179ok36</bpmn:incoming>
       <bpmn:outgoing>Flow_0nsbk0y</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0nsbk0y" sourceRef="Activity_04o5jiw" targetRef="Gateway_0preja8" />
+    <bpmn:sequenceFlow id="Flow_0nsbk0y" sourceRef="check_appeal_key" targetRef="Gateway_0preja8" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="otr-camunda-process">
+      <bpmndi:BPMNEdge id="Flow_0nsbk0y_di" bpmnElement="Flow_0nsbk0y">
+        <di:waypoint x="760" y="290" />
+        <di:waypoint x="865" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ndoway_di" bpmnElement="Flow_1ndoway">
+        <di:waypoint x="1170" y="420" />
+        <di:waypoint x="1292" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0aswt1l_di" bpmnElement="Flow_0aswt1l">
+        <di:waypoint x="890" y="315" />
+        <di:waypoint x="890" y="420" />
+        <di:waypoint x="1070" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fazy61_di" bpmnElement="Flow_0fazy61">
+        <di:waypoint x="1170" y="290" />
+        <di:waypoint x="1292" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05sce8x_di" bpmnElement="Flow_05sce8x">
+        <di:waypoint x="660" y="120" />
+        <di:waypoint x="540" y="120" />
+        <di:waypoint x="540" y="265" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13n1j7y_di" bpmnElement="Flow_13n1j7y">
+        <di:waypoint x="890" y="265" />
+        <di:waypoint x="890" y="120" />
+        <di:waypoint x="760" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jhokdt_di" bpmnElement="Flow_0jhokdt">
+        <di:waypoint x="915" y="290" />
+        <di:waypoint x="1070" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_179ok36_di" bpmnElement="Flow_179ok36">
+        <di:waypoint x="565" y="290" />
+        <di:waypoint x="660" y="290" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_18o7zqy_di" bpmnElement="SequenceFlow_18o7zqy">
         <di:waypoint x="380" y="290" />
         <di:waypoint x="515" y="290" />
@@ -78,45 +113,16 @@
           <dc:Bounds x="228" y="95" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nsbk0y_di" bpmnElement="Flow_0nsbk0y">
-        <di:waypoint x="760" y="290" />
-        <di:waypoint x="865" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_179ok36_di" bpmnElement="Flow_179ok36">
-        <di:waypoint x="565" y="290" />
-        <di:waypoint x="660" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0jhokdt_di" bpmnElement="Flow_0jhokdt">
-        <di:waypoint x="915" y="290" />
-        <di:waypoint x="1070" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_13n1j7y_di" bpmnElement="Flow_13n1j7y">
-        <di:waypoint x="890" y="265" />
-        <di:waypoint x="890" y="120" />
-        <di:waypoint x="760" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05sce8x_di" bpmnElement="Flow_05sce8x">
-        <di:waypoint x="660" y="120" />
-        <di:waypoint x="540" y="120" />
-        <di:waypoint x="540" y="265" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fazy61_di" bpmnElement="Flow_0fazy61">
-        <di:waypoint x="1170" y="290" />
-        <di:waypoint x="1292" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0aswt1l_di" bpmnElement="Flow_0aswt1l">
-        <di:waypoint x="890" y="315" />
-        <di:waypoint x="890" y="420" />
-        <di:waypoint x="1070" y="420" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ndoway_di" bpmnElement="Flow_1ndoway">
-        <di:waypoint x="1170" y="420" />
-        <di:waypoint x="1292" y="420" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent">
         <dc:Bounds x="173" y="272" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="172" y="308" width="40" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0fkea3f_di" bpmnElement="EndEvent">
+        <dc:Bounds x="1292" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1291" y="308" width="40" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_16vok30_di" bpmnElement="ServiceTask_Logger">
@@ -128,26 +134,20 @@
       <bpmndi:BPMNShape id="Gateway_0preja8_di" bpmnElement="Gateway_0preja8" isMarkerVisible="true">
         <dc:Bounds x="865" y="265" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0gtwu5x_di" bpmnElement="Activity_04o5jiw">
-        <dc:Bounds x="660" y="250" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_10btq9b_di" bpmnElement="Activity_1jwxyga">
+      <bpmndi:BPMNShape id="Activity_10btq9b_di" bpmnElement="change_appeal_key">
         <dc:Bounds x="660" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_0fkea3f_di" bpmnElement="EndEvent">
-        <dc:Bounds x="1292" y="272" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1291" y="308" width="40" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1mmozv5_di" bpmnElement="Activity_04v2843">
+      <bpmndi:BPMNShape id="Activity_1mmozv5_di" bpmnElement="report_approved_key">
         <dc:Bounds x="1070" y="250" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0aepv2g_di" bpmnElement="Event_0aepv2g">
         <dc:Bounds x="1292" y="402" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_09z0yhh_di" bpmnElement="Activity_0f2szuv">
+      <bpmndi:BPMNShape id="Activity_09z0yhh_di" bpmnElement="report_denied_key">
         <dc:Bounds x="1070" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0gtwu5x_di" bpmnElement="check_appeal_key">
+        <dc:Bounds x="660" y="250" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

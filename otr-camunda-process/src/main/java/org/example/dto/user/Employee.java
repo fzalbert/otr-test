@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 public class Employee {
 
     private Long id;
+    private String login;
     private String name;
     private String lastName;
     private String email;
