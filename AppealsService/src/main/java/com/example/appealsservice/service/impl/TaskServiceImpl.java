@@ -5,6 +5,7 @@ import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
+import com.example.appealsservice.exception.MissingRequiredFieldException;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.kafka.model.MessageType;
@@ -53,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
                 .findFirst()
-                .get();
+                .orElse(null);
 
         if(task.getEmployeeId() != null)
             throw new NotRightsException("Task already busy");
@@ -109,7 +110,10 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
                 .findFirst()
-                .get();
+                .orElse(null);
+
+        if (task == null)
+            throw new MissingRequiredFieldException("");
 
         if(task.getEmployeeId() != null)
             throw new NotRightsException("Task already busy");

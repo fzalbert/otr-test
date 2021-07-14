@@ -18,6 +18,7 @@ import com.example.appealsservice.repository.ReportRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.ReportService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import javassist.NotFoundException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -62,10 +63,13 @@ public class ReportServiceImpl implements ReportService {
                 .findFirst()
                 .orElse(null);
 
-        if(task.getEmployeeId() != null)
+        if (task == null)
+            throw new ResourceNotFoundException(appealId);
+
+        if(!task.getEmployeeId().equals(employeeId))
             throw new NotRightsException("Task is busy");
 
-        if(task.getTaskStatus() != TaskStatus.NEEDREJECT || task.getTaskStatus() != TaskStatus.NEEDSUCCESS)
+        if(task.getTaskStatus() == TaskStatus.NEEDUPDATE || task.getTaskStatus() == TaskStatus.NEEDCHECK)
             throw new NotRightsException("Appeal haven't considered yet");
 
             task.setEmployeeId(employeeId);

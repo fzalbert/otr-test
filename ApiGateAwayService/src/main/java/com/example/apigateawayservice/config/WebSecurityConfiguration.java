@@ -33,11 +33,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterAfter(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/api/**", "/employee/**").hasAnyRole(UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
+ /*               .antMatchers("/api/**", "/employee/**").hasAnyRole(UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
                 .antMatchers("/employee/api/employee/update", "/employee/**").hasRole(UserType.EMPLOYEE.name())
                 .antMatchers("/client/api/clients/**", "/employee/**").hasRole(UserType.CLIENT.name())
-                .antMatchers("/auth/**", "/client/api/account/register").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/auth/**", "/client/api/account/register").permitAll()*/
+
+                .anyRequest().permitAll();
 
     }
 

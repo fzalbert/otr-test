@@ -19,7 +19,6 @@ public class Appeal {
     @Column(name = "clientId")
     private Long clientId;
 
-
     @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
@@ -47,7 +46,6 @@ public class Appeal {
     @Nullable
     @Column(name = "amount")
     private double amount;
-
 
     @ManyToOne()
     @JoinColumn(name = "costcatId", referencedColumnName = "id", nullable = true)

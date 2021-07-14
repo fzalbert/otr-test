@@ -88,7 +88,7 @@ public class AppealServiceImpl implements AppealService {
                 .findByAppealId(appeal.getId());
 
         var task = taskRepository
-                .getByAppealId(appeal.getId())
+                .getByAppealIdAndIsOverFalse(appeal.getId())
                 .stream()
                 .findFirst()
                 .orElse(null);
@@ -249,10 +249,10 @@ public class AppealServiceImpl implements AppealService {
                 .findFirst()
                 .orElse(null);
 
-        if(task.getTaskStatus() != TaskStatus.NEEDCHECK)
+        if(task.getTaskStatus() != TaskStatus.NEEDUPDATE)
             throw new NotRightsException("Task not update");
 
-        if(task.getEmployeeId() != null)
+        if(!task.getEmployeeId().equals(employeeId))
             throw new NotRightsException("Task already busy");
 
 
@@ -286,6 +286,8 @@ public class AppealServiceImpl implements AppealService {
         appeal.setDescription(request.description);
 
         appealRepository.save(appeal);
+        task.setOver(true);
+        taskRepository.save(task);
 
         task.setEmployeeId(employeeId);
 
@@ -352,7 +354,7 @@ public class AppealServiceImpl implements AppealService {
         var appeal = appealRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
 
-        var task = taskRepository.findByAppealIdAndTaskStatus(appeal.getId(), TaskStatus.NEEDCHECK)
+        var task = taskRepository.findByAppealIdAndTaskStatusAndIsOverFalse(appeal.getId(), TaskStatus.NEEDCHECK)
                 .orElseThrow(() -> new ResourceNotFoundException(appeal.getId()));
 
         task.setOver(true);

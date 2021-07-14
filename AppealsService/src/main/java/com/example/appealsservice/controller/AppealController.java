@@ -1,5 +1,6 @@
 package com.example.appealsservice.controller;
 
+import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealAdminDto;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.junit.experimental.theories.FromDataPoints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
@@ -73,38 +75,23 @@ public class AppealController  extends AuthorizeController{
     }
 
     @GetMapping("check")
-    public void check(@RequestParam Long id, @RequestParam TaskStatus status){
-        appealService.check(id, status);
+    public void check(@RequestParam Long id, @RequestParam int status){
+
+        appealService.check(id, TaskStatus.values()[status]);
     }
 
-    @RequestMapping(value = "update-my", method = RequestMethod.POST,
-                        consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public AppealDto updateMy( @RequestParam("request") String request,
-                             @RequestParam("appeal-id") Long appealId) throws JsonProcessingException {
+    @RequestMapping(value = "update-my")
+    public AppealDto updateMy(@RequestBody AppealRequestDto request,
+                             @RequestParam("appeal-id") Long appealId) {
 
-        if(!checkUser.isClient(userModel))
-            throw new NotRightsException("This is not your appeal");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        var appealRequest = objectMapper.readValue(request, AppealRequestDto.class);
-
-        return appealService.updateMyAppeal(userModel.getId(), appealId, appealRequest);
+        return appealService.updateMyAppeal(userModel.getId(), appealId, request);
     }
 
-    @RequestMapping(value = "update", method = RequestMethod.POST,
-            consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public AppealDto update( @RequestParam("request") String request,
-                             @RequestParam("appeal-id") Long appealId) throws JsonProcessingException {
+    @RequestMapping(value = "update")
+    public AppealDto update( @RequestBody AppealRequestDto request,
+                             @RequestParam("appeal-id") Long appealId) {
 
-        if(!checkUser.isClient(userModel))
-            throw new NotRightsException("This is not your appeal");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        var appealRequest = objectMapper.readValue(request, AppealRequestDto.class);
-
-        return appealService.update(userModel.getId(), appealId, appealRequest);
+        return appealService.update(userModel.getId(), appealId, request);
     }
 
 

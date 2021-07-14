@@ -12,11 +12,12 @@ import java.util.ArrayList;
 
 @Component
 public class CreateClientDtoValidator implements BaseValidator<CreateClientDto> {
-    private static final String FIELD_INN = "inn";
-    private static final String FIELD_CON_NUMBER = "Control number inn";
-    private static final String FIELD_EMAIL = "email";
-    private static final String FIELD_KPP = "kpp";
-    private static final String FIELD_LOGIN = "login";
+
+    private static final String FIELD_INN = "Данный ИНН уже существует в базе";
+    private static final String FIELD_CON_NUMBER = "Некорректное контрольное число ИНН";
+    private static final String FIELD_EMAIL = "Данный email уже существует в базе";
+    private static final String FIELD_KPP = "Данный КПП уже существует в базе";
+    private static final String FIELD_LOGIN = "Данный Логин уже существует в базе";
 
     private final ClientRepository clientRepository;
 
@@ -39,7 +40,7 @@ public class CreateClientDtoValidator implements BaseValidator<CreateClientDto> 
                 .anyMatch(x -> x.getUser().getLogin().equals(CreateClientDto.getLogin()));
 
         if(checkLogin){
-            throw new FieldNotUniqueException((FIELD_LOGIN));
+            throw new TemplateException((FIELD_LOGIN));
         }
 
         var checkControlNumberInn = checkInn(CreateClientDto.getInn());
@@ -53,7 +54,7 @@ public class CreateClientDtoValidator implements BaseValidator<CreateClientDto> 
                 .stream().anyMatch(x -> x.getInn().equals(CreateClientDto.getInn()));
 
         if (checkInnClient) {
-            throw new FieldNotUniqueException(FIELD_INN);
+            throw new TemplateException(FIELD_INN);
         }
 
         var checkEmailClient = this.clientRepository
@@ -61,7 +62,7 @@ public class CreateClientDtoValidator implements BaseValidator<CreateClientDto> 
                 .stream().anyMatch(x -> x.getEmail().equals(CreateClientDto.getEmail()));
 
         if (checkEmailClient) {
-            throw new FieldNotUniqueException(FIELD_EMAIL);
+            throw new TemplateException(FIELD_EMAIL);
         }
 
         var checkKppClient = this.clientRepository
@@ -69,7 +70,7 @@ public class CreateClientDtoValidator implements BaseValidator<CreateClientDto> 
                 .stream().anyMatch(x -> x.getKpp().equals(CreateClientDto.getKpp()));
 
         if (checkKppClient) {
-            throw new FieldNotUniqueException(FIELD_KPP);
+            throw new TemplateException(FIELD_KPP);
         }
 
     }
