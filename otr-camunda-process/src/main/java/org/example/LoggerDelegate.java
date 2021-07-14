@@ -5,7 +5,10 @@ import java.util.logging.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.example.dto.appeal.Appeal;
+import org.example.kafka.MessageSenderService;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -16,6 +19,9 @@ import org.springframework.stereotype.Component;
  */
 @Component("logger")
 public class LoggerDelegate implements JavaDelegate {
+
+  @Autowired
+  private MessageSenderService messageSenderService;
 
   private final Logger LOGGER = Logger.getLogger(LoggerDelegate.class.getName());
   
@@ -30,6 +36,10 @@ public class LoggerDelegate implements JavaDelegate {
             + ", executionId=" + execution.getId()
             + " \n\n");
 
+    Appeal appeal = new Appeal();
+    appeal.setDescription("test");
+
+    messageSenderService.send(appeal);
   }
 
 }

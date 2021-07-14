@@ -28,15 +28,14 @@ public class AppealCreatedListener {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @StreamListener(target = Sink.INPUT,
-            condition="(headers['type']?:'')=='AppealCreatedCommand'")
+    @StreamListener(target = Sink.INPUT)
+//            condition="(headers['type']?:'')=='AppealCreatedCommand'")
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException {
 
-        Message<Appeal> message = objectMapper.readValue(messageJson, new TypeReference<Message<Appeal>>(){});
-        Appeal appeal = message.getData();
+        Appeal message = objectMapper.readValue(messageJson, new TypeReference<Appeal>(){});
 
-        appealService.create(appeal);
+        appealService.create(message);
     }
 
 }

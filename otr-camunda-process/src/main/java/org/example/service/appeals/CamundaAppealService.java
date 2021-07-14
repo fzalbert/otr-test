@@ -1,32 +1,34 @@
 package org.example.service.appeals;
 
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngines;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.example.dto.appeal.Appeal;
 import org.example.dto.appeal.StatusAppealParser;
 import org.example.dto.user.Employee;
 import org.example.service.BaseCamundaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class CamundaAppealService extends BaseCamundaService implements AppealService {
 
+    @Autowired
+    private RuntimeService runtimeService;
+    @Autowired
+    private TaskService taskService;
+
     @Override
     public void create(Appeal appeal) {
         System.out.println("appeal: " + appeal.getId());
 
-        camunda.getRuntimeService()
-                .startProcessInstanceByKey(appeal.getId().toString());
+        runtimeService
+                .startProcessInstanceByKey("otr-camunda-process", appeal.getId().toString(), appeal.toVariableMap());
 
-        camunda.getRuntimeService().createMessageCorrelation(appeal.getId().toString()) //
-                .processInstanceBusinessKey(appeal.getId().toString())
-                .setVariable("appeals_id", appeal.getId())
-                .setVariable("appeal_client_name", appeal.getClientId())
-                .setVariable("appeal_status", StatusAppealParser.toString(appeal.getStatusAppeal()))
-                .setVariable("created_at", appeal.getCreateDate())
-                .setVariable("appeal_theme", appeal.getTheme().getName())
-                .setVariable("appeal_obj", appeal)
-                .correlateWithResult();
     }
 
     @Override
@@ -36,7 +38,7 @@ public class CamundaAppealService extends BaseCamundaService implements AppealSe
 
     @Override
     public void appoint(Employee employee, Long appealId) {
-        Task task = camunda.getTaskService()
+        Task task = taskService
                 .createTaskQuery()
                 .processInstanceBusinessKey(appealId.toString())
                 .singleResult();
@@ -45,7 +47,7 @@ public class CamundaAppealService extends BaseCamundaService implements AppealSe
         if(task == null)
             return;
 
-        camunda.getTaskService()
+        taskService
                 .setAssignee(task.getId(), employee.getEmail());
     }
 
