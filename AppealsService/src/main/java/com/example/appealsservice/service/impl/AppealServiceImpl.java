@@ -19,6 +19,7 @@ import com.example.appealsservice.kafka.model.ModelMessage;
 import com.example.appealsservice.messaging.MessageSender;
 import com.example.appealsservice.repository.*;
 import com.example.appealsservice.service.AppealService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Scope("prototype")
 @Service
 public class AppealServiceImpl implements AppealService {
 
@@ -44,6 +44,7 @@ public class AppealServiceImpl implements AppealService {
 
     private final MessageSender msgSender;
 
+    @Autowired
     public AppealServiceImpl(AppealRepository appealRepository, ThemeRepository themeRepository,
                              FileRepository fileRepository, FileServiceImpl fileServiceImpl,
                              TNVEDRepository tnvedRepository, MessageSender msgSender,
@@ -141,11 +142,6 @@ public class AppealServiceImpl implements AppealService {
             }
         }
 
-
-        ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                    appeal.getNameOrg(), "APPEAL SUCCESSFULLY CREATED",appeal.getId().toString(), MessageType.APPEALCREATE);
-        msgSender.send(model);
-
         var task = new Task();
         task.setOver(false);
         task.setTaskStatus(TaskStatus.NEEDCHECK);
@@ -153,6 +149,10 @@ public class AppealServiceImpl implements AppealService {
         task.setDate(new Date());
 
         taskRepository.save(task);
+
+        ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
+                appeal.getNameOrg(), "APPEAL SUCCESSFULLY CREATED",appeal.getId().toString(), MessageType.APPEALCREATE);
+        msgSender.send(model);
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
     }
@@ -300,11 +300,11 @@ public class AppealServiceImpl implements AppealService {
      * получение списка обращений с помощью фильтра
      */
     @Override
-    public List<ShortAppealDto> filter(FilterAppealDto filter) {
+    public List<ShortAppealDto> filter( Long clientId, FilterAppealDto filter) {
 
-        var appeals =  appealRepository.findAll()
+        var appeals =  appealRepository
+                .findByClientId(clientId, Sort.by(Sort.Direction.DESC, "createDate"))
                 .stream()
-                .sorted(Comparator.comparing(Appeal::getCreateDate, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
 
         if (filter != null && filter.themeId != null )

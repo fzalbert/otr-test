@@ -49,9 +49,9 @@ public class AppealController  extends AuthorizeController{
         return appealService.getById(id);
     }
 
-    @PostMapping("filter")
+    @PostMapping("filter-for-client")
     public List<ShortAppealDto> filer(@RequestBody(required = false) FilterAppealDto request){
-        return appealService.filter(request);
+        return appealService.filter(userModel.getId(), request);
     }
 
     @GetMapping("by-client-id")
