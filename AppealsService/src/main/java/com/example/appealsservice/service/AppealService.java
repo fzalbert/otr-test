@@ -2,6 +2,7 @@ package com.example.appealsservice.service;
 
 import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.request.AppealRequestDto;
+import com.example.appealsservice.dto.request.FilterAppealAdminDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
@@ -28,6 +29,8 @@ public interface AppealService {
     List<ShortAppealDto> filter(Long clientId, FilterAppealDto filter);
 
     List<ShortAppealDto> myAppeals(Long clientId);
+
+    List<ShortAppealDto> filterAdmin(FilterAppealAdminDto filter);
 
     void check(Long id, TaskStatus status);
 }

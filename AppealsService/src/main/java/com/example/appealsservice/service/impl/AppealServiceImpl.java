@@ -5,11 +5,10 @@ import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.request.AppealRequestDto;
+import com.example.appealsservice.dto.request.FilterAppealAdminDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
-import com.example.appealsservice.dto.response.AppealDto;
+import com.example.appealsservice.dto.response.*;
 
-import com.example.appealsservice.dto.response.ReportDto;
-import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.httpModel.UserModel;
@@ -88,8 +87,14 @@ public class AppealServiceImpl implements AppealService {
         var report = reportRepository
                 .findByAppealId(appeal.getId());
 
+        var task = taskRepository
+                .getByAppealId(appeal.getId())
+                .stream()
+                .findFirst()
+                .orElse(null);
 
-        return new AppealDto(appeal, files, new ReportDto(report));
+
+        return new AppealDto(appeal, files, new ReportDto(report), new TaskDto(task));
     }
 
     /**
@@ -158,7 +163,7 @@ public class AppealServiceImpl implements AppealService {
 
         msgSender.sendAppeal(new ShortAppealDto(appeal));
 
-        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
+        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null, new TaskDto(task));
     }
 
 
@@ -200,7 +205,7 @@ public class AppealServiceImpl implements AppealService {
         if(request.endDate != null)
         {
             var date = new Date();
-            if(!date.after(request.endDate))
+            if(date.after(request.endDate))
                 throw new NotRightsException("Incorrect date");
 
             appeal.setEndDate(request.endDate);
@@ -221,7 +226,7 @@ public class AppealServiceImpl implements AppealService {
         appealRepository.save(appeal);
 
 
-        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
+        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null, null);
 
     }
 
@@ -242,7 +247,7 @@ public class AppealServiceImpl implements AppealService {
                 .stream()
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
                 .findFirst()
-                .get();
+                .orElse(null);
 
         if(task.getTaskStatus() != TaskStatus.NEEDCHECK)
             throw new NotRightsException("Task not update");
@@ -262,7 +267,7 @@ public class AppealServiceImpl implements AppealService {
         if(request.endDate != null)
         {
             var date = new Date();
-            if(!date.after(request.endDate))
+            if(date.after(request.endDate))
                 throw new NotRightsException("Incorrect date");
 
             appeal.setEndDate(request.endDate);
@@ -294,9 +299,10 @@ public class AppealServiceImpl implements AppealService {
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
                 appeal.getNameOrg(), "APPEAL IS UPDATE", appeal.getId().toString(), MessageType.UPDATE);
 
-        //msgSender.send(model);
+        msgSender.sendEmail(model);
+        msgSender.sendAppeal(new ShortAppealDto(appeal));
 
-        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
+        return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null, null);
 
     }
 
@@ -357,6 +363,43 @@ public class AppealServiceImpl implements AppealService {
         newTask.setAppeal(appeal);
         newTask.setDate(new Date());
 
+
+        msgSender.sendChangeStatus(new AppealStatusChangedDto(new ShortAppealDto(appeal), status));
         taskRepository.save(newTask);
+    }
+
+    /**
+     * получение списка обращений по фильтрам для админа
+     */
+    @Override
+    public List<ShortAppealDto> filterAdmin(FilterAppealAdminDto filter) {
+        var appeals =  appealRepository
+                .findAll(Sort.by(Sort.Direction.DESC, "createDate"))
+                .stream()
+                .collect(Collectors.toList());
+
+        if (filter != null && filter.themeId != null )
+            appeals = appeals.stream().filter(x -> x.getTheme().getId() == (filter.themeId))
+                    .collect(Collectors.toList());
+
+        if (filter != null && filter.statusAppeal != null)
+            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == filter.statusAppeal)
+                    .collect(Collectors.toList());
+
+        if (filter != null && filter.date != null)
+            appeals = appeals.stream().filter(x -> x.getCreateDate().after(filter.date))
+                    .collect(Collectors.toList());
+
+        if (filter != null && filter.employeeId != null) {
+            appeals = appeals.stream().filter(x -> taskRepository.findByAppealIdAndIsOverFalse(x.getId()) != null)
+                    .collect(Collectors.toList());
+        }
+
+        if (filter != null && filter.nameOrg != null)
+            appeals = appeals.stream().filter(x -> x.getNameOrg().contains(filter.nameOrg))
+                    .collect(Collectors.toList());
+
+        return appeals.stream().map(x -> new ShortAppealDto(x, taskRepository.findByAppealIdAndIsOverFalse(x.getId()).getEmployeeId()))
+                .collect(Collectors.toList());
     }
 }

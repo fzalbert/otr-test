@@ -8,7 +8,11 @@ public class TaskDto {
 
     private Long id;
 
-    private ShortAppealDto appealDto;
+    private Long appealId;
+
+    private Long employeeId;
+
+    private Integer taskStatus;
 
     private boolean isOver;
 
@@ -18,12 +22,14 @@ public class TaskDto {
     {
 
     }
-    public TaskDto(Task task,ShortAppealDto appeal)
+    public TaskDto(Task task)
     {
         if (task == null)
             return;
         id = task.getId();
-        appealDto = appeal;
+        appealId = task.getAppeal().getId();
+        taskStatus = task.getTaskStatus().getValue();
+        employeeId = task.getEmployeeId();
         isOver = task.isOver();
         date = task.getDate();
     }

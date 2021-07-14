@@ -15,7 +15,7 @@ public class ShortAppealDto {
 
     private Long id;
 
-    private Long clientId;
+    private Long employeeId;
 
     private String nameOrg;
 
@@ -25,22 +25,35 @@ public class ShortAppealDto {
 
     private Date createDate;
 
-    private StatusAppeal statusAppeal;
+    private Integer statusAppeal;
 
 
     public ShortAppealDto() {}
 
-    public ShortAppealDto(Appeal appeal ) {
+    public ShortAppealDto(Appeal appeal) {
 
         if(appeal == null)
             return;
         id = appeal.getId();
-        clientId = appeal.getClientId();
         nameOrg = appeal.getNameOrg();
         theme = appeal.getTheme();
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();
-        statusAppeal = appeal.getStatusAppeal();
+        statusAppeal = appeal.getStatusAppeal().getValue();
+
+    }
+
+    public ShortAppealDto(Appeal appeal, Long employeeId) {
+
+        if(appeal == null)
+            return;
+        id = appeal.getId();
+        this.employeeId = employeeId;
+        nameOrg = appeal.getNameOrg();
+        theme = appeal.getTheme();
+        description = appeal.getDescription();
+        createDate = appeal.getCreateDate();
+        statusAppeal = appeal.getStatusAppeal().getValue();
 
     }
 }

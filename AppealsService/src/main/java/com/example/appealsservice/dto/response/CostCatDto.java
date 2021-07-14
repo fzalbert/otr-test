@@ -8,7 +8,6 @@ public class CostCatDto {
     public Long id;
     public String name;
 
-
     public CostCatDto() {
 
     }

@@ -5,12 +5,12 @@ import lombok.Data;
 
 @Data
 public class AppealStatusChangedDto {
-    private Long appealId;
+    private ShortAppealDto appeal;
     private TaskStatus taskStatus;
 
-    public AppealStatusChangedDto(Long appealId, TaskStatus taskStatus)
+    public AppealStatusChangedDto(ShortAppealDto appeal, TaskStatus taskStatus)
     {
-        this.appealId = appealId;
+        this.appeal = appeal;
         this.taskStatus = taskStatus;
     }
 }

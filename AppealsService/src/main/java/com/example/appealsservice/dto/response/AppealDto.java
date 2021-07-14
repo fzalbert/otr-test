@@ -33,16 +33,18 @@ public class AppealDto {
 
     private Date createDate;
 
-    private StatusAppeal statusAppeal;
+    private Integer statusAppeal;
 
     private List<FileDto> files;
 
     private ReportDto report;
 
+    private TaskDto lastTask;
+
     public AppealDto()
         {}
 
-    public AppealDto(Appeal appeal, List<FileDto> files, ReportDto report) {
+    public AppealDto(Appeal appeal, List<FileDto> files, ReportDto report, TaskDto lastTask) {
 
         if(appeal == null)
             return;
@@ -53,11 +55,12 @@ public class AppealDto {
         costCat = new CostCatDto(appeal.getCostCat());
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();
-        statusAppeal = appeal.getStatusAppeal();
+        statusAppeal = appeal.getStatusAppeal().getValue();
         endDate = appeal.getEndDate();
         tnved = new TNVEDDto(appeal.getTnved());
         this.files = files;
         this.report = report;
+        this.lastTask = lastTask;
 
     }
 }
