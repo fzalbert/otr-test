@@ -39,10 +39,9 @@ public class ReportCreatedListener {
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException, Exception {
 
-        Message<Report> message = objectMapper.readValue(messageJson, new TypeReference<Message<Report>>(){});
-        Report report = message.getData();
+        Report message = objectMapper.readValue(messageJson, new TypeReference<Report>(){});
 
-        service.create(report);
+        service.create(message);
     }
 
 }

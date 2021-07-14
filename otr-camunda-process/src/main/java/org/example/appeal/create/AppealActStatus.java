@@ -18,14 +18,12 @@ public class AppealActStatus {
         else throw new Exception("status not selected");
     }
 
-    public static int getStatus(ReportStatus status) throws Exception{
+    public static int getStatus(ReportStatus status){
         switch (status){
             case Success:
                 return Allow;
-            case Rejected:
-                return Denied;
             default:
-                throw new Exception("status not allowed");
+                return Denied;
         }
     }
 }

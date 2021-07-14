@@ -1,11 +1,15 @@
 package org.example;
 
 import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
+import org.example.kafka.KafkaProcessor;
+import org.example.kafka.MessageSenderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
@@ -18,6 +22,7 @@ import org.springframework.web.filter.CorsFilter;
 @SpringBootApplication
 @EnableProcessApplication("otr-camunda-process")
 public class CamundaApplication {
+
   public static void main(String... args) {
     SpringApplication.run(CamundaApplication.class, args);
   }

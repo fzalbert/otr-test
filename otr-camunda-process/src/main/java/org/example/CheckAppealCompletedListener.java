@@ -15,9 +15,9 @@ public class CheckAppealCompletedListener implements TaskListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
-       boolean changed = (boolean) delegateTask.getVariable("changed");
-       boolean denied = (boolean) delegateTask.getVariable("denied");
-       boolean approved = (boolean) delegateTask.getVariable("approved");
+//       boolean changed = (boolean) delegateTask.getVariable("changed");
+//       boolean denied = (boolean) delegateTask.getVariable("denied");
+//       boolean approved = (boolean) delegateTask.getVariable("approved");
 
     }
 }
