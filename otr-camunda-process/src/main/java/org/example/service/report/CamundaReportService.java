@@ -1,9 +1,13 @@
 package org.example.service.report;
 
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngines;
+import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.example.appeal.create.AppealActStatus;
 import org.example.dto.report.Report;
 import org.example.service.BaseCamundaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -11,13 +15,18 @@ import java.util.Map;
 
 
 @Service
-public class CamundaReportService extends BaseCamundaService implements ReportService{
+public class CamundaReportService implements ReportService{
+
+
+    @Autowired
+    private TaskService taskService;
+
 
     @Override
-    public void create(Report report) throws Exception {
+    public void create(Report report) {
         System.out.println("report created: " + report.getId());
 
-        Task task = camunda.getTaskService()
+        Task task = taskService
                 .createTaskQuery()
                 .processInstanceBusinessKey(report.getAppeal().getId().toString())
                 .singleResult();
@@ -32,7 +41,7 @@ public class CamundaReportService extends BaseCamundaService implements ReportSe
         variables.put("report_date", report.getCreateDate());
         variables.put("status", AppealActStatus.getStatus(report.getReportStatus()));
 
-        camunda.getTaskService()
+        taskService
                 .complete(task.getId(), variables);
     }
 }

@@ -12,19 +12,19 @@ public class TestEndedListener implements ExecutionListener {
     @Override
     public void notify(DelegateExecution execution) throws Exception {
 
-        List<Task> tasks = execution
-                .getProcessEngineServices()
-                .getTaskService().createTaskQuery()
-                .taskAssignee("demo")
-                .processVariableValueEquals("orderId", "0815")
-                .orderByDueDate().asc()
-                .list();
-
-        boolean changed = (boolean) execution.getVariable("changed");
-        boolean denied = (boolean) execution.getVariable("denied");
-        boolean approved = (boolean) execution.getVariable("approved");
-
-
-        execution.setVariable("status", AppealActStatus.getStatus(approved, denied, changed));
+//        List<Task> tasks = execution
+//                .getProcessEngineServices()
+//                .getTaskService().createTaskQuery()
+//                .taskAssignee("demo")
+//                .processVariableValueEquals("orderId", "0815")
+//                .orderByDueDate().asc()
+//                .list();
+//
+//        boolean changed = (boolean) execution.getVariable("changed");
+//        boolean denied = (boolean) execution.getVariable("denied");
+//        boolean approved = (boolean) execution.getVariable("approved");
+//
+//
+//        execution.setVariable("status", AppealActStatus.getStatus(approved, denied, changed));
     }
 }

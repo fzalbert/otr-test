@@ -23,4 +23,15 @@ camunda.bpm.job-execution:
   max-wait: 10000
 
 
+spring.cloud.stream.bindings.output1.destination: test
+spring.cloud.stream.bindings.output1.content-type: application/json
+
+spring.cloud.stream.bindings.output2.destination: test2
+spring.cloud.stream.bindings.output2.content-type: application/json
+
+spring.cloud.stream.bindings.input.destination: test2
+spring.cloud.stream.bindings.input.content-type: application/json
+
+
+spring.cloud.stream.kafka.binder.zkNodes: localhost:2181
 spring.cloud.stream.kafka.binder.brokers: localhost:9092
