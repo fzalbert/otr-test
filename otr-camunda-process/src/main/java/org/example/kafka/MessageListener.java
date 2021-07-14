@@ -17,9 +17,6 @@ import java.io.IOException;
 @EnableBinding(Sink.class)
 public class MessageListener {
 
-//    @Autowired
-//    private ProcessEngine camunda;
-
     @Autowired
     private ObjectMapper objectMapper;
 

@@ -13,27 +13,28 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-@EnableBinding(KafkaProcessor.class)
+@EnableBinding(Source.class)
 //@EnableBinding(Source.class)
 public class MessageSenderService {
 
     @Autowired
-    private KafkaProcessor processor;
+    private MessageChannel output;
 
     @Autowired
     private ObjectMapper objectMapper;
 
 
-    public void send(Appeal m) {
+    public void send(Message<?> m) {
         try {
 
             String jsonMessage = objectMapper.writeValueAsString(m);
 
-            processor.output1().send(
-                    MessageBuilder.withPayload(jsonMessage).setHeader("type", m.getDescription()).build());
-
-            processor.output2().send(
-                    MessageBuilder.withPayload(jsonMessage).setHeader("type", m.getDescription()).build());
+            output.send(
+                    MessageBuilder
+                            .withPayload(jsonMessage)
+                            .setHeader("type", m.getType())
+                            .build()
+            );
 
         } catch (Exception e) {
             throw new RuntimeException("Could not tranform and send message due to: "+ e.getMessage(), e);

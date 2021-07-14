@@ -35,11 +35,6 @@ public class LoggerDelegate implements JavaDelegate {
             + ", businessKey=" + execution.getProcessBusinessKey()
             + ", executionId=" + execution.getId()
             + " \n\n");
-
-    Appeal appeal = new Appeal();
-    appeal.setDescription("test");
-
-    messageSenderService.send(appeal);
   }
 
 }

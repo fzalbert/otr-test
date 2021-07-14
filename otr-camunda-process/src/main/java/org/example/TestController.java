@@ -6,6 +6,8 @@ import org.example.dto.appeal.ShortAppeal;
 import org.example.dto.appeal.StatusAppeal;
 import org.example.dto.report.Report;
 import org.example.dto.report.ReportStatus;
+import org.example.dto.user.Employee;
+import org.example.dto.user.RoleType;
 import org.example.service.appeals.CamundaAppealService;
 import org.example.service.report.CamundaReportService;
 import org.example.service.user.CamundaUserService;
@@ -65,5 +67,20 @@ public class TestController {
     @GetMapping("user_appointed")
     public void userAppointed() {
 
+    }
+
+    @GetMapping("user_created")
+    public void userCreated(){
+
+        Employee employee = new Employee();
+        employee.setId(12L);
+        employee.setEmail("fajb420@gmail.com");
+        employee.setName("we");
+        employee.setLastName("qwe");
+        employee.setPassword("12345");
+        employee.setRole(RoleType.EMPLOYEE);
+
+
+        userService.create(employee);
     }
 }
