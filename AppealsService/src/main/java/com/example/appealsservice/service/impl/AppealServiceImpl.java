@@ -114,7 +114,7 @@ public class AppealServiceImpl implements AppealService {
         if(request.endDate != null)
         {
             var date = new Date();
-            if(!date.after(request.endDate))
+            if(date.after(request.endDate))
             throw new NotRightsException("Incorrect date");
         }
 

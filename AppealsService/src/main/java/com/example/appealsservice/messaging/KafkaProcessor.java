@@ -15,4 +15,10 @@ public interface KafkaProcessor {
 
     @Output
     MessageChannel output2();
+
+    @Output
+    MessageChannel output3();
+
+    @Output
+    MessageChannel output4();
 }
