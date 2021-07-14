@@ -11,6 +11,7 @@ import com.example.appealsservice.dto.response.*;
 
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.httpModel.UserModel;
 import com.example.appealsservice.kafka.model.MessageType;
 import com.example.appealsservice.kafka.model.ModelConvertor;
@@ -65,7 +66,6 @@ public class AppealServiceImpl implements AppealService {
      */
     @Override
     public List<ShortAppealDto> getAll() {
-
         return appealRepository
                 .findAll()
                 .stream()
@@ -80,7 +80,7 @@ public class AppealServiceImpl implements AppealService {
     @Override
     public AppealDto getById(Long id) {
         var appeal = appealRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("Обращение не найдено"));
 
         var files = fileServiceImpl.getFilesByAppealId(id);
 
@@ -91,7 +91,7 @@ public class AppealServiceImpl implements AppealService {
                 .getByAppealIdAndIsOverFalse(appeal.getId())
                 .stream()
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new TemplateException("Задача не взята в работу"));
 
 
         return new AppealDto(appeal, files, new ReportDto(report), new TaskDto(task));
@@ -102,34 +102,30 @@ public class AppealServiceImpl implements AppealService {
      */
     @Override
     public AppealDto create(List<MultipartFile> files, UserModel client, AppealRequestDto request) throws IOException {
-
         var theme = themeRepository.findById(request.themeId).orElseThrow(()
-                -> new ResourceNotFoundException(request.themeId));
+                -> new TemplateException("Тема не найдена"));
 
         var appeal = new Appeal();
         appeal.setTheme(theme);
 
-        if(request.catCostId != null)
-        {
+        if (request.catCostId != null) {
             var costCat = costCatRepository.findById(request.catCostId).orElseThrow(()
-                -> new ResourceNotFoundException(request.tnvedId));
+                    -> new TemplateException("Неверные данные по категориям затрат"));
             appeal.setCostCat(costCat);
         }
 
-        if(request.endDate != null)
-        {
+        if (request.endDate != null) {
             var date = new Date();
-            if(date.after(request.endDate))
-            throw new NotRightsException("Incorrect date");
+            if (date.after(request.endDate))
+                throw new TemplateException("Неверная дата окончания");
         }
 
-        if(request.tnvedId != null)
-        {
-           var tnved = tnvedRepository.findById(request.tnvedId).orElseThrow(()
-                    -> new ResourceNotFoundException(request.tnvedId));
+        if (request.tnvedId != null) {
+            var tnved = tnvedRepository.findById(request.tnvedId).orElseThrow(()
+                    -> new TemplateException("Неверный код ТН ВЭД"));
             appeal.setTnved(tnved);
         }
-        if(request.amount !=null)
+        if (request.amount != null)
             appeal.setAmount(request.amount);
 
         appeal.setCreateDate(new Date());
@@ -158,7 +154,7 @@ public class AppealServiceImpl implements AppealService {
         taskRepository.save(task);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameOrg(),appeal.getId().toString(), "APPEAL SUCCESSFULLY CREATED", MessageType.APPEALCREATE);
+                appeal.getNameOrg(), appeal.getId().toString(), "APPEAL SUCCESSFULLY CREATED", MessageType.APPEALCREATE);
         msgSender.sendEmail(model);
 
         msgSender.sendAppeal(new ShortAppealDto(appeal));
@@ -173,7 +169,7 @@ public class AppealServiceImpl implements AppealService {
     @Override
     public void deleteById(Long id) {
         var appeal = appealRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("Обращение не найдено"));
 
         appealRepository.delete(appeal);
     }
@@ -183,38 +179,34 @@ public class AppealServiceImpl implements AppealService {
      * обновление обращения клиентом(до того как возьмет сотрудник)
      */
     @Override
-    public AppealDto updateMyAppeal(Long clientId, Long id, AppealRequestDto request){
-
+    public AppealDto updateMyAppeal(Long clientId, Long id, AppealRequestDto request) {
         var appeal = appealRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("Обращение не найдено"));
 
-        if(appeal.getClientId() != clientId)
-            throw new NotRightsException("This appeal is not yours");
+        if (appeal.getClientId() != clientId)
+            throw new TemplateException("Обращение закреплено за вами");
 
-        if(appeal.getStatusAppeal() != StatusAppeal.NOTPROCCESING)
-            throw new NotRightsException("This appeal have already begun to consider");
+        if (appeal.getStatusAppeal() != StatusAppeal.NOTPROCCESING)
+            throw new TemplateException("Это обращение уже начали рассматривать");
 
-        if(request.tnvedId != null)
-        {
+        if (request.tnvedId != null) {
             var theme = themeRepository.findById(request.themeId).orElseThrow(()
-                    -> new ResourceNotFoundException(request.themeId));
+                    -> new TemplateException("Тема не найдена"));
             appeal.setTheme(theme);
         }
 
 
-        if(request.endDate != null)
-        {
+        if (request.endDate != null) {
             var date = new Date();
-            if(date.after(request.endDate))
-                throw new NotRightsException("Incorrect date");
+            if (date.after(request.endDate))
+                throw new TemplateException("Неверная дата окончания");
 
             appeal.setEndDate(request.endDate);
         }
 
-        if(request.tnvedId != null && request.tnvedId > 0)
-        {
+        if (request.tnvedId != null && request.tnvedId > 0) {
             var tnved = tnvedRepository.findById(request.tnvedId).orElseThrow(()
-                    -> new ResourceNotFoundException(request.tnvedId));
+                    -> new TemplateException("Неверный код ТН ВЭД"));
             appeal.setTnved(tnved);
         }
 
@@ -227,7 +219,6 @@ public class AppealServiceImpl implements AppealService {
 
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null, null);
-
     }
 
     /**
@@ -237,10 +228,10 @@ public class AppealServiceImpl implements AppealService {
     public AppealDto update(Long employeeId, Long id, AppealRequestDto request) {
 
         var appeal = appealRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("Обращение не найдено"));
 
-        if(appeal.isOver())
-            throw new NotRightsException("Appeal is over");
+        if (appeal.isOver())
+            throw new TemplateException("Задача завершена");
 
         var task = taskRepository
                 .getByAppealId(id)
@@ -249,34 +240,31 @@ public class AppealServiceImpl implements AppealService {
                 .findFirst()
                 .orElse(null);
 
-        if(task.getTaskStatus() != TaskStatus.NEEDUPDATE)
-            throw new NotRightsException("Task not update");
+        if (task.getTaskStatus() != TaskStatus.NEEDUPDATE)
+            throw new TemplateException("Задача в неверном статусе");
 
-        if(!task.getEmployeeId().equals(employeeId))
-            throw new NotRightsException("Task already busy");
+        if (!task.getEmployeeId().equals(employeeId))
+            throw new TemplateException("Задача уже закреплена за исполнителем");
 
 
-        if(request.tnvedId != null)
-        {
+        if (request.tnvedId != null) {
             var theme = themeRepository.findById(request.themeId).orElseThrow(()
-                    -> new ResourceNotFoundException(request.themeId));
+                    -> new TemplateException("Тема не найдена"));
             appeal.setTheme(theme);
         }
 
 
-        if(request.endDate != null)
-        {
+        if (request.endDate != null) {
             var date = new Date();
-            if(date.after(request.endDate))
-                throw new NotRightsException("Incorrect date");
+            if (date.after(request.endDate))
+                throw new TemplateException("Неверная дата окончания");
 
             appeal.setEndDate(request.endDate);
         }
 
-        if(request.tnvedId != null && request.tnvedId > 0)
-        {
+        if (request.tnvedId != null && request.tnvedId > 0) {
             var tnved = tnvedRepository.findById(request.tnvedId).orElseThrow(()
-                    -> new ResourceNotFoundException(request.tnvedId));
+                    -> new TemplateException("Неверный код ТН ВЭД"));
             appeal.setTnved(tnved);
         }
 
@@ -305,21 +293,19 @@ public class AppealServiceImpl implements AppealService {
         msgSender.sendAppeal(new ShortAppealDto(appeal));
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null, null);
-
     }
 
     /**
      * получение списка обращений с помощью фильтра
      */
     @Override
-    public List<ShortAppealDto> filter( Long clientId, FilterAppealDto filter) {
-
-        var appeals =  appealRepository
+    public List<ShortAppealDto> filter(Long clientId, FilterAppealDto filter) {
+        var appeals = appealRepository
                 .findByClientId(clientId, Sort.by(Sort.Direction.DESC, "createDate"))
                 .stream()
                 .collect(Collectors.toList());
 
-        if (filter != null && filter.themeId != null )
+        if (filter != null && filter.themeId != null)
             appeals = appeals.stream().filter(x -> x.getTheme().getId() == (filter.themeId))
                     .collect(Collectors.toList());
 
@@ -343,7 +329,7 @@ public class AppealServiceImpl implements AppealService {
     public List<ShortAppealDto> myAppeals(Long clientId) {
 
         return appealRepository
-                .findByClientId(clientId, Sort.by(Sort.Direction.DESC, "createDate") )
+                .findByClientId(clientId, Sort.by(Sort.Direction.DESC, "createDate"))
                 .stream()
                 .map(ShortAppealDto::new)
                 .collect(Collectors.toList());
@@ -352,10 +338,10 @@ public class AppealServiceImpl implements AppealService {
     @Override
     public void check(Long id, TaskStatus status) {
         var appeal = appealRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id));
+                .orElseThrow(() -> new TemplateException("Обращние не найдено"));
 
         var task = taskRepository.findByAppealIdAndTaskStatusAndIsOverFalse(appeal.getId(), TaskStatus.NEEDCHECK)
-                .orElseThrow(() -> new ResourceNotFoundException(appeal.getId()));
+                .orElseThrow(() -> new TemplateException("Задача не найдена"));
 
         task.setOver(true);
         taskRepository.save(task);
@@ -375,12 +361,12 @@ public class AppealServiceImpl implements AppealService {
      */
     @Override
     public List<ShortAppealDto> filterAdmin(FilterAppealAdminDto filter) {
-        var appeals =  appealRepository
+        var appeals = appealRepository
                 .findAll(Sort.by(Sort.Direction.DESC, "createDate"))
                 .stream()
                 .collect(Collectors.toList());
 
-        if (filter != null && filter.themeId != null )
+        if (filter != null && filter.themeId != null)
             appeals = appeals.stream().filter(x -> x.getTheme().getId() == (filter.themeId))
                     .collect(Collectors.toList());
 

@@ -2,6 +2,7 @@ package com.example.employeesservice.controller;
 
 import com.example.employeesservice.domain.enums.RoleType;
 import com.example.employeesservice.dto.request.CreateEmployeeDTO;
+import com.example.employeesservice.dto.request.UpdateEmployeeDto;
 import com.example.employeesservice.dto.response.EmployeeDTO;
 import com.example.employeesservice.dto.response.ShortEmployeeDTO;
 import com.example.employeesservice.repository.EmployeeRepository;
@@ -33,8 +34,8 @@ public class EmployeeController extends AuthorizeController {
         return employeeService.create(request);
     }
 
-    @PutMapping("update")
-    public EmployeeDTO update(@RequestBody CreateEmployeeDTO request, @RequestParam long employeeId) {
+    @PostMapping("update")
+    public EmployeeDTO update( @RequestParam long employeeId, @RequestBody UpdateEmployeeDto request) {
         return employeeService.update(request, employeeId);
     }
 

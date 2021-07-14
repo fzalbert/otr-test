@@ -5,6 +5,7 @@ import com.example.employeesservice.domain.Person;
 import com.example.employeesservice.domain.enums.RoleType;
 import com.example.employeesservice.dto.request.AuthDto;
 import com.example.employeesservice.dto.request.CreateEmployeeDTO;
+import com.example.employeesservice.dto.request.UpdateEmployeeDto;
 import com.example.employeesservice.dto.response.EmployeeDTO;
 import com.example.employeesservice.dto.response.EmployeeModelDTO;
 import com.example.employeesservice.dto.response.ShortEmployeeDTO;
@@ -94,12 +95,12 @@ public class EmployeeServiceImp implements EmployeeService {
 
     /** Обновление сотрудника */
     @Override
-    public EmployeeDTO update(CreateEmployeeDTO request, long employeeId) {
+    public EmployeeDTO update(UpdateEmployeeDto request, long employeeId) {
         var employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException(employeeId));
+
         var updatedEmployee = this.dtoToEntity(request, employee);
         employeeRepository.save(updatedEmployee);
-
         return new EmployeeDTO(updatedEmployee);
     }
 
@@ -151,6 +152,22 @@ public class EmployeeServiceImp implements EmployeeService {
         var person = new Person();
         BeanUtils.copyProperties(request, person, "password");
         person.setPassword(CryptoHelper.HMAC(request.getPassword()));
+        person.setRegistrationDate(new Date());
+        person.setActive(true);
+        employee.setPerson(person);
+
+        return employee;
+    }
+
+    /** Преобразовать из dto в сущность employee */
+    private Employee dtoToEntity(UpdateEmployeeDto request, Employee employee) {
+        CryptoHelper.setSecretKey(secretKey);
+        BeanUtils.copyProperties(request, employee);
+
+        var person = new Person();
+        BeanUtils.copyProperties(request, person, "password");
+        if (request.getPassword() != null)
+            person.setPassword(CryptoHelper.HMAC(request.getPassword()));
         person.setRegistrationDate(new Date());
         person.setActive(true);
         employee.setPerson(person);

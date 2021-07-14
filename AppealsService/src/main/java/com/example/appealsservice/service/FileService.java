@@ -14,6 +14,8 @@ public interface FileService {
 
     List<FileDto> getFilesByAppealId(Long appealId);
 
+    byte[] download(Long fileId);
+
     void deleteFile(Long Id);
 
 }

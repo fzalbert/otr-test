@@ -8,6 +8,7 @@ import com.example.appealsservice.dto.response.TaskDto;
 import com.example.appealsservice.exception.MissingRequiredFieldException;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.kafka.model.MessageType;
 import com.example.appealsservice.kafka.model.ModelConvertor;
 import com.example.appealsservice.kafka.model.ModelMessage;
@@ -30,8 +31,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final AppealRepository appealRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository, AppealRepository appealRepository)
-    {
+    public TaskServiceImpl(TaskRepository taskRepository, AppealRepository appealRepository) {
         this.taskRepository = taskRepository;
         this.appealRepository = appealRepository;
     }
@@ -46,8 +46,8 @@ public class TaskServiceImpl implements TaskService {
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
 
-        if(appeal.isOver())
-            throw new NotRightsException("Appeal is over");
+        if (appeal.isOver())
+            throw new TemplateException("Обращение выполнено");
 
         var task = taskRepository
                 .getByAppealId(appealId)
@@ -56,8 +56,8 @@ public class TaskServiceImpl implements TaskService {
                 .findFirst()
                 .orElse(null);
 
-        if(task.getEmployeeId() != null)
-            throw new NotRightsException("Task already busy");
+        if (task.getEmployeeId() != null)
+            throw new TemplateException("Задача занята");
 
         task.setEmployeeId(employeeId);
         taskRepository.save(task);
@@ -88,8 +88,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto geById(Long id) {
         var task = taskRepository
-                .findById(id).orElseThrow(()
-                        -> new ResourceNotFoundException(id));
+                .findById(id).orElseThrow(() -> new TemplateException("Задача не найдена"));
 
         return new TaskDto(task);
     }
@@ -103,20 +102,17 @@ public class TaskServiceImpl implements TaskService {
 
         var appeal = appealRepository
                 .findById(appealId).orElseThrow(()
-                         -> new ResourceNotFoundException(appealId));
+                        -> new ResourceNotFoundException(appealId));
 
         var task = taskRepository
                 .getByAppealId(appealId)
                 .stream()
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new TemplateException("Задача не найдена"));
 
-        if (task == null)
-            throw new MissingRequiredFieldException("");
-
-        if(task.getEmployeeId() != null)
-            throw new NotRightsException("Task already busy");
+        if (task.getEmployeeId() != null)
+            throw new TemplateException("Задача занята");
 
         task.setEmployeeId(employeeId);
 

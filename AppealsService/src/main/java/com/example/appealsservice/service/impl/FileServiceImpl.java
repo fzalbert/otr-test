@@ -1,6 +1,8 @@
 package com.example.appealsservice.service.impl;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.stream.Collectors;
 import com.example.appealsservice.domain.File;
 import com.example.appealsservice.dto.response.FileDto;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.FileRepository;
 import com.example.appealsservice.service.CostCatService;
@@ -17,6 +20,8 @@ import com.example.appealsservice.service.FileService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,9 +48,8 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public FileDto getById(Long fileId) {
-
         var file = fileRepository.findById(fileId).orElseThrow(()
-                -> new ResourceNotFoundException(fileId));
+                -> new TemplateException("Файл не найден"));
         return new FileDto(file);
     }
 
@@ -53,7 +57,6 @@ public class FileServiceImpl implements FileService {
      * создание файла
      */
     public void store(MultipartFile fileRequest, Long appealId, Long clientId) throws IOException {
-
         var filename = fileRequest.getOriginalFilename();
         int lastIndexOf = filename.lastIndexOf(".");
 
@@ -72,7 +75,6 @@ public class FileServiceImpl implements FileService {
         fileDb.setType(fileRequest.getContentType());
 
         fileRepository.save(fileDb);
-
     }
 
 
@@ -81,9 +83,8 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public List<FileDto> getFilesByAppealId(Long appealId) {
-
         var appeal = appealRepository.findById(appealId).orElseThrow(()
-                -> new ResourceNotFoundException(appealId));
+                -> new TemplateException("Обращения не найдено"));
 
         return fileRepository
                 .findAll()
@@ -93,16 +94,37 @@ public class FileServiceImpl implements FileService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public byte[] download(Long fileId) {
+
+        var file = fileRepository.findById(fileId).orElseThrow(()
+                -> new TemplateException("Файл не найден"));
+
+        return new byte[0];
+    }
+
     /**
      * удалить файл
      */
     @Override
     public void deleteFile(Long id) {
+        var fileDb = fileRepository.findById(id).orElseThrow(()
+                -> new TemplateException("Файл не найден"));
 
-        var file = fileRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+        try {
 
-        fileRepository.delete(file);
+            Path path =  pathFile.resolve(fileDb.getName());
+            Resource resource = new UrlResource(pathFile);
+
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new RuntimeException("Could not read the file!");
+            }
+
+        }
+    }
+
     }
 
 
@@ -110,13 +132,10 @@ public class FileServiceImpl implements FileService {
      * удалить файлы по id обращения
      */
     private void deleteFiles(Long appealId) {
-
         var files = getFilesByAppealId(appealId);
         for (var file :
                 files) {
             deleteFile(file.getId());
         }
     }
-
-
 }

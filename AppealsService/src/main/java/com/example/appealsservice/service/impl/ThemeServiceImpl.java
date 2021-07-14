@@ -3,6 +3,7 @@ package com.example.appealsservice.service.impl;
 import com.example.appealsservice.domain.Theme;
 import com.example.appealsservice.dto.response.ThemeDto;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.repository.ThemeRepository;
 import com.example.appealsservice.service.ThemeService;
 import com.sun.istack.NotNull;
@@ -19,17 +20,16 @@ public class ThemeServiceImpl implements ThemeService {
 
     private final ThemeRepository themeRepository;
 
-    public ThemeServiceImpl(ThemeRepository themeRepository)
-    {
+    public ThemeServiceImpl(ThemeRepository themeRepository) {
         this.themeRepository = themeRepository;
     }
 
 
-
-    /** получить все темы  */
+    /**
+     * получить все темы
+     */
     @Override
     public List<ThemeDto> getAll() {
-
         return themeRepository
                 .findAll()
                 .stream()
@@ -38,49 +38,50 @@ public class ThemeServiceImpl implements ThemeService {
                 .collect(Collectors.toList());
     }
 
-    /** получить тему по id  */
+    /**
+     * получить тему по id
+     */
     @Override
     public ThemeDto getById(long id) {
         var theme = themeRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("Тема не найдена"));
 
         return new ThemeDto(theme);
-
     }
 
-    /** создать */
+    /**
+     * создать
+     */
     @Override
     public ThemeDto Create(@NotNull String name) {
-
         Theme theme = new Theme();
         theme.setName(name);
         themeRepository.save(theme);
 
         return new ThemeDto(theme);
-
     }
 
-    /** удалить по id  */
+    /**
+     * удалить по id
+     */
     @Override
     public void Delete(long id) {
-
         var theme = themeRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("Тема не найдена"));
 
         themeRepository.delete(theme);
-
     }
 
-    /** обновить  */
+    /**
+     * обновить
+     */
     @Override
     public ThemeDto update(long id, @NotNull String name) {
-
         var theme = themeRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("Тема не найдена"));
 
         theme.setName(name);
         themeRepository.save(theme);
-
         return new ThemeDto(theme);
     }
 }

@@ -9,6 +9,7 @@ import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.kafka.model.MessageType;
 import com.example.appealsservice.kafka.model.ModelConvertor;
 import com.example.appealsservice.kafka.model.ModelMessage;
@@ -40,17 +41,18 @@ public class ReportServiceImpl implements ReportService {
 
     public ReportServiceImpl(AppealRepository appealRepository, MessageSender msgSender,
                              ReportRepository reportRepository,
-                             TaskRepository taskRepository)
-     {
+                             TaskRepository taskRepository) {
         this.appealRepository = appealRepository;
         this.reportRepository = reportRepository;
         this.taskRepository = taskRepository;
         this.msgSender = msgSender;
     }
 
-    /** создание отчета и одобрение либо отклонение обращения  */
+    /**
+     * создание отчета и одобрение либо отклонение обращения
+     */
     @Override
-    public void approveOrReject(Long appealId, Long employeeId, Boolean isApprove,  String text) throws JsonProcessingException {
+    public void approveOrReject(Long appealId, Long employeeId, Boolean isApprove, String text) throws JsonProcessingException {
 
         var appeal = appealRepository
                 .findById(appealId)
@@ -66,13 +68,13 @@ public class ReportServiceImpl implements ReportService {
         if (task == null)
             throw new ResourceNotFoundException(appealId);
 
-        if(!task.getEmployeeId().equals(employeeId))
-            throw new NotRightsException("Task is busy");
+        if (!task.getEmployeeId().equals(employeeId))
+            throw new TemplateException("Задача занята");
 
-        if(task.getTaskStatus() == TaskStatus.NEEDUPDATE || task.getTaskStatus() == TaskStatus.NEEDCHECK)
-            throw new NotRightsException("Appeal haven't considered yet");
+        if (task.getTaskStatus() == TaskStatus.NEEDUPDATE || task.getTaskStatus() == TaskStatus.NEEDCHECK)
+            throw new TemplateException("Обращение еще не рассмотрено");
 
-            task.setEmployeeId(employeeId);
+        task.setEmployeeId(employeeId);
 
         var report = new Report();
         report.setCreateDate(new Date());
@@ -93,7 +95,7 @@ public class ReportServiceImpl implements ReportService {
 
         String subject = isApprove ? "APPEAL APPROVED" : "APPEAL REJECTED";
 
-        MessageType messageType = isApprove? MessageType.ACCEPT : MessageType.REJECT;
+        MessageType messageType = isApprove ? MessageType.ACCEPT : MessageType.REJECT;
 
         ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
                 task.getAppeal().getNameOrg(), appealId.toString(), subject, messageType);
@@ -101,7 +103,9 @@ public class ReportServiceImpl implements ReportService {
 
     }
 
-    /** получить все отчеты  */
+    /**
+     * получить все отчеты
+     */
     @Override
     public List<ReportDto> getAll() {
         return reportRepository
@@ -112,16 +116,20 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
     }
 
-    /** получить по id */
+    /**
+     * получить по id
+     */
     @Override
     public ReportDto getById(Long id) {
         var report = reportRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("Отчет не найден"));
 
         return new ReportDto(report);
     }
 
-    /** получение списка отчетов по выбранному статусу  */
+    /**
+     * получение списка отчетов по выбранному статусу
+     */
     @Override
     public List<ReportDto> getByStatus(ReportStatus status) {
         return reportRepository

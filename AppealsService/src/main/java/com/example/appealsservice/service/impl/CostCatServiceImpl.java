@@ -5,6 +5,7 @@ import com.example.appealsservice.domain.TNVED;
 import com.example.appealsservice.dto.response.CostCatDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.repository.CostCatRepository;
 import com.example.appealsservice.repository.TNVEDRepository;
 import com.example.appealsservice.service.CostCatService;
@@ -29,8 +30,7 @@ public class CostCatServiceImpl implements CostCatService {
 
     private final CostCatRepository costCatRepository;
 
-    public CostCatServiceImpl(CostCatRepository costCatRepository)
-    {
+    public CostCatServiceImpl(CostCatRepository costCatRepository) {
         this.costCatRepository = costCatRepository;
     }
 
@@ -48,10 +48,9 @@ public class CostCatServiceImpl implements CostCatService {
     @Override
     public CostCatDto byId(Long id) {
         var cat = costCatRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
+                -> new TemplateException("Код затрат не найден"));
 
-        return  new CostCatDto(cat);
-
+        return new CostCatDto(cat);
     }
 
     /**
@@ -59,7 +58,7 @@ public class CostCatServiceImpl implements CostCatService {
      */
     public void init() throws URISyntaxException {
 
-        if((long) costCatRepository.findAll().size() >=1)
+        if ((long) costCatRepository.findAll().size() >= 1)
             throw new NotRightsException("costCats already created");
 
         URL res = getClass().getClassLoader().getResource("costCats.json");
