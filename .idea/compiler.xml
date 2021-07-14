@@ -15,12 +15,21 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ApiGateAwayService" target="1.5" />
-      <module name="AppealsService" target="1.5" />
-      <module name="AutorizeService" target="1.5" />
-      <module name="ClientsService" target="1.5" />
-      <module name="EmployeesService" target="1.5" />
+      <module name="ApiGateAwayService" target="1.8" />
+      <module name="AppealsService" target="16" />
+      <module name="AutorizeService" target="16" />
+      <module name="ClientsService" target="16" />
+      <module name="EmployeesService" target="10" />
       <module name="NotificationService" target="1.5" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ApiGateAwayService" options="-parameters" />
+      <module name="AppealsService" options="-parameters" />
+      <module name="AutorizeService" options="-parameters" />
+      <module name="ClientsService" options="-parameters" />
+      <module name="EmployeesService" options="-parameters" />
+    </option>
   </component>
 </project>
