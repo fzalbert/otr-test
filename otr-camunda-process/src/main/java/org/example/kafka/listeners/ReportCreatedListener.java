@@ -10,7 +10,6 @@ import org.camunda.bpm.engine.task.Task;
 import org.example.dto.appeal.Appeal;
 import org.example.dto.appeal.StatusAppealParser;
 import org.example.dto.report.Report;
-import org.example.kafka.Message;
 import org.example.service.report.CamundaReportService;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +38,9 @@ public class ReportCreatedListener {
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException, Exception {
 
-        Message<Report> message = objectMapper.readValue(messageJson, new TypeReference<Message<Report>>(){});
+        Report message = objectMapper.readValue(messageJson, new TypeReference<Report>(){});
 
-        service.create(message.getData());
+        service.create(message);
     }
 
 }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dto.user.Employee;
-import org.example.kafka.Message;
 import org.example.service.user.CamundaUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -31,12 +30,11 @@ public class UserCreatedListener {
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException {
 
-        Message<Employee> message = objectMapper.readValue(messageJson, new TypeReference<Message<Employee>>(){});
-        Employee employee = message.getData();
+        Employee message = objectMapper.readValue(messageJson, new TypeReference<Employee>(){});
 
-        System.out.println("user created: " + employee.getEmail());
+        System.out.println("user created: " + message.getEmail());
 
-        userService.create(employee);
+        userService.create(message);
     }
 
 }
