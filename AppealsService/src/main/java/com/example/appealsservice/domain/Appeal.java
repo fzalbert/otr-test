@@ -19,8 +19,6 @@ public class Appeal {
     @Column(name = "clientId")
     private Long clientId;
 
-    @Column(name = "employeeId")
-    private Long employeeId;
 
     @Column(name = "description", columnDefinition="TEXT")
     private String description;
@@ -40,8 +38,8 @@ public class Appeal {
     @Enumerated(EnumType.ORDINAL)
     private StatusAppeal statusAppeal;
 
-    @Column(name = "startDate")
-    private Date startDate;
+    @Column(name = "isOver")
+    private boolean isOver;
 
     @Column(name = "endDate")
     private Date endDate;
@@ -50,6 +48,10 @@ public class Appeal {
     @Column(name = "amount")
     private double amount;
 
+
+    @ManyToOne()
+    @JoinColumn(name = "costcatId", referencedColumnName = "id", nullable = true)
+    private CostCat costCat;
 
     @ManyToOne()
     @JoinColumn(name = "tnvedId", referencedColumnName = "id", nullable = true)

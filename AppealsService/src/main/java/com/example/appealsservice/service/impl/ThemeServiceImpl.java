@@ -6,12 +6,14 @@ import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.repository.ThemeRepository;
 import com.example.appealsservice.service.ThemeService;
 import com.sun.istack.NotNull;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Scope("prototype")
 @Service
 public class ThemeServiceImpl implements ThemeService {
 

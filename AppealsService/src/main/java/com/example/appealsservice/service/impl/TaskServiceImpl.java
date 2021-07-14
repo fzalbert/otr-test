@@ -2,11 +2,11 @@ package com.example.appealsservice.service.impl;
 
 import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.Task;
+import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
-import com.example.appealsservice.kafka.kafkamsg.ProducerApacheKafkaMsgSender;
 import com.example.appealsservice.kafka.model.MessageType;
 import com.example.appealsservice.kafka.model.ModelConvertor;
 import com.example.appealsservice.kafka.model.ModelMessage;
@@ -14,6 +14,7 @@ import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.TaskService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -21,19 +22,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Scope("prototype")
 @Service
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
-    private final ProducerApacheKafkaMsgSender apacheKafkaMsgSender;
     private final AppealRepository appealRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository, AppealRepository appealRepository,
-                           ProducerApacheKafkaMsgSender apacheKafkaMsgSender)
+    public TaskServiceImpl(TaskRepository taskRepository, AppealRepository appealRepository)
     {
         this.taskRepository = taskRepository;
         this.appealRepository = appealRepository;
-        this.apacheKafkaMsgSender = apacheKafkaMsgSender;
     }
 
 
@@ -41,41 +40,28 @@ public class TaskServiceImpl implements TaskService {
      * взять задачу
      */
     @Override
-    public void takeTask(Long appealId,  Long employeeId) throws JsonProcessingException {
+    public void takeTask(Long appealId, Long employeeId, TaskStatus status) {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
 
-        if (appeal.getStatusAppeal() != StatusAppeal.NOTPROCCESING)
-            throw new NotRightsException("the employee is already fulfilling appeal");
+        if(appeal.isOver())
+            throw new NotRightsException("Appeal is over");
 
         var task = taskRepository
-                .findAll()
+                .getByAppealId(appealId)
                 .stream()
-                .filter(x -> x.getEmployeeId() == employeeId && x.getAppeal().getId() == appealId)
-                .findFirst();
+                .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
+                .findFirst()
+                .get();
 
-        if (task.isPresent())
-            throw new NotRightsException("task already created");
+        if(task.getEmployeeId() != null)
+            throw new NotRightsException("Task already busy");
 
+        task.setTaskStatus(status);
+        task.setEmployeeId(employeeId);
+        taskRepository.save(task);
 
-        var taskDb = new Task();
-        taskDb.setEmployeeId(employeeId);
-        taskDb.setDate(new Date());
-        taskDb.setOver(false);
-        taskDb.setAppeal(appeal);
-
-        taskRepository.save(taskDb);
-
-        appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
-        appeal.setEmployeeId(employeeId);
-        appealRepository.save(appeal);
-
-        ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION ", MessageType.TAKEAPPEAL);
-
-        apacheKafkaMsgSender.initializeKafkaProducer();
-        apacheKafkaMsgSender.sendJson(model);
     }
 
 
@@ -119,35 +105,19 @@ public class TaskServiceImpl implements TaskService {
                 .findById(appealId).orElseThrow(()
                          -> new ResourceNotFoundException(appealId));
 
-        if(appeal.getStatusAppeal() != StatusAppeal.NOTPROCCESING)
-            throw new NotRightsException("The employee is already fulfilling appeal");
-
         var task = taskRepository
-                .findAll()
+                .getByAppealId(appealId)
                 .stream()
-                .filter(x -> x.getEmployeeId() == employeeId && x.getAppeal().getId() == appealId)
-                .findFirst();
+                .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
+                .findFirst()
+                .get();
 
-        if (task.isPresent())
-            throw new NotRightsException("Task already created");
+        if(task.getEmployeeId() != null)
+            throw new NotRightsException("Task already busy");
 
-        var taskDb = new Task();
-        taskDb.setEmployeeId(employeeId);
-        taskDb.setDate( new Date());
-        taskDb.setOver(false);
-        taskDb.setAppeal(appeal);
+        task.setEmployeeId(employeeId);
 
-        taskRepository.save(taskDb);
-
-        appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
-        appeal.setEmployeeId(employeeId);
-        appealRepository.save(appeal);
-
-        ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameOrg(), "APPEAL TAKEN FOR CONSIDERATION", MessageType.TAKEAPPEAL);
-
-        apacheKafkaMsgSender.initializeKafkaProducer();
-        apacheKafkaMsgSender.sendJson(model);
+        taskRepository.save(task);
 
     }
 

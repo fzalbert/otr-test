@@ -67,7 +67,7 @@ public class AppealController  extends AuthorizeController{
 
     @RequestMapping(value = "update-my", method = RequestMethod.POST,
                         consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public AppealDto update( @RequestParam("request") String request,
+    public AppealDto updateMy( @RequestParam("request") String request,
                              @RequestParam("appeal-id") Long appealId) throws JsonProcessingException {
 
         if(!checkUser.isClient(userModel))
@@ -78,6 +78,21 @@ public class AppealController  extends AuthorizeController{
         var appealRequest = objectMapper.readValue(request, AppealRequestDto.class);
 
         return appealService.updateMyAppeal(userModel.getId(), appealId, appealRequest);
+    }
+
+    @RequestMapping(value = "update", method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public AppealDto update( @RequestParam("request") String request,
+                             @RequestParam("appeal-id") Long appealId) throws JsonProcessingException {
+
+        if(!checkUser.isClient(userModel))
+            throw new NotRightsException("This is not your appeal");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        var appealRequest = objectMapper.readValue(request, AppealRequestDto.class);
+
+        return appealService.update(userModel.getId(), appealId, appealRequest);
     }
 
 

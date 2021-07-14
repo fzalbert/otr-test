@@ -22,7 +22,7 @@ public interface AppealService {
 
     AppealDto updateMyAppeal( Long clientId, Long id, AppealRequestDto request);
 
-    AppealDto update(Long id, AppealRequestDto request);
+    AppealDto update(Long employeeId, Long id, AppealRequestDto request);
 
     List<ShortAppealDto> filter(FilterAppealDto filter);
 

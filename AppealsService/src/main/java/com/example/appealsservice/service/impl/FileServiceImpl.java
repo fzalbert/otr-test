@@ -1,32 +1,28 @@
 package com.example.appealsservice.service.impl;
-import java.io.BufferedWriter;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.example.appealsservice.domain.File;
 import com.example.appealsservice.dto.response.FileDto;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.FileRepository;
+import com.example.appealsservice.service.CostCatService;
 import com.example.appealsservice.service.FileService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+@Scope("prototype")
 @Service
 public class FileServiceImpl implements FileService {
 
@@ -35,7 +31,8 @@ public class FileServiceImpl implements FileService {
     @Value("${path.file}")
     private String pathFile;
 
-    public FileServiceImpl(FileRepository fileRepository, AppealRepository appealRepository) {
+    public FileServiceImpl(FileRepository fileRepository, CostCatService costCatService,
+                           AppealRepository appealRepository) {
         this.fileRepository = fileRepository;
         this.appealRepository = appealRepository;
     }

@@ -25,7 +25,6 @@ public class ShortAppealDto {
 
     private StatusAppeal statusAppeal;
 
-    private Long employeeId;
 
 
     public ShortAppealDto() {}
@@ -36,7 +35,6 @@ public class ShortAppealDto {
             return;
         id = appeal.getId();
         clientId = appeal.getClientId();
-        employeeId = appeal.getEmployeeId();
         theme = appeal.getTheme();
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();

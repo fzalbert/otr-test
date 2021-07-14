@@ -1,7 +1,9 @@
 package com.example.appealsservice.service.impl;
 
 import com.example.appealsservice.domain.Appeal;
+import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.enums.StatusAppeal;
+import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
@@ -11,13 +13,14 @@ import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.httpModel.UserModel;
-import com.example.appealsservice.kafka.kafkamsg.ProducerApacheKafkaMsgSender;
 import com.example.appealsservice.kafka.model.MessageType;
 import com.example.appealsservice.kafka.model.ModelConvertor;
 import com.example.appealsservice.kafka.model.ModelMessage;
+import com.example.appealsservice.messaging.MessageSender;
 import com.example.appealsservice.repository.*;
 import com.example.appealsservice.service.AppealService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Scope("prototype")
 @Service
 public class AppealServiceImpl implements AppealService {
 
@@ -36,17 +40,24 @@ public class AppealServiceImpl implements AppealService {
     private final FileServiceImpl fileServiceImpl;
     private final ThemeRepository themeRepository;
     private final ReportRepository reportRepository;
-    private final ProducerApacheKafkaMsgSender apacheKafkaMsgSender;
+    private final TaskRepository taskRepository;
+    private final CostCatRepository costCatRepository;
+
+    private final MessageSender msgSender;
 
     public AppealServiceImpl(AppealRepository appealRepository, ThemeRepository themeRepository,
                              FileRepository fileRepository, FileServiceImpl fileServiceImpl,
-                             TNVEDRepository tnvedRepository, ProducerApacheKafkaMsgSender apacheKafkaMsgSender,
-                             ReportRepository reportRepository) {
+                             TNVEDRepository tnvedRepository, MessageSender msgSender,
+                             ReportRepository reportRepository, CostCatRepository costCatRepository,
+                             TaskRepository taskRepository) {
+
         this.appealRepository = appealRepository;
         this.themeRepository = themeRepository;
         this.tnvedRepository = tnvedRepository;
         this.fileServiceImpl = fileServiceImpl;
-        this.apacheKafkaMsgSender = apacheKafkaMsgSender;
+        this.costCatRepository = costCatRepository;
+        this.msgSender = msgSender;
+        this.taskRepository = taskRepository;
         this.reportRepository = reportRepository;
     }
 
@@ -93,6 +104,13 @@ public class AppealServiceImpl implements AppealService {
         var appeal = new Appeal();
         appeal.setTheme(theme);
 
+        if(request.catCostId != null)
+        {
+            var costCat = costCatRepository.findById(request.catCostId).orElseThrow(()
+                -> new ResourceNotFoundException(request.tnvedId));
+            appeal.setCostCat(costCat);
+        }
+
         if(request.endDate != null)
         {
             var date = new Date();
@@ -107,7 +125,6 @@ public class AppealServiceImpl implements AppealService {
             appeal.setTnved(tnved);
         }
         appeal.setCreateDate(new Date());
-        appeal.setTheme(theme);
         appeal.setAmount(request.amount);
         appeal.setEmail(client.getEmail());
         appeal.setNameOrg(client.getName());
@@ -125,16 +142,16 @@ public class AppealServiceImpl implements AppealService {
             }
         }
 
-        try {
-            ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                    appeal.getNameOrg(), "APPEAL SUCCESSFULLY CREATED", MessageType.APPEALCREATE);
 
-            apacheKafkaMsgSender.initializeKafkaProducer();
-            apacheKafkaMsgSender.sendJson(model);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
+                    appeal.getNameOrg(), "APPEAL SUCCESSFULLY CREATED",appeal.getId().toString(), MessageType.APPEALCREATE);
+        msgSender.send(model);
 
+        var task = new Task();
+        task.setOver(false);
+        task.setTaskStatus(TaskStatus.NEEDCHECK);
+        task.setAppeal(appeal);
+        task.setDate(new Date());
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
     }
@@ -207,9 +224,27 @@ public class AppealServiceImpl implements AppealService {
      * обновление обращения сотрудником
      */
     @Override
-    public AppealDto update(Long id, AppealRequestDto request) {
+    public AppealDto update(Long employeeId, Long id, AppealRequestDto request) {
+
         var appeal = appealRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException(id));
+
+        if(appeal.isOver())
+            throw new NotRightsException("Appeal is over");
+
+        var task = taskRepository
+                .getByAppealId(id)
+                .stream()
+                .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
+                .findFirst()
+                .get();
+
+        if(task.getTaskStatus() != TaskStatus.NEEDCHECK)
+            throw new NotRightsException("Task not update");
+
+        if(task.getEmployeeId() != null)
+            throw new NotRightsException("Task already busy");
+
 
         if(request.tnvedId != null)
         {
@@ -240,8 +275,21 @@ public class AppealServiceImpl implements AppealService {
         appeal.setUpdateDate(new Date());
         appeal.setDescription(request.description);
 
-
         appealRepository.save(appeal);
+
+        task.setEmployeeId(employeeId);
+
+        var newTask = new Task();
+        newTask.setTaskStatus(TaskStatus.NEEDCHECK);
+        newTask.setAppeal(appeal);
+        newTask.setDate(new Date());
+
+        taskRepository.save(newTask);
+
+        ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
+                appeal.getNameOrg(), "APPEAL IS UPDATE", appeal.getId().toString(), MessageType.UPDATE);
+
+        msgSender.send(model);
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
 

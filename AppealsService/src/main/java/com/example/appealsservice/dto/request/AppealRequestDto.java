@@ -16,6 +16,9 @@ public class AppealRequestDto {
     public Long tnvedId;
 
     @Nullable
+    public Long catCostId;
+
+    @Nullable
     public Double amount;
 
     @Nullable

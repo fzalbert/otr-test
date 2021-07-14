@@ -1,5 +1,6 @@
 package com.example.appealsservice.domain;
 
+import com.example.appealsservice.domain.enums.TaskStatus;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,11 +17,15 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "employee_id")
-    private long employeeId;
+    @Column(name = "employeeId")
+    private Long employeeId;
 
-    @OneToOne()
-    @JoinColumn(name = "appeal_id", referencedColumnName = "id")
+    @Column(name = "taskStatus")
+    @Enumerated(EnumType.ORDINAL)
+    private TaskStatus taskStatus;
+
+    @ManyToOne()
+    @JoinColumn(name = "appealId", referencedColumnName = "id")
     private Appeal appeal;
 
     @Column(name = "isOver")

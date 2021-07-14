@@ -2,11 +2,11 @@ package com.example.appealsservice.dto.response;
 
 
 import com.example.appealsservice.domain.TNVED;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class TNVEDDto {
     public Long id;
     public String code;

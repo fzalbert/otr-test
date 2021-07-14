@@ -1,11 +1,13 @@
 package com.example.appealsservice.service.impl;
 
+import com.example.appealsservice.domain.CostCat;
 import com.example.appealsservice.domain.TNVED;
-import com.example.appealsservice.dto.response.TNVEDDto;
+import com.example.appealsservice.dto.response.CostCatDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
+import com.example.appealsservice.repository.CostCatRepository;
 import com.example.appealsservice.repository.TNVEDRepository;
-import com.example.appealsservice.service.TNVEDService;
+import com.example.appealsservice.service.CostCatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -23,23 +25,44 @@ import java.util.stream.Collectors;
 
 @Scope("prototype")
 @Service
-public class TNVEDServiceImpl implements TNVEDService {
+public class CostCatServiceImpl implements CostCatService {
 
-    private final TNVEDRepository tnvedRepository;
+    private final CostCatRepository costCatRepository;
 
-    public TNVEDServiceImpl(TNVEDRepository tnvedRepository)
+    public CostCatServiceImpl(CostCatRepository costCatRepository)
     {
-        this.tnvedRepository = tnvedRepository;
+        this.costCatRepository = costCatRepository;
     }
 
-    /** создать коды ТН ВЭД   */
     @Override
+    public List<CostCatDto> getAll() {
+
+        return costCatRepository
+                .findAll()
+                .stream()
+                .map(CostCatDto::new)
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public CostCatDto byId(Long id) {
+        var cat = costCatRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException(id));
+
+        return  new CostCatDto(cat);
+
+    }
+
+    /**
+     * Создать коды затрат в базе
+     */
     public void init() throws URISyntaxException {
 
-        if((long) tnvedRepository.findAll().size() >=1)
-            throw new NotRightsException("Tnveds already created");
+        if((long) costCatRepository.findAll().size() >=1)
+            throw new NotRightsException("costCats already created");
 
-        URL res = getClass().getClassLoader().getResource("tnved.json");
+        URL res = getClass().getClassLoader().getResource("costCats.json");
         var file = Paths.get(res.toURI()).toFile();
         String absolutePath = file.getAbsolutePath();
 
@@ -54,8 +77,8 @@ public class TNVEDServiceImpl implements TNVEDService {
             if (jsonArray != null) {
                 int len = jsonArray.size();
                 for (int i = 0; i < len; i++) {
-                    TNVED tnved = objectMapper.readValue(jsonArray.get(i).toString(), TNVED.class);
-                    tnvedRepository.save(tnved);
+                    CostCat costCat = objectMapper.readValue(jsonArray.get(i).toString(), CostCat.class);
+                    costCatRepository.save(costCat);
                 }
 
             }
@@ -63,26 +86,5 @@ public class TNVEDServiceImpl implements TNVEDService {
             e.printStackTrace();
         }
 
-    }
-
-    /** получить лист коды ТН ВЭД   */
-    @Override
-    public List<TNVEDDto> getAll() {
-
-       return tnvedRepository
-               .findAll()
-               .stream()
-               .map(TNVEDDto::new)
-               .collect(Collectors.toList());
-    }
-
-    /** получить по id   */
-    @Override
-    public TNVEDDto byId(Long id) {
-
-        var tnved = tnvedRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(id));
-
-        return new TNVEDDto(tnved);
     }
 }

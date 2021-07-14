@@ -45,7 +45,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 JwtParseResponseDto responseDto = parseJwt(token);
 
                 if (responseDto == null){
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    //response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     return;
                 }
 
