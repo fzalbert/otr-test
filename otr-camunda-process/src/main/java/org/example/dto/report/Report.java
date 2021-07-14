@@ -2,7 +2,7 @@ package org.example.dto.report;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.dto.appeal.ShortAppeal;
+import org.example.dto.appeal.Appeal;
 
 import java.util.Date;
 
@@ -17,7 +17,7 @@ public class Report {
 
     private String text;
 
-    private ShortAppeal appeal;
+    private Appeal appeal;
 
     private ReportStatus reportStatus;
 

@@ -1,9 +1,9 @@
-spring.datasource:
-  url: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-  #shareable h2 database: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
-  username: sa
-  password: sa
-spring.h2.console.enabled: true # http://localhost:8080/h2-console/
+#spring.datasource:
+#  url: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#  #shareable h2 database: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
+#  username: postgres
+#  password: Ivan230691
+#spring.h2.console.enabled: true # http://localhost:8080/h2-console/
 camunda.bpm:
   admin-user:
     id: demo
@@ -35,3 +35,39 @@ spring.cloud.stream.bindings.input.content-type: application/json
 
 spring.cloud.stream.kafka.binder.zkNodes: localhost:2181
 spring.cloud.stream.kafka.binder.brokers: localhost:9092
+
+#camunda.bpm.database.type: postgres
+#spring.datasource.url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/camunda?useSSL=false
+#spring.datasource.username: postgres
+#spring.datasource.password: Ivan230691
+#
+#spring.datasource.driver-class-name: org.postgresql.Driver
+#camunda.bpm.database.schema-update: true
+#camunda.bpm.database.table-prefix: camunda.
+
+spring:
+
+  profiles:
+    active: local
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/camunda
+    username: postgres
+    password: Ivan230691
+
+    hikari:
+      jdbc-url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/camunda
+      username: postgres
+      password: Ivan230691
+      driver-class-name: org.postgresql.Driver
+      pool-name: CAMUNDA-HIKARI-POOL
+      idle-timeout: 3000
+      minimum-idle: 30
+      maximum-pool-size: 10
+      connection-timeout: 2000
+      connection-test-query: select 1
+      transaction-isolation: TRANSACTION_READ_COMMITTED

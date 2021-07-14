@@ -1,12 +1,9 @@
 package org.example.service.report;
 
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.example.appeal.create.AppealActStatus;
 import org.example.dto.report.Report;
-import org.example.service.BaseCamundaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

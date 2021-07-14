@@ -1,5 +1,6 @@
 package org.example.kafka;
 
+import ch.qos.logback.core.db.dialect.PostgreSQLDialect;
 import org.example.dto.appeal.Appeal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,21 +24,23 @@ public class MessageSenderService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    public void test(){
 
-    public void send(Message<?> m) {
-        try {
-
-            String jsonMessage = objectMapper.writeValueAsString(m);
-
-            output.send(
-                    MessageBuilder
-                            .withPayload(jsonMessage)
-                            .setHeader("type", m.getType())
-                            .build()
-            );
-
-        } catch (Exception e) {
-            throw new RuntimeException("Could not tranform and send message due to: "+ e.getMessage(), e);
-        }
     }
+//    public void send(Message<?> m) {
+//        try {
+//
+//            String jsonMessage = objectMapper.writeValueAsString(m);
+//
+//            output.send(
+//                    MessageBuilder
+//                            .withPayload(jsonMessage)
+//                            .setHeader("type", m.getType())
+//                            .build()
+//            );
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException("Could not tranform and send message due to: "+ e.getMessage(), e);
+//        }
+//    }
 }

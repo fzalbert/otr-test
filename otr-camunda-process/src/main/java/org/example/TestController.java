@@ -2,8 +2,6 @@ package org.example;
 
 import org.example.dto.Theme;
 import org.example.dto.appeal.Appeal;
-import org.example.dto.appeal.ShortAppeal;
-import org.example.dto.appeal.StatusAppeal;
 import org.example.dto.report.Report;
 import org.example.dto.report.ReportStatus;
 import org.example.dto.user.Employee;
@@ -15,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
 
 @RestController
 @RequestMapping("test")
@@ -40,10 +36,10 @@ public class TestController {
 
         appeal.setDescription("test");
         appeal.setId(11L);
-        appeal.setAmount(10);
-        appeal.setCreateDate(new Date());
-        appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
-        appeal.setTheme(theme);
+//        appeal.setAmount(10);
+//        appeal.setCreateDate(new Date());
+//        appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
+//        appeal.setTheme(theme);
 
         appealService.create(appeal);
     }
@@ -51,7 +47,7 @@ public class TestController {
     @GetMapping("report_create")
     public void reportCreate() {
 
-        ShortAppeal appeal = new ShortAppeal();
+        Appeal appeal = new Appeal();
         appeal.setId(11L);
 
         Report report = new Report();
