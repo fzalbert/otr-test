@@ -17,32 +17,24 @@ public class Appeal {
 
     private Long id;
 
-    private Long clientId;
+    private Long employeeId;
+
+    private String nameOrg;
 
     private Theme theme;
 
     private String description;
 
-    private Date startDate;
-
-    private Date endDate;
-
-    private TNVED tnved;
-
-    private double amount;
-
     private Date createDate;
 
-    private StatusAppeal statusAppeal;
-
-    private List<FileDto> files;
+    private Integer statusAppeal;
 
     public Map<String, Object> toVariableMap(){
         Map<String, Object> result = new HashMap<>();
 
         result.put("appeals_id", getId());
-        result.put("appeal_client_name", getClientId());
-        result.put("appeal_status_text", StatusAppealParser.toString(getStatusAppeal()));
+        result.put("appeal_client_name", nameOrg);
+        result.put("appeal_status_text", StatusAppealParser.toString(StatusAppeal.fromInt(statusAppeal)));
         result.put("appeal_status", getStatusAppeal());
         result.put("created_at", getCreateDate());
         result.put("appeal_theme_name", getTheme().getName());
