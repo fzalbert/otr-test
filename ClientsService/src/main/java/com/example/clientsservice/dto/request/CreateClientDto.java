@@ -10,31 +10,31 @@ import javax.validation.constraints.Size;
 @Data
 public class CreateClientDto {
     @NotNull
-    @Size(min = 5, max = 20, message = "Error login")
+    @Size(min = 5, max = 20, message = "Длина логина минимум 5 символов, максимум 20")
     private String login;
 
     @NotNull
-    @Size(min = 5, message = "Error password")
+    @Size(min = 5, message = "Длина пароля минимум 5 символов")
     private String password;
 
     @NotNull
-    @Size(min = 5, message = "Error Fio")
+    @Size(min = 5, message = "Минимальная длина ФИО 5 символов")
     private String fio;
 
     @NotNull
-    @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "Error inn")
+    @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "ИНН должен содержать 10 либо 12 символов")
     private String inn;
 
 
-    @Pattern(regexp = "^(\\d{9})$", message = "Error kpp")
+    @Pattern(regexp = "^(\\d{9})$", message = "КПП должен содержать 9 символов")
     private String kpp;
 
     @NotNull
-    @Size(min = 5, message = "Error FullAddress")
+    @Size(min = 5, message = "Полный адрес организации должен содержать минимум 5 символов")
     private String fullAddress;
 
     @NotNull
-    @Size(min= 5, message = "FullNameOrg")
+    @Size(min= 5, message = "Полное наименование организации должно содержать минимум 5 символов")
     private String fullNameOrg;
 
     private String shortNameOrg;

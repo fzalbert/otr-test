@@ -13,10 +13,10 @@ import java.util.ArrayList;
 @Component
     public class ClientDtoValidator implements BaseValidator<ClientDto> {
 
-    private static final String FIELD_INN = "inn";
-    private static final String FIELD_CON_NUMBER = "Control number inn";
-    private static final String FIELD_EMAIL = "email";
-    private static final String FIELD_KPP = "kpp";
+    private static final String FIELD_INN = "Данный ИНН уже существует в базе";
+    private static final String FIELD_CON_NUMBER = "Некорректное контрольное число ИНН";
+    private static final String FIELD_EMAIL = "Данный email уже существует в базе";
+    private static final String FIELD_KPP = "Данный КПП уже существует в базе";
 
         private final ClientRepository clientRepository;
 
@@ -44,7 +44,7 @@ import java.util.ArrayList;
                    .stream().anyMatch(x -> !x.getId().equals(clientDto.getId()) && x.getInn().equals(clientDto.getInn()));
 
             if (checkInnClient) {
-                throw new FieldNotUniqueException(FIELD_INN);
+                throw new TemplateException(FIELD_INN);
             }
 
             var checkEmailClient = this.clientRepository
@@ -52,7 +52,7 @@ import java.util.ArrayList;
                     .stream().anyMatch(x -> !x.getId().equals(clientDto.getId()) && x.getEmail().equals(clientDto.getEmail()));
 
             if (checkEmailClient) {
-                throw new FieldNotUniqueException(FIELD_EMAIL);
+                throw new TemplateException(FIELD_EMAIL);
             }
 
             var checkKppClient = this.clientRepository
@@ -60,7 +60,7 @@ import java.util.ArrayList;
                     .stream().anyMatch(x -> !x.getId().equals(clientDto.getId()) && x.getKpp().equals(clientDto.getKpp()));
 
             if (checkKppClient) {
-                throw new FieldNotUniqueException(FIELD_KPP);
+                throw new TemplateException(FIELD_KPP);
             }
 
         }

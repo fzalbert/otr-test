@@ -40,7 +40,7 @@ public class AuthDtoValidator implements BaseValidator<AuthDto> {
             var checkPassword =  CryptoHelper.HMAC(authDto.getPassword()).equals(user.getPassword());
 
             if(!user.isActive())
-                throw new TemplateException("You are blocked");
+                throw new TemplateException("Ваш профиль заблокирован");
 
             if(!checkPassword) {
                 var countAttempts = user.getAttemptsBlocking() +1;
@@ -48,17 +48,17 @@ public class AuthDtoValidator implements BaseValidator<AuthDto> {
                 userRepository.save(user);
                 if(user.getAttemptsBlocking() < 3) {
                     int count = 3 - user.getAttemptsBlocking();
-                    throw new TemplateException("Wrong password, attempts left " + count +"");
+                    throw new TemplateException("Неверный пароль, оставшееся количество попыток: " + count +"");
                 }
                 else{
                     user.setActive(false);
                     userRepository.save(user);
-                    throw new TemplateException("You are blocked");
+                    throw new TemplateException("К сожалению, вы совершили 3 неверных попытки ввода пароля. Ваш профиль заблокирован.");
                 }
             }
         }
         else
-            throw new TemplateException("Not found login");
+            throw new TemplateException("Пользователь с таким логином не найден");
 
         user.setAttemptsBlocking(0);
         userRepository.save(user);

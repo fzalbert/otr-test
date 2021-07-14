@@ -12,10 +12,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class AuthDto {
     @NotNull
-    @Size(min = 5, max = 20, message = "Error login")
+    @Size(min = 5, max = 20, message = "Длина логина минимум 5 символов, максимум 20")
     private String login;
 
     @NotNull
-    @Size(min = 5, message = "Error password")
+    @Size(min = 5, message = "Длина пароля минимум 5 символов")
     private String password;
 }
