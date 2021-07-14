@@ -3,7 +3,6 @@ package com.example.apigateawayservice.config;
 import com.example.apigateawayservice.dto.JwtParseRequestDto;
 import com.example.apigateawayservice.dto.JwtParseResponseDto;
 import com.netflix.zuul.context.RequestContext;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

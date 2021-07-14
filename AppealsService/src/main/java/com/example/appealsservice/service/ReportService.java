@@ -16,5 +16,4 @@ public interface ReportService {
 
     List<ReportDto> getByStatus(ReportStatus status);
 
-    List<ReportDto> getByFilter();
 }

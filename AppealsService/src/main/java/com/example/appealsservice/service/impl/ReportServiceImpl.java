@@ -88,9 +88,8 @@ public class ReportServiceImpl implements ReportService {
         MessageType messageType = isApprove? MessageType.ACCEPT : MessageType.REJECT;
 
         ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
-                task.getAppeal().getNameOrg(), subject, appealId.toString(), messageType);
-        msgSender.send(model);
-
+                task.getAppeal().getNameOrg(), appealId.toString(), subject, messageType);
+        msgSender.sendEmail(model);
 
     }
 
@@ -124,10 +123,5 @@ public class ReportServiceImpl implements ReportService {
                 .sorted(Comparator.comparing(Report::getCreateDate, Comparator.reverseOrder()))
                 .map(ReportDto::new)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ReportDto> getByFilter() {
-        return null;
     }
 }

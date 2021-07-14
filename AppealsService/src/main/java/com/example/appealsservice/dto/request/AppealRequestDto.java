@@ -23,5 +23,4 @@ public class AppealRequestDto {
 
     @Nullable
     public String description;
-    
 }

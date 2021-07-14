@@ -11,23 +11,23 @@ public class ModelConvertor {
 
         switch (type)    {
             case TAKEAPPEAL:
-                message.setContent(name +" " + "!" + "Ваше обращение "+ id + "начали рассматривать.");
+                message.setContent(name +" " + "!" + "Ваше обращение c ID:"+ id + "начали рассматривать.");
                 return message;
 
             case ACCEPT:
-                message.setContent(" " + name + "!" + "Ваше обращение "+ id + " одобрили.");
+                message.setContent(" " + name + "!" + "Ваше обращение c ID:"+ id + " одобрили.");
                 return message;
 
             case APPEALCREATE:
-                message.setContent(name + "! " + "Ваше обращение "+ id + "успешно создано.");
+                message.setContent(name + "! " + "Ваше обращение c ID:"+ id + " успешно создано.");
                 return message;
 
             case REJECT:
-                message.setContent(name + " " + "!" + "Ваше обращение "+ id + " отклонили.");
+                message.setContent(name + " " + "!" + "Ваше обращение c ID:"+ id + " отклонили.");
                 return message;
 
             case UPDATE:
-                message.setContent( name + " " + "!" + "Ваше обращение"+ id + " обновили.");
+                message.setContent( name + " " + "!" + "Ваше обращение c ID:"+ id + " обновили.");
                 return message;
             default:
                 return  null;

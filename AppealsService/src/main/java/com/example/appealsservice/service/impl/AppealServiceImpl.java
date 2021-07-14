@@ -124,8 +124,10 @@ public class AppealServiceImpl implements AppealService {
                     -> new ResourceNotFoundException(request.tnvedId));
             appeal.setTnved(tnved);
         }
+        if(request.amount !=null)
+            appeal.setAmount(request.amount);
+
         appeal.setCreateDate(new Date());
-        appeal.setAmount(request.amount);
         appeal.setEmail(client.getEmail());
         appeal.setNameOrg(client.getName());
         appeal.setDescription(request.description);
@@ -151,8 +153,10 @@ public class AppealServiceImpl implements AppealService {
         taskRepository.save(task);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameOrg(), "APPEAL SUCCESSFULLY CREATED",appeal.getId().toString(), MessageType.APPEALCREATE);
-        msgSender.send(model);
+                appeal.getNameOrg(),appeal.getId().toString(), "APPEAL SUCCESSFULLY CREATED", MessageType.APPEALCREATE);
+        msgSender.sendEmail(model);
+
+        msgSender.sendAppeal(new ShortAppealDto(appeal));
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
     }
