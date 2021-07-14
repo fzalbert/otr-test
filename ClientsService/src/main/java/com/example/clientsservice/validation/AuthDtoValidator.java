@@ -36,6 +36,7 @@ public class AuthDtoValidator implements BaseValidator<AuthDto> {
 
         if(user != null) {
             CryptoHelper.setSecretKey(secretKey);
+            var a = CryptoHelper.HMAC(authDto.getPassword());
             var checkPassword =  CryptoHelper.HMAC(authDto.getPassword()).equals(user.getPassword());
 
             if(!user.isActive())

@@ -1,9 +1,11 @@
 package com.example.appealsservice.controller;
 
+import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
+import com.example.appealsservice.exception.MissingRequiredFieldException;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.httpModel.CheckUser;
 import com.example.appealsservice.service.AppealService;
@@ -64,6 +66,10 @@ public class AppealController  extends AuthorizeController{
         appealService.deleteById(id);
     }
 
+    @GetMapping("check")
+    public void check(@RequestParam Long id, @RequestParam TaskStatus status){
+        appealService.check(id, status);
+    }
 
     @RequestMapping(value = "update-my", method = RequestMethod.POST,
                         consumes = {MediaType.APPLICATION_JSON_VALUE})

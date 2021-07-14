@@ -1,16 +1,12 @@
 package com.example.clientsservice.controller;
 
-import com.example.clientsservice.dto.request.AuthDto;
 import com.example.clientsservice.dto.request.ClientDto;
-import com.example.clientsservice.dto.request.CreateClientDto;
-import com.example.clientsservice.dto.responce.ClientModelDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
 import com.example.clientsservice.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -31,18 +27,6 @@ public class ClientController {
     public List<ShortClientDto> geAll() {
 
         return this.clientService.getAll();
-    }
-
-    @GetMapping("block")
-    public void blockById(@RequestParam long id) {
-
-        this.clientService.blockById(id);
-    }
-
-    @PutMapping("unblock")
-    public void unblockById(@RequestParam long id) {
-
-        this.clientService.unblockById(id);
     }
 
     @GetMapping("by-id")

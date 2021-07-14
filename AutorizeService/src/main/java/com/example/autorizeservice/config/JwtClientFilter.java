@@ -1,18 +1,11 @@
 package com.example.autorizeservice.config;
 
 import com.example.autorizeservice.dto.AuthDto;
-import com.example.autorizeservice.dto.UserDto;
 import com.example.autorizeservice.dto.LoginDto;
-import com.example.autorizeservice.enums.UserRole;
+import com.example.autorizeservice.dto.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

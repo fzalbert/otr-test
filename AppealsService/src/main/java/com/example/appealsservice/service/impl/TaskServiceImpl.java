@@ -40,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
      * взять задачу
      */
     @Override
-    public void takeTask(Long appealId, Long employeeId, TaskStatus status) {
+    public void takeTask(Long appealId, Long employeeId) {
 
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
@@ -58,7 +58,6 @@ public class TaskServiceImpl implements TaskService {
         if(task.getEmployeeId() != null)
             throw new NotRightsException("Task already busy");
 
-        task.setTaskStatus(status);
         task.setEmployeeId(employeeId);
         taskRepository.save(task);
 
@@ -99,7 +98,7 @@ public class TaskServiceImpl implements TaskService {
      * создать задачу для другого сотрудника
      */
     @Override
-    public void Appoint(Long employeeId, Long appealId) throws JsonProcessingException {
+    public void appoint(Long employeeId, Long appealId) throws JsonProcessingException {
 
         var appeal = appealRepository
                 .findById(appealId).orElseThrow(()

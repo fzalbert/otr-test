@@ -19,7 +19,6 @@ import com.example.appealsservice.kafka.model.ModelMessage;
 import com.example.appealsservice.messaging.MessageSender;
 import com.example.appealsservice.repository.*;
 import com.example.appealsservice.service.AppealService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -152,6 +151,8 @@ public class AppealServiceImpl implements AppealService {
         task.setTaskStatus(TaskStatus.NEEDCHECK);
         task.setAppeal(appeal);
         task.setDate(new Date());
+
+        taskRepository.save(task);
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
     }
@@ -289,7 +290,7 @@ public class AppealServiceImpl implements AppealService {
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
                 appeal.getNameOrg(), "APPEAL IS UPDATE", appeal.getId().toString(), MessageType.UPDATE);
 
-        msgSender.send(model);
+        //msgSender.send(model);
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null);
 
@@ -334,5 +335,24 @@ public class AppealServiceImpl implements AppealService {
                 .stream()
                 .map(ShortAppealDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void check(Long id, TaskStatus status) {
+        var appeal = appealRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+
+        var task = taskRepository.findByAppealIdAndTaskStatus(appeal.getId(), TaskStatus.NEEDCHECK)
+                .orElseThrow(() -> new ResourceNotFoundException(appeal.getId()));
+
+        task.setOver(true);
+        taskRepository.save(task);
+
+        var newTask = new Task();
+        newTask.setTaskStatus(status);
+        newTask.setAppeal(appeal);
+        newTask.setDate(new Date());
+
+        taskRepository.save(newTask);
     }
 }

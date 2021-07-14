@@ -1,5 +1,6 @@
 package com.example.appealsservice.service;
 
+import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.request.AppealRequestDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
@@ -28,4 +29,5 @@ public interface AppealService {
 
     List<ShortAppealDto> myAppeals(Long clientId);
 
+    void check(Long id, TaskStatus status);
 }

@@ -1,6 +1,5 @@
 package com.example.appealsservice.controller;
 
-import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.response.TaskDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.httpModel.CheckUser;
@@ -28,11 +27,11 @@ public class TaskController extends AuthorizeController{
     }
 
     @GetMapping("take")
-    public void take(@RequestParam Long appealId, @RequestParam TaskStatus status) throws JsonProcessingException {
+    public void take(@RequestParam Long appealId) throws JsonProcessingException {
         if(!checkUser.isEmployee(userModel))
             throw new NotRightsException("No rights");
 
-        taskService.takeTask(appealId, userModel.getId(), status);
+        taskService.takeTask(appealId, userModel.getId());
 
     }
 
@@ -40,7 +39,7 @@ public class TaskController extends AuthorizeController{
     public void appoint(@RequestParam Long appealId, @RequestParam Long employeeId) throws JsonProcessingException {
         if(!checkUser.isAdmin(userModel))
             throw new NotRightsException("No rights");
-        taskService.Appoint(employeeId, appealId);
+        taskService.appoint(employeeId, appealId);
 
     }
 
