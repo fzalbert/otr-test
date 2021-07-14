@@ -1,12 +1,9 @@
-package com.example.appealsservice.messaging;
+package com.example.employeesservice.kafka;
 
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 
-public interface KafkaProcessor {
-
-    @Output
-    MessageChannel output1();
+public interface KafkaPro {
 
     @Output
     MessageChannel output2();

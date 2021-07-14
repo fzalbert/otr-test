@@ -18,6 +18,8 @@ public class CreateEmployeeDTO {
     @Size(min = 5, message = "Error password")
     private String password;
 
+    private String firstName;
+
     private String lastName;
 
     @NotNull

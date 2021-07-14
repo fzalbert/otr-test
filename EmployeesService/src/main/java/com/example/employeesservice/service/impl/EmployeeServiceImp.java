@@ -10,6 +10,8 @@ import com.example.employeesservice.dto.response.EmployeeModelDTO;
 import com.example.employeesservice.dto.response.ShortEmployeeDTO;
 import com.example.employeesservice.exception.MissingRequiredFieldException;
 import com.example.employeesservice.exception.ResourceNotFoundException;
+import com.example.employeesservice.kafka.EmployeeModel;
+import com.example.employeesservice.kafka.KafkaSender;
 import com.example.employeesservice.repository.EmployeeRepository;
 import com.example.employeesservice.repository.PersonRepository;
 import com.example.employeesservice.repository.RoleRepository;
@@ -39,14 +41,17 @@ public class EmployeeServiceImp implements EmployeeService {
     private final RoleRepository roleRepository;
     private final CreateEmployeeDtoValidator dtoValidator;
     private final PersonRepository personRepository;
+    private final KafkaSender kafkaSender;
 
     @Autowired
     public EmployeeServiceImp(EmployeeRepository employeeRepository, PersonRepository personRepository,
-                              RoleRepository roleRepository, CreateEmployeeDtoValidator dtoValidator) {
+                              RoleRepository roleRepository, CreateEmployeeDtoValidator dtoValidator,
+                              KafkaSender kafkaSender) {
         this.employeeRepository = employeeRepository;
         this.roleRepository = roleRepository;
         this.dtoValidator = dtoValidator;
         this.personRepository = personRepository;
+        this.kafkaSender = kafkaSender;
     }
 
     /** Авторизация */
@@ -74,6 +79,15 @@ public class EmployeeServiceImp implements EmployeeService {
         var employee = this.dtoToEntity(request, new Employee());
 
         employeeRepository.save(employee);
+
+        var model = new EmployeeModel();
+        model.setEmail(request.getEmail());
+        model.setId(employee.getId());
+        model.setPassword(request.getPassword());
+        model.setName(request.getFirstName());
+        model.setLastName(request.getLastName());
+        model.setRole(request.getRoleType());
+        kafkaSender.sendEmployee(model);
 
         return true;
     }
