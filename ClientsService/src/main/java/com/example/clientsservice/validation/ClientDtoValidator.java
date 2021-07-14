@@ -57,7 +57,7 @@ import java.util.ArrayList;
 
             var checkKppClient = this.clientRepository
                     .findAll()
-                    .stream().anyMatch(x -> x.getKpp().equals(clientDto.getKpp()));
+                    .stream().anyMatch(x -> !x.getId().equals(clientDto.getId()) && x.getKpp().equals(clientDto.getKpp()));
 
             if (checkKppClient) {
                 throw new FieldNotUniqueException(FIELD_KPP);

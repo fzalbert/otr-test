@@ -39,7 +39,10 @@ public class ClientDto {
 
     private String shortNameOrg;
 
+    private String login;
+
     public ClientDto(Client client) {
         BeanUtils.copyProperties(client, this);
+        this.login = client.getUser().getLogin();
     }
 }

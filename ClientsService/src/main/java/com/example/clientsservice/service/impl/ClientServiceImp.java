@@ -57,7 +57,7 @@ public class ClientServiceImp implements ClientService {
 
         return clientRepository
                 .findAll()
-                .stream()
+                .stream().filter(x -> x.getUser().isActive())
                 .sorted(Comparator.comparing(Client::getFio, Comparator.reverseOrder()))
                 .map(ShortClientDto::new)
                 .collect(Collectors.toList());
@@ -118,6 +118,8 @@ public class ClientServiceImp implements ClientService {
         var client = clientRepository.findById(clientRequest.getId()).orElseThrow(() -> new ResourceNotFoundException(clientRequest.getId()));
         if (client == null)
             return null;
+
+        client.getUser().setLogin(clientRequest.getLogin());
 
         Client updateClient = new Client(clientRequest);
         updateClient.setUser(client.getUser());
