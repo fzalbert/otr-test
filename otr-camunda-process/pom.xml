@@ -29,6 +29,7 @@
     <failOnMissingWebXml>false</failOnMissingWebXml>
 
     <spring-cloud-stream.version>Horsham.RELEASE</spring-cloud-stream.version>
+    <dockerfile-maven-version>1.4.0</dockerfile-maven-version>
   </properties>
 
   <dependencyManagement>
@@ -314,28 +315,54 @@
               </executions>
             </plugin>
       -->
+
+<!--      <plugin>-->
+<!--        <groupId>com.spotify</groupId>-->
+<!--        <artifactId>dockerfile-maven-plugin</artifactId>-->
+<!--        <version>${dockerfile-maven-version}</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>default</id>-->
+<!--            <goals>-->
+<!--              <goal>build</goal>-->
+<!--              <goal>push</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--        <configuration>-->
+<!--          <repository>spotify/foobar</repository>-->
+<!--          <tag>${project.version}</tag>-->
+<!--          <buildArgs>-->
+<!--            <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>-->
+<!--          </buildArgs>-->
+<!--        </configuration>-->
+<!--      </plugin>-->
+
     </plugins>
   </build>
 
-<!--  <profiles>-->
-<!--    <profile>-->
-<!--      <id>default</id>-->
-<!--      <activation>-->
-<!--        <activeByDefault>true</activeByDefault>-->
-<!--      </activation>-->
-<!--      <dependencies>-->
-<!--      </dependencies>-->
-<!--      <build>-->
-<!--        <plugins>-->
-<!--&lt;!&ndash;          <plugin>&ndash;&gt;-->
-<!--&lt;!&ndash;            <groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
-<!--&lt;!&ndash;            <artifactId>maven-surefire-plugin</artifactId>&ndash;&gt;-->
-<!--&lt;!&ndash;            <configuration>&ndash;&gt;-->
-<!--&lt;!&ndash;            </configuration>&ndash;&gt;-->
-<!--&lt;!&ndash;          </plugin>&ndash;&gt;-->
-<!--        </plugins>-->
-<!--      </build>-->
-<!--    </profile>-->
+  <profiles>
+    <profile>
+      <id>qa</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>install</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
-<!--  </profiles>-->
+  </profiles>
 </project>
