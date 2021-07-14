@@ -55,6 +55,7 @@ public class AppealDto {
         costCat = new CostCatDto(appeal.getCostCat());
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();
+        amount = appeal.getAmount();
         statusAppeal = appeal.getStatusAppeal().getValue();
         endDate = appeal.getEndDate();
         tnved = new TNVEDDto(appeal.getTnved());

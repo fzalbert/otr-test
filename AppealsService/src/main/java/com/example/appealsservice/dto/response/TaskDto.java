@@ -1,9 +1,11 @@
 package com.example.appealsservice.dto.response;
 
 import com.example.appealsservice.domain.Task;
+import lombok.Data;
 
 import java.util.Date;
 
+@Data
 public class TaskDto {
 
     private Long id;

@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> getByAppealId(long appealId);
-    Optional<Task> findByAppealIdAndTaskStatus(long appealId, TaskStatus taskStatus);
+    List<Task> getByAppealIdAndIsOverFalse(long appealId);
+    Optional<Task> findByAppealIdAndTaskStatusAndIsOverFalse(long appealId, TaskStatus taskStatus);
     Task findByAppealIdAndIsOverFalse(Long appealId);
+
 }
