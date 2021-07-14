@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReportService {
 
-    void approveOrReject(Long taskId, Long employeeId, Boolean isApprove,  String text) throws JsonProcessingException;
+    void approveOrReject(Long appealId, Long employeeId, Boolean isApprove,  String text) throws JsonProcessingException;
 
     List<ReportDto> getAll();
 
@@ -16,5 +16,4 @@ public interface ReportService {
 
     List<ReportDto> getByStatus(ReportStatus status);
 
-    List<ReportDto> getByFilter();
 }

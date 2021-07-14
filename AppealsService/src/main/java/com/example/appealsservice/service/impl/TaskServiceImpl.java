@@ -75,7 +75,7 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .filter(x -> x.getEmployeeId() == employeeId)
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
-                .map(x -> new TaskDto(x, new ShortAppealDto(x.getAppeal())))
+                .map(TaskDto::new)
                 .collect(Collectors.toList());
 
     }
@@ -90,7 +90,7 @@ public class TaskServiceImpl implements TaskService {
                 .findById(id).orElseThrow(()
                         -> new ResourceNotFoundException(id));
 
-        return new TaskDto(task, new ShortAppealDto(task.getAppeal()));
+        return new TaskDto(task);
     }
 
 

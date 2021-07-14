@@ -17,13 +17,13 @@ public class AppealDto {
 
     private Long clientId;
 
-    private Theme theme;
+    private ThemeDto theme;
 
     private String nameOrg;
 
     private String description;
 
-    private Date startDate;
+    private CostCatDto costCat;
 
     private Date endDate;
 
@@ -33,30 +33,34 @@ public class AppealDto {
 
     private Date createDate;
 
-    private StatusAppeal statusAppeal;
+    private Integer statusAppeal;
 
     private List<FileDto> files;
 
     private ReportDto report;
 
+    private TaskDto lastTask;
+
     public AppealDto()
         {}
 
-    public AppealDto(Appeal appeal, List<FileDto> files, ReportDto report) {
+    public AppealDto(Appeal appeal, List<FileDto> files, ReportDto report, TaskDto lastTask) {
 
         if(appeal == null)
             return;
         id = appeal.getId();
         clientId = appeal.getClientId();
         nameOrg = appeal.getNameOrg();
-        theme = appeal.getTheme();
+        theme = new ThemeDto(appeal.getTheme());
+        costCat = new CostCatDto(appeal.getCostCat());
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();
-        statusAppeal = appeal.getStatusAppeal();
+        statusAppeal = appeal.getStatusAppeal().getValue();
         endDate = appeal.getEndDate();
         tnved = new TNVEDDto(appeal.getTnved());
         this.files = files;
         this.report = report;
+        this.lastTask = lastTask;
 
     }
 }

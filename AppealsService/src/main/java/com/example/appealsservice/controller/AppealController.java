@@ -2,6 +2,7 @@ package com.example.appealsservice.controller;
 
 import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.request.AppealRequestDto;
+import com.example.appealsservice.dto.request.FilterAppealAdminDto;
 import com.example.appealsservice.dto.request.FilterAppealDto;
 import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
@@ -59,6 +60,11 @@ public class AppealController  extends AuthorizeController{
         if(!checkUser.isClient(userModel))
             throw new NotRightsException("");
         return appealService.myAppeals(clientId);
+    }
+
+    @PostMapping("filter-for-admin")
+    public List<ShortAppealDto> filterAdmin(@RequestBody(required = false) FilterAppealAdminDto request){
+        return appealService.filterAdmin(request);
     }
 
     @DeleteMapping("delete")

@@ -13,7 +13,6 @@ public class FileDto {
     private Long appealId;
     private String url;
     private String type;
-    private long size;
 
     public FileDto(File file)
     {
@@ -24,7 +23,6 @@ public class FileDto {
         appealId = file.getAppealId();
         url = file.getUrl();
         type = file.getType();
-        size = file.getSize();
     }
 }
 
