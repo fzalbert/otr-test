@@ -25,7 +25,7 @@ public interface AppealService {
 
     AppealDto update(Long employeeId, Long id, AppealRequestDto request);
 
-    List<ShortAppealDto> filter(FilterAppealDto filter);
+    List<ShortAppealDto> filter(Long clientId, FilterAppealDto filter);
 
     List<ShortAppealDto> myAppeals(Long clientId);
 

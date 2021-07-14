@@ -19,6 +19,8 @@ public class AppealDto {
 
     private Theme theme;
 
+    private String nameOrg;
+
     private String description;
 
     private Date startDate;
@@ -46,12 +48,11 @@ public class AppealDto {
             return;
         id = appeal.getId();
         clientId = appeal.getClientId();
-
+        nameOrg = appeal.getNameOrg();
         theme = appeal.getTheme();
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();
         statusAppeal = appeal.getStatusAppeal();
-//        startDate = appeal.getStartDate();
         endDate = appeal.getEndDate();
         tnved = new TNVEDDto(appeal.getTnved());
         this.files = files;

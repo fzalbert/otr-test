@@ -17,6 +17,8 @@ public class ShortAppealDto {
 
     private Long clientId;
 
+    private String nameOrg;
+
     private Theme theme;
 
     private String description;
@@ -24,7 +26,6 @@ public class ShortAppealDto {
     private Date createDate;
 
     private StatusAppeal statusAppeal;
-
 
 
     public ShortAppealDto() {}
@@ -35,6 +36,7 @@ public class ShortAppealDto {
             return;
         id = appeal.getId();
         clientId = appeal.getClientId();
+        nameOrg = appeal.getNameOrg();
         theme = appeal.getTheme();
         description = appeal.getDescription();
         createDate = appeal.getCreateDate();

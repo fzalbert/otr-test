@@ -1,8 +1,18 @@
 package com.example.appealsservice.domain.enums;
 
 public enum TaskStatus {
-    NEEDCHECK,
-    NEEDUPDATE,
-    NEEDREJECT,
-    NEEDSUCCESS
+    NEEDCHECK(0),
+    NEEDUPDATE(1),
+    NEEDREJECT(2),
+    NEEDSUCCESS(3);
+
+    private final int value;
+
+    TaskStatus(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

@@ -1,7 +1,7 @@
 package com.example.appealsservice.domain.enums;
 
 public enum StatusAppeal {
-    NOTPROCCESING,
+    NOTPROCCESING ,
     INPROCCESING,
     SUCCESS,
     REJECT

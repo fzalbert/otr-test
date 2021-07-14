@@ -24,7 +24,6 @@ namespace NotificationServer.Consumer
                 return;
 
 
-            // доделать под сохранение в базу не отправленный сообщений с полем IsSend 
 
             var isSend = await EmailService.SendMessage(model.Email, model.Subject, model.Content);
 
