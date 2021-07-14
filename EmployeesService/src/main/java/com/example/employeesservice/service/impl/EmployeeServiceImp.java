@@ -72,7 +72,9 @@ public class EmployeeServiceImp implements EmployeeService {
     public boolean create(CreateEmployeeDTO request) {
         dtoValidator.validate(request);
         var employee = this.dtoToEntity(request, new Employee());
+
         employeeRepository.save(employee);
+
         return true;
     }
 
@@ -136,8 +138,39 @@ public class EmployeeServiceImp implements EmployeeService {
         BeanUtils.copyProperties(request, person, "password");
         person.setPassword(CryptoHelper.HMAC(request.getPassword()));
         person.setRegistrationDate(new Date());
+        person.setActive(true);
         employee.setPerson(person);
 
         return employee;
+    }
+
+    @Override
+    public void blockById(long id) {
+
+        var client = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+
+        var person = personRepository
+                .findById(client.getPerson().getId())
+                .get();
+
+        person.setActive(false);
+
+        personRepository.save(person);
+    }
+
+    /**
+     * Разблокировать клиента по id
+     */
+    @Override
+    public void unblockById(long id) {
+        var client = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+
+        var person = personRepository
+                .findById(client.getPerson().getId())
+                .get();
+
+        person.setActive(true);
+
+        personRepository.save(person);
     }
 }

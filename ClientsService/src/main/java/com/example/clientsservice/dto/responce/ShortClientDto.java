@@ -14,9 +14,11 @@ public class ShortClientDto {
     private String fio;
     private String fullNameOrg;
     private String email;
+    private Boolean isActive;
 
     public ShortClientDto(Client client) {
         BeanUtils.copyProperties(client, this);
         this.email = client.getUser().getLogin();
+        this.isActive = client.getUser().isActive();
     }
 }

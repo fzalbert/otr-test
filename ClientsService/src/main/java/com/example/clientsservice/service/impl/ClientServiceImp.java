@@ -57,7 +57,7 @@ public class ClientServiceImp implements ClientService {
 
         return clientRepository
                 .findAll()
-                .stream().filter(x -> x.getUser().isActive())
+                .stream()
                 .sorted(Comparator.comparing(Client::getFio, Comparator.reverseOrder()))
                 .map(ShortClientDto::new)
                 .collect(Collectors.toList());

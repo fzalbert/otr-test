@@ -57,4 +57,16 @@ public class EmployeeController extends AuthorizeController {
     public boolean delete(@RequestParam long id) {
         return employeeService.delete(id);
     }
+
+    @GetMapping("block")
+    public void blockById(@RequestParam long id) {
+
+        this.employeeService.blockById(id);
+    }
+
+    @PutMapping("unblock")
+    public void unblockById(@RequestParam long id) {
+
+        this.employeeService.unblockById(id);
+    }
 }

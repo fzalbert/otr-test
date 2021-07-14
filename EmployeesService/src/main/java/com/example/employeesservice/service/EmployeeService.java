@@ -18,5 +18,7 @@ public interface EmployeeService {
     List<EmployeeDTO> getList();
     EmployeeDTO getById(long id);
     boolean appointRole(long id, RoleType role);
+    void blockById(long id);
+    void unblockById(long id);
 
 }
