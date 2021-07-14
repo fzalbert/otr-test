@@ -3,6 +3,7 @@ package com.example.apigateawayservice.config;
 import com.example.apigateawayservice.dto.JwtParseRequestDto;
 import com.example.apigateawayservice.dto.JwtParseResponseDto;
 import com.netflix.zuul.context.RequestContext;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.stream.Collectors;
 
 import static com.example.apigateawayservice.utils.SecurityConstants.AUTHORIZATION_HEADER;
@@ -57,7 +59,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
                 RequestContext ctx = RequestContext.getCurrentContext();
                 ctx.addZuulRequestHeader("id", responseDto.getAuthorities().get(0));
-                ctx.addZuulRequestHeader("name", responseDto.getAuthorities().get(1));
+                ctx.addZuulRequestHeader("name", URLEncoder.encode(responseDto.getAuthorities().get(1), "UTF-8"));
                 ctx.addZuulRequestHeader("email", responseDto.getAuthorities().get(2));
                 ctx.addZuulRequestHeader("role", responseDto.getAuthorities().get(3));
 
