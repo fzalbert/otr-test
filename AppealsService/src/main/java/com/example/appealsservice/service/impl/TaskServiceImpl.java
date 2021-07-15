@@ -1,17 +1,9 @@
 package com.example.appealsservice.service.impl;
 
-import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.Task;
-import com.example.appealsservice.domain.enums.TaskStatus;
-import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
-import com.example.appealsservice.exception.MissingRequiredFieldException;
-import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.exception.TemplateException;
-import com.example.appealsservice.kafka.model.MessageType;
-import com.example.appealsservice.kafka.model.ModelConvertor;
-import com.example.appealsservice.kafka.model.ModelMessage;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.TaskService;

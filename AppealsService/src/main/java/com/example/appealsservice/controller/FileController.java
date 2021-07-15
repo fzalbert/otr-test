@@ -8,6 +8,7 @@ import com.example.appealsservice.service.TNVEDService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +61,12 @@ public class FileController extends AuthorizeController {
 
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
+    }
+
+
+    @GetMapping("download")
+    public Resource download(@RequestParam Long id){
+        return fileService.download(id);
     }
 
 

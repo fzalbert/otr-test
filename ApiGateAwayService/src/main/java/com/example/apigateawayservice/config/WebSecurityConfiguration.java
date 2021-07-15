@@ -37,7 +37,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/employee/api/employee/update", "/employee/**").hasRole(UserType.EMPLOYEE.name())
                 .antMatchers("/client/api/clients/**", "/employee/**").hasRole(UserType.CLIENT.name())
                 .antMatchers("/auth/**", "/client/api/account/register").permitAll()*/
-
                 .anyRequest().permitAll();
 
     }
