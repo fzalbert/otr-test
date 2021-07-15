@@ -86,6 +86,7 @@ public class EmployeeServiceImp implements EmployeeService {
         model.setId(employee.getId());
         model.setPassword(request.getPassword());
         model.setName(request.getFirstName());
+        model.setLogin(request.getLogin());
         model.setLastName(request.getLastName());
         model.setRole(request.getRoleType());
         kafkaSender.sendEmployee(model);

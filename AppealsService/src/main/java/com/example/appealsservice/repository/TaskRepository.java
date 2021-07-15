@@ -13,5 +13,4 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> getByAppealIdAndIsOverFalse(long appealId);
     Optional<Task> findByAppealIdAndTaskStatusAndIsOverFalse(long appealId, TaskStatus taskStatus);
     Task findByAppealIdAndIsOverFalse(Long appealId);
-
 }

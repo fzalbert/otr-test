@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -369,28 +370,37 @@ public class AppealServiceImpl implements AppealService {
                 .stream()
                 .collect(Collectors.toList());
 
-        if (filter != null && filter.themeId != null)
+        if (filter != null && filter.themeId != null && filter.themeId != 0)
             appeals = appeals.stream().filter(x -> x.getTheme().getId() == (filter.themeId))
                     .collect(Collectors.toList());
 
-        if (filter != null && filter.statusAppeal != null)
-            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == StatusAppeal.values()[filter.statusAppeal])
+        if (filter != null && filter.statusAppeal != null){
+            var a = StatusAppeal.values()[filter.statusAppeal];
+            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == a)
                     .collect(Collectors.toList());
+        }
+
 
         if (filter != null && filter.date != null)
             appeals = appeals.stream().filter(x -> x.getCreateDate().after(filter.date))
                     .collect(Collectors.toList());
 
-        if (filter != null && filter.employeeId != null) {
-            appeals = appeals.stream().filter(x -> taskRepository.findByAppealIdAndIsOverFalse(x.getId()) != null)
-                    .collect(Collectors.toList());
+        if (filter != null && filter.employeeId != null && filter.employeeId != 0) {
+            List<Appeal> appealList = new ArrayList<>();
+            for (var appeal : appeals) {
+                var task = taskRepository.findByAppealIdAndIsOverFalse(appeal.getId());
+                if (task != null && task.getEmployeeId().equals(filter.employeeId)){
+                    appealList.add(appeal);
+                }
+            }
+            appeals = appealList;
         }
 
-        if (filter != null && filter.nameOrg != null)
+        if (filter != null && filter.nameOrg != null && !filter.nameOrg.isEmpty())
             appeals = appeals.stream().filter(x -> x.getNameOrg().contains(filter.nameOrg))
                     .collect(Collectors.toList());
 
-        return appeals.stream().map(x -> new ShortAppealDto(x, taskRepository.findByAppealIdAndIsOverFalse(x.getId()).getEmployeeId()))
+        return appeals.stream().map(x -> new ShortAppealDto(x, taskRepository.findByAppealIdAndIsOverFalse(x.getId())))
                 .collect(Collectors.toList());
     }
 }

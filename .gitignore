@@ -1,2 +1,6 @@
 
 otr-camunda-process/src/main/java/org/example/kafka/listeners/methods.txt
+.idea/compiler.xml
+.idea/misc.xml
+AppealsService/uploads/
+camunda-db.mv.db

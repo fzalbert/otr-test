@@ -1,6 +1,7 @@
 package com.example.appealsservice.dto.response;
 
 import com.example.appealsservice.domain.Appeal;
+import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.Theme;
 import lombok.Getter;
@@ -43,12 +44,13 @@ public class ShortAppealDto {
 
     }
 
-    public ShortAppealDto(Appeal appeal, Long employeeId) {
+    public ShortAppealDto(Appeal appeal, Task task) {
 
         if(appeal == null)
             return;
         id = appeal.getId();
-        this.employeeId = employeeId;
+        if (task != null)
+            this.employeeId = task.getEmployeeId();
         nameOrg = appeal.getNameOrg();
         theme = appeal.getTheme();
         description = appeal.getDescription();
