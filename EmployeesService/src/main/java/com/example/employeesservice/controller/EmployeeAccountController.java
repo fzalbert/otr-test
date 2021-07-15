@@ -1,7 +1,7 @@
 package com.example.employeesservice.controller;
 
 import com.example.employeesservice.dto.request.AuthDto;
-import com.example.employeesservice.dto.response.EmployeeModelDTO;
+import com.example.employeesservice.dto.response.EmployeeModelDto;
 import com.example.employeesservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -22,7 +22,7 @@ public class EmployeeAccountController {
     }
 
     @PostMapping("auth")
-    public EmployeeModelDTO auth(@RequestBody @Valid AuthDto request) {
+    public EmployeeModelDto auth(@RequestBody @Valid AuthDto request) {
         return employeeService.auth(request);
     }
 }

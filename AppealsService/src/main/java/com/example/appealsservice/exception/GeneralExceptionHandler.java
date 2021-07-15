@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -34,5 +35,16 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(error, status);
     }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Object> handleMaxSizeException(MaxUploadSizeExceededException exc) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.EXPECTATION_FAILED.value(),
+                HttpStatus.EXPECTATION_FAILED.getReasonPhrase(),
+                "File too large!");
+
+        return new ResponseEntity<>(error, HttpStatus.EXPECTATION_FAILED);
+    }
+
 
 }

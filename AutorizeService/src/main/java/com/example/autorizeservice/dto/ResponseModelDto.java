@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseModel{
+public class ResponseModelDto {
     public HttpStatus status = HttpStatus.OK;
     public String content;
 }

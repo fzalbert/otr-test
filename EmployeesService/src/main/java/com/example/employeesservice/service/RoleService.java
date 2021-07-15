@@ -1,14 +1,14 @@
 package com.example.employeesservice.service;
 
-import com.example.employeesservice.dto.request.CreateRoleDTO;
-import com.example.employeesservice.dto.response.RoleDTO;
+import com.example.employeesservice.dto.request.CreateRoleDto;
+import com.example.employeesservice.dto.response.RoleDto;
 
 import java.util.List;
 
 public interface RoleService {
 
-    boolean create(CreateRoleDTO request);
-    RoleDTO update(CreateRoleDTO request, long id);
-    List<RoleDTO> getList();
+    boolean create(CreateRoleDto request);
+    RoleDto update(CreateRoleDto request, long id);
+    List<RoleDto> getList();
     boolean delete(long id);
 }

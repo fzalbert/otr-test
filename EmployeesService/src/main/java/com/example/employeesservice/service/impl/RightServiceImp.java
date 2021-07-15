@@ -1,7 +1,7 @@
 package com.example.employeesservice.service.impl;
 
 import com.example.employeesservice.domain.Right;
-import com.example.employeesservice.dto.response.RightDTO;
+import com.example.employeesservice.dto.response.RightDto;
 import com.example.employeesservice.exception.ResourceNotFoundException;
 import com.example.employeesservice.repository.RightRepository;
 import com.example.employeesservice.repository.RoleRepository;
@@ -42,24 +42,24 @@ public class RightServiceImp implements RightService {
 
     /** Получить список всех прав */
     @Override
-    public List<RightDTO> getList() {
+    public List<RightDto> getList() {
         return rightRepository
                 .findAll()
                 .stream()
                 .sorted(Comparator.comparing(Right::getTitle, Comparator.reverseOrder()))
-                .map(RightDTO::new)
+                .map(RightDto::new)
                 .collect(Collectors.toList());
     }
 
     /** Получить список прав, относящихся к выбранной роле */
     @Override
-    public List<RightDTO> getListByRoleId(long roleId) {
+    public List<RightDto> getListByRoleId(long roleId) {
         var role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new ResourceNotFoundException(roleId));
 
         return role.getRights()
                 .stream()
-                .map(RightDTO::new)
+                .map(RightDto::new)
                 .collect(Collectors.toList());
     }
 }

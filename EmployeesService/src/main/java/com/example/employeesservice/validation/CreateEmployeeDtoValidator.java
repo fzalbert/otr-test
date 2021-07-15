@@ -1,14 +1,14 @@
 package com.example.employeesservice.validation;
 
 import com.example.employeesservice.common.validation.BaseValidator;
-import com.example.employeesservice.dto.request.CreateEmployeeDTO;
+import com.example.employeesservice.dto.request.CreateEmployeeDto;
 import com.example.employeesservice.exception.TemplateException;
 import com.example.employeesservice.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateEmployeeDtoValidator implements BaseValidator<CreateEmployeeDTO> {
+public class CreateEmployeeDtoValidator implements BaseValidator<CreateEmployeeDto> {
 
     private static final String FIELD_EMAIL = "Данный email уже существует в базе";
     private static final String FIELD_LOGIN = "Данный Логин уже существует в базе";
@@ -21,12 +21,12 @@ public class CreateEmployeeDtoValidator implements BaseValidator<CreateEmployeeD
     }
 
     @Override
-    public void validate(CreateEmployeeDTO obj) {
+    public void validate(CreateEmployeeDto obj) {
         validateUniqueEmail(obj);
     }
 
 
-    private void validateUniqueEmail(CreateEmployeeDTO createEmployeeDTO) {
+    private void validateUniqueEmail(CreateEmployeeDto createEmployeeDTO) {
 
         var checkLogin = this.employeeRepository
                 .findAll()

@@ -1,10 +1,9 @@
 package com.example.employeesservice.controller;
 
 import com.example.employeesservice.domain.enums.RoleType;
-import com.example.employeesservice.dto.request.CreateEmployeeDTO;
+import com.example.employeesservice.dto.request.CreateEmployeeDto;
 import com.example.employeesservice.dto.request.UpdateEmployeeDto;
-import com.example.employeesservice.dto.response.EmployeeDTO;
-import com.example.employeesservice.dto.response.ShortEmployeeDTO;
+import com.example.employeesservice.dto.response.EmployeeDto;
 import com.example.employeesservice.repository.EmployeeRepository;
 import com.example.employeesservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +29,12 @@ public class EmployeeController extends AuthorizeController {
     }
 
     @PostMapping("create")
-    public boolean create(@Valid @RequestBody CreateEmployeeDTO request) {
+    public boolean create(@Valid @RequestBody CreateEmployeeDto request) {
         return employeeService.create(request);
     }
 
     @PostMapping("update")
-    public EmployeeDTO update( @RequestParam long employeeId, @RequestBody UpdateEmployeeDto request) {
+    public EmployeeDto update(@RequestParam long employeeId, @RequestBody UpdateEmployeeDto request) {
         return employeeService.update(request, employeeId);
     }
 
@@ -45,12 +44,12 @@ public class EmployeeController extends AuthorizeController {
     }
 
     @GetMapping("by-id")
-    public EmployeeDTO getById(@RequestParam long id) {
+    public EmployeeDto getById(@RequestParam long id) {
         return employeeService.getById(id);
     }
 
     @GetMapping("list")
-    public List<EmployeeDTO> getList() {
+    public List<EmployeeDto> getList() {
         return employeeService.getList();
     }
 

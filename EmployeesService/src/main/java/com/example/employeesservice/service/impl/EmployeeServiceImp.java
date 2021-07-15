@@ -4,10 +4,10 @@ import com.example.employeesservice.domain.Employee;
 import com.example.employeesservice.domain.Person;
 import com.example.employeesservice.domain.enums.RoleType;
 import com.example.employeesservice.dto.request.AuthDto;
-import com.example.employeesservice.dto.request.CreateEmployeeDTO;
+import com.example.employeesservice.dto.request.CreateEmployeeDto;
 import com.example.employeesservice.dto.request.UpdateEmployeeDto;
-import com.example.employeesservice.dto.response.EmployeeDTO;
-import com.example.employeesservice.dto.response.EmployeeModelDTO;
+import com.example.employeesservice.dto.response.EmployeeDto;
+import com.example.employeesservice.dto.response.EmployeeModelDto;
 import com.example.employeesservice.exception.TemplateException;
 import com.example.employeesservice.kafka.EmployeeModel;
 import com.example.employeesservice.kafka.KafkaSender;
@@ -53,7 +53,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
     /** Авторизация */
     @Override
-    public EmployeeModelDTO auth(AuthDto request) {
+    public EmployeeModelDto auth(AuthDto request) {
         CryptoHelper.setSecretKey(secretKey);
         var hmacPassword = CryptoHelper.HMAC(request.getPassword());
 
@@ -63,7 +63,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
         var employee = user.getEmployee();
 
-        return new EmployeeModelDTO(employee.getId(),
+        return new EmployeeModelDto(employee.getId(),
                 employee.getEmail(),
                 employee.getLastName(),
                 employee.getRoleType().name());
@@ -71,7 +71,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
     /** Создание сотрудника */
     @Override
-    public boolean create(CreateEmployeeDTO request) {
+    public boolean create(CreateEmployeeDto request) {
         dtoValidator.validate(request);
         var employee = this.dtoToEntity(request, new Employee());
 
@@ -92,13 +92,13 @@ public class EmployeeServiceImp implements EmployeeService {
 
     /** Обновление сотрудника */
     @Override
-    public EmployeeDTO update(UpdateEmployeeDto request, long employeeId) {
+    public EmployeeDto update(UpdateEmployeeDto request, long employeeId) {
         var employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
 
         var updatedEmployee = this.dtoToEntity(request, employee);
         employeeRepository.save(updatedEmployee);
-        return new EmployeeDTO(updatedEmployee);
+        return new EmployeeDto(updatedEmployee);
     }
 
     /** Удаление сотрудника */
@@ -113,21 +113,21 @@ public class EmployeeServiceImp implements EmployeeService {
     /** Получить список всех сотрудников в системе */
     //@Cacheable(value = "itemCache")
     @Override
-    public List<EmployeeDTO> getList() {
+    public List<EmployeeDto> getList() {
         return employeeRepository
                 .findAll()
                 .stream()
                 .sorted(Comparator.comparing(Employee::getLastName, Comparator.reverseOrder()))
-                .map(EmployeeDTO::new)
+                .map(EmployeeDto::new)
                 .collect(Collectors.toList());
     }
 
     /** Получить данные о сотруднике по id */
     @Override
-    public EmployeeDTO getById(long employeeId) {
+    public EmployeeDto getById(long employeeId) {
         var employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
-        return new EmployeeDTO(employee);
+        return new EmployeeDto(employee);
     }
 
     /** Назначить роль сотруднику */
@@ -142,7 +142,7 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     /** Преобразовать из dto в сущность employee */
-    private Employee dtoToEntity(CreateEmployeeDTO request, Employee employee) {
+    private Employee dtoToEntity(CreateEmployeeDto request, Employee employee) {
         CryptoHelper.setSecretKey(secretKey);
         BeanUtils.copyProperties(request, employee);
 

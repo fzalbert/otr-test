@@ -14,5 +14,5 @@ public class FilterAppealDto {
     public Date date;
 
     @Nullable
-    public StatusAppeal statusAppeal;
+    public Integer statusAppeal;
 }

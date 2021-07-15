@@ -2,7 +2,7 @@ package com.example.autorizeservice.config;
 
 import com.example.autorizeservice.dto.AuthDto;
 import com.example.autorizeservice.dto.LoginDto;
-import com.example.autorizeservice.dto.ResponseModel;
+import com.example.autorizeservice.dto.ResponseModelDto;
 import com.example.autorizeservice.dto.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
@@ -25,8 +25,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -112,8 +110,8 @@ public class JwtClientFilter extends AbstractAuthenticationProcessingFilter {
     }
 
 
-    private ResponseModel getResponse(String login, String password) {
-        ResponseModel model = new ResponseModel();
+    private ResponseModelDto getResponse(String login, String password) {
+        ResponseModelDto model = new ResponseModelDto();
         AuthDto body = new AuthDto(login, password);
         var restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new ResponseErrorHandler() {

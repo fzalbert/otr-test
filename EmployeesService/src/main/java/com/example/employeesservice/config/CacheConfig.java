@@ -1,3 +1,4 @@
+/*
 package com.example.employeesservice.config;
 
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
@@ -29,3 +30,4 @@ public class CacheConfig {
     }
 
 }
+*/

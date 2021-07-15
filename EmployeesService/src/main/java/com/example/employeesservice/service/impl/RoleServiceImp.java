@@ -1,8 +1,8 @@
 package com.example.employeesservice.service.impl;
 
 import com.example.employeesservice.domain.Role;
-import com.example.employeesservice.dto.request.CreateRoleDTO;
-import com.example.employeesservice.dto.response.RoleDTO;
+import com.example.employeesservice.dto.request.CreateRoleDto;
+import com.example.employeesservice.dto.response.RoleDto;
 import com.example.employeesservice.exception.ResourceNotFoundException;
 import com.example.employeesservice.repository.EmployeeRepository;
 import com.example.employeesservice.repository.RoleRepository;
@@ -29,7 +29,7 @@ public class RoleServiceImp implements RoleService {
 
     /** Создание роли */
     @Override
-    public boolean create(CreateRoleDTO request) {
+    public boolean create(CreateRoleDto request) {
         var role = this.dtoInEntity(request, new Role());
 
         roleRepository.save(role);
@@ -38,23 +38,23 @@ public class RoleServiceImp implements RoleService {
 
     /** Обновление роли */
     @Override
-    public RoleDTO update(CreateRoleDTO request, long id) {
+    public RoleDto update(CreateRoleDto request, long id) {
         var role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
         var updatedRole = this.dtoInEntity(request, role);
 
         roleRepository.save(updatedRole);
-        return new RoleDTO(updatedRole);
+        return new RoleDto(updatedRole);
     }
 
     /** Получить список ролей */
     @Override
-    public List<RoleDTO> getList() {
+    public List<RoleDto> getList() {
         return roleRepository
                 .findAll()
                 .stream()
                 .sorted(Comparator.comparing(Role::getTitle, Comparator.reverseOrder()))
-                .map(RoleDTO::new)
+                .map(RoleDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +69,7 @@ public class RoleServiceImp implements RoleService {
     }
 
     /** Преобразовать из dto в сущность role */
-    private Role dtoInEntity(CreateRoleDTO request, Role role) {
+    private Role dtoInEntity(CreateRoleDto request, Role role) {
         BeanUtils.copyProperties(request, role);
         return role;
     }

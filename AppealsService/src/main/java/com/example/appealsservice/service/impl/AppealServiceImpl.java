@@ -312,14 +312,15 @@ public class AppealServiceImpl implements AppealService {
                 .stream()
                 .collect(Collectors.toList());
 
-        if (filter != null && filter.themeId != null)
+        if (filter != null && filter.themeId != null && filter.themeId != 0)
             appeals = appeals.stream().filter(x -> x.getTheme().getId() == (filter.themeId))
                     .collect(Collectors.toList());
 
-
-        if (filter != null && filter.statusAppeal != null)
-            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == filter.statusAppeal)
+        if (filter != null && filter.statusAppeal != null){
+            var status = StatusAppeal.values()[filter.statusAppeal];
+            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == status)
                     .collect(Collectors.toList());
+        }
 
         if (filter != null && filter.date != null)
             appeals = appeals.stream().filter(x -> x.getCreateDate().after(filter.date))
@@ -378,8 +379,8 @@ public class AppealServiceImpl implements AppealService {
                     .collect(Collectors.toList());
 
         if (filter != null && filter.statusAppeal != null){
-            var a = StatusAppeal.values()[filter.statusAppeal];
-            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == a)
+            var status = StatusAppeal.values()[filter.statusAppeal];
+            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == status)
                     .collect(Collectors.toList());
         }
 
