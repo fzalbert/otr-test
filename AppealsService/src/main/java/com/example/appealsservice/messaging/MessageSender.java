@@ -23,9 +23,7 @@ public class MessageSender {
 
     public void sendEmail(ModelMessage m) {
         try {
-            // avoid too much magic and transform ourselves
             String jsonMessage = objectMapper.writeValueAsString(m);
-            // wrap into a proper message for the transport (Kafka/Rabbit) and send it
             var message =                     MessageBuilder.withPayload(jsonMessage)
                     .setHeader("type", m.getName())
                     .build();

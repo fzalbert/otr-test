@@ -1,6 +1,7 @@
 package com.example.appealsservice.service;
 
 import com.example.appealsservice.dto.response.FileDto;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ public interface FileService {
 
     List<FileDto> getFilesByAppealId(Long appealId);
 
-    byte[] download(Long fileId);
+    Resource download(Long fileId);
 
     void deleteFile(Long Id);
 

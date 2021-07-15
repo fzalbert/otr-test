@@ -8,6 +8,8 @@ import com.example.clientsservice.dto.request.CreateClientDto;
 import com.example.clientsservice.dto.responce.ClientModelDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
 import com.example.clientsservice.exception.ResourceNotFoundException;
+import com.example.clientsservice.kafka.MessageSender;
+import com.example.clientsservice.kafka.ModelMessage;
 import com.example.clientsservice.repository.ClientRepository;
 import com.example.clientsservice.repository.UserRepository;
 import com.example.clientsservice.service.ClientService;
@@ -35,18 +37,20 @@ public class ClientServiceImp implements ClientService {
     private final ClientDtoValidator dtoValidator;
     private final CreateClientDtoValidator createClientDtoValidator;
     private final AuthDtoValidator authDtoValidator;
+    private final MessageSender messageSender;
 
     @Value("${secret}")
     private String secretKey;
 
     public ClientServiceImp(ClientRepository clientRepository, UserRepository userRepository,
                             ClientDtoValidator dtoValidator, CreateClientDtoValidator createClientDtoValidator,
-                            AuthDtoValidator authDtoValidator) {
+                            AuthDtoValidator authDtoValidator, MessageSender messageSender) {
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
         this.dtoValidator = dtoValidator;
         this.createClientDtoValidator = createClientDtoValidator;
         this.authDtoValidator = authDtoValidator;
+        this.messageSender = messageSender;
     }
 
     /**
@@ -185,6 +189,13 @@ public class ClientServiceImp implements ClientService {
 
         client.setUser(user);
         clientRepository.save(client);
+
+        ModelMessage model = new ModelMessage();
+        model.setEmail(client.getEmail());
+        model.setName(client.getFio());
+        model.setSubject("SUCCESSFUL REGISTRATION");
+        model.setContent("Вы успешно зарегистрировались! ");
+        messageSender.sendEmail(model);
     }
 
 
