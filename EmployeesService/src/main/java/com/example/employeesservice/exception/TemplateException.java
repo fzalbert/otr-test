@@ -7,4 +7,8 @@ import org.springframework.http.HttpStatus;
         public TemplateException(String message) {
             super(message , HttpStatus.BAD_REQUEST);
         }
+        public TemplateException() {
+            super("Сотрудник не найден" , HttpStatus.BAD_REQUEST);
+        }
+
     }

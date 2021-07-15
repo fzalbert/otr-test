@@ -8,9 +8,7 @@ import com.example.employeesservice.dto.request.CreateEmployeeDTO;
 import com.example.employeesservice.dto.request.UpdateEmployeeDto;
 import com.example.employeesservice.dto.response.EmployeeDTO;
 import com.example.employeesservice.dto.response.EmployeeModelDTO;
-import com.example.employeesservice.dto.response.ShortEmployeeDTO;
-import com.example.employeesservice.exception.MissingRequiredFieldException;
-import com.example.employeesservice.exception.ResourceNotFoundException;
+import com.example.employeesservice.exception.TemplateException;
 import com.example.employeesservice.kafka.EmployeeModel;
 import com.example.employeesservice.kafka.KafkaSender;
 import com.example.employeesservice.repository.EmployeeRepository;
@@ -19,11 +17,9 @@ import com.example.employeesservice.repository.RoleRepository;
 import com.example.employeesservice.service.EmployeeService;
 import com.example.employeesservice.utils.CryptoHelper;
 import com.example.employeesservice.validation.CreateEmployeeDtoValidator;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +59,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
         var user = personRepository
                 .findByLoginAndPassword(request.getLogin(), hmacPassword)
-                .orElseThrow(MissingRequiredFieldException::new);
+                .orElseThrow(TemplateException::new);
 
         var employee = user.getEmployee();
 
@@ -98,7 +94,7 @@ public class EmployeeServiceImp implements EmployeeService {
     @Override
     public EmployeeDTO update(UpdateEmployeeDto request, long employeeId) {
         var employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException(employeeId));
+                .orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
 
         var updatedEmployee = this.dtoToEntity(request, employee);
         employeeRepository.save(updatedEmployee);
@@ -109,7 +105,7 @@ public class EmployeeServiceImp implements EmployeeService {
     @Override
     public boolean delete(long employeeId) {
         var employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException(employeeId));
+                .orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
         employeeRepository.delete(employee);
         return true;
     }
@@ -130,7 +126,7 @@ public class EmployeeServiceImp implements EmployeeService {
     @Override
     public EmployeeDTO getById(long employeeId) {
         var employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException(employeeId));
+                .orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
         return new EmployeeDTO(employee);
     }
 
@@ -138,7 +134,7 @@ public class EmployeeServiceImp implements EmployeeService {
     @Override
     public boolean appointRole(long employeeId, RoleType role) {
         var employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException(employeeId));
+                .orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
 
         employee.setRoleType(role);
         employeeRepository.save(employee);
@@ -179,7 +175,7 @@ public class EmployeeServiceImp implements EmployeeService {
     @Override
     public void blockById(long id) {
 
-        var client = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        var client = employeeRepository.findById(id).orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
 
         var person = personRepository
                 .findById(client.getPerson().getId())
@@ -195,7 +191,7 @@ public class EmployeeServiceImp implements EmployeeService {
      */
     @Override
     public void unblockById(long id) {
-        var client = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        var client = employeeRepository.findById(id).orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
 
         var person = personRepository
                 .findById(client.getPerson().getId())

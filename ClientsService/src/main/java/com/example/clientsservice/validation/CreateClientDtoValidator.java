@@ -2,7 +2,6 @@ package com.example.clientsservice.validation;
 
 import com.example.clientsservice.common.validation.BaseValidator;
 import com.example.clientsservice.dto.request.CreateClientDto;
-import com.example.clientsservice.exception.FieldNotUniqueException;
 import com.example.clientsservice.exception.TemplateException;
 import com.example.clientsservice.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
