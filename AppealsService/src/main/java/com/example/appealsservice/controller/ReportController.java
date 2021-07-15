@@ -6,6 +6,7 @@ import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.httpModel.CheckUser;
 import com.example.appealsservice.service.ReportService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@Log4j
 @Scope("prototype")
 @RestController
 @RequestMapping("reports")
@@ -42,10 +44,20 @@ public class ReportController extends AuthorizeController {
 
     @GetMapping("approve-or-reject")
     public void approveOrReject(@RequestParam Long appealId, @RequestParam Boolean isApprove, @RequestParam String text) throws JsonProcessingException {
-        if(!checkUser.isEmployee(userModel))
+
+        log.debug("Request method reports/approve-or-reject for AppealId= " + appealId );
+
+        if(checkUser.isClient(userModel))
             throw new NotRightsException("Not Rights");
 
-        reportService.approveOrReject(appealId, userModel.getId(), isApprove, text);
+        try {
+            reportService.approveOrReject(appealId, userModel.getId(), isApprove, text);
+            log.debug("SUCCESS Create report for AppealId : " + appealId);
+        }
+        catch (Exception e)
+        {
+            log.error("ERROR created report for AppealId : " + appealId);
+        }
     }
 
     @GetMapping("by-status")

@@ -23,7 +23,7 @@ public class BanController {
         this.clientService.blockById(id);
     }
 
-    @PutMapping("unblock")
+    @GetMapping("unblock")
     public void unblockById(@RequestParam long id) {
 
         this.clientService.unblockById(id);

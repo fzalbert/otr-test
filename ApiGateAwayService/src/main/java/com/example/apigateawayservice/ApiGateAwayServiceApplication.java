@@ -11,5 +11,4 @@ public class ApiGateAwayServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApiGateAwayServiceApplication.class, args);
     }
-
 }

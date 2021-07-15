@@ -16,8 +16,6 @@ namespace NotificationServer
 {
     public class Startup
     {
-        
-
 
         public Startup(IConfiguration configuration)
         {
@@ -52,19 +50,14 @@ namespace NotificationServer
 
         public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env, IServiceProvider serviceProvider)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
 
 
             app.UseCors(builder =>
                 builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod());
 
-            app.UseAuthentication();
-            app.UseMvc();
-            app.UseRouting();
-            //app.UseHttpsRedirection();
+            //app.UseAuthentication();
+            //app.UseMvc();
+            //app.UseRouting();
 
         }
     }

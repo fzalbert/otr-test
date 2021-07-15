@@ -1,7 +1,6 @@
 package com.example.autorizeservice.service.impl;
 
 import com.example.autorizeservice.dto.JwtParseResponseDto;
-import com.example.autorizeservice.exception.UnauthorisedException;
 import com.example.autorizeservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import static com.example.autorizeservice.utils.ErrorMessage.TokenInvalid;
 
 @Service
 public class JwtServiceImpl implements JwtService {

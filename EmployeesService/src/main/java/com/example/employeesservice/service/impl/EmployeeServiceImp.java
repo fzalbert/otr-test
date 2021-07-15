@@ -59,7 +59,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
         var user = personRepository
                 .findByLoginAndPassword(request.getLogin(), hmacPassword)
-                .orElseThrow(TemplateException::new);
+                .orElseThrow(() -> new TemplateException("Пользователь не найден"));
 
         var employee = user.getEmployee();
 

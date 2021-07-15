@@ -35,10 +35,10 @@ public class ClientController {
         return this.clientService.getById(id);
     }
 
-    @PutMapping("update")
-    public ClientDto update(@RequestBody @Valid ClientDto clientrequest) {
+    @PostMapping("update")
+    public ClientDto update(@RequestBody @Valid ClientDto request) {
 
-        return  this.clientService.update(clientrequest);
+        return  this.clientService.update(request);
     }
 
     @DeleteMapping("delete")
