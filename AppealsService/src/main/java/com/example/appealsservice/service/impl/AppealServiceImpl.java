@@ -126,7 +126,10 @@ public class AppealServiceImpl implements AppealService {
                     -> new TemplateException("Неверный код ТН ВЭД"));
             appeal.setTnved(tnved);
         }
-        if (request.amount != null)
+
+        if(request.amount != null && request.amount <=0)
+            throw new TemplateException("Неверная сумма заявки");
+
             appeal.setAmount(request.amount);
 
         appeal.setCreateDate(new Date());
