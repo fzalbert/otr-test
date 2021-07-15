@@ -7,7 +7,7 @@ import com.example.clientsservice.dto.request.ClientDto;
 import com.example.clientsservice.dto.request.CreateClientDto;
 import com.example.clientsservice.dto.responce.ClientModelDto;
 import com.example.clientsservice.dto.responce.ShortClientDto;
-import com.example.clientsservice.exception.ResourceNotFoundException;
+import com.example.clientsservice.exception.TemplateException;
 import com.example.clientsservice.kafka.MessageSender;
 import com.example.clientsservice.kafka.ModelMessage;
 import com.example.clientsservice.repository.ClientRepository;
@@ -18,8 +18,6 @@ import com.example.clientsservice.validation.AuthDtoValidator;
 import com.example.clientsservice.validation.ClientDtoValidator;
 import com.example.clientsservice.validation.CreateClientDtoValidator;
 import com.sun.istack.NotNull;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +71,7 @@ public class ClientServiceImp implements ClientService {
     @Override
     public ClientDto getById(long id) {
 
-        Client client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        Client client = clientRepository.findById(id).orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
 
         return new ClientDto(client);
     }
@@ -84,7 +82,7 @@ public class ClientServiceImp implements ClientService {
     @Override
     public void blockById(long id) {
 
-        var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        var client = clientRepository.findById(id).orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
 
         var user = userRepository
                 .findById(client.getUser().getId())
@@ -100,7 +98,7 @@ public class ClientServiceImp implements ClientService {
      */
     @Override
     public void unblockById(long id) {
-        var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        var client = clientRepository.findById(id).orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
 
         var user = userRepository
                 .findById(client.getUser().getId())
@@ -119,7 +117,7 @@ public class ClientServiceImp implements ClientService {
     @Override
     public ClientDto update(ClientDto clientRequest) {
         dtoValidator.validate(clientRequest);
-        var client = clientRepository.findById(clientRequest.getId()).orElseThrow(() -> new ResourceNotFoundException(clientRequest.getId()));
+        var client = clientRepository.findById(clientRequest.getId()).orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
         if (client == null)
             return null;
 
@@ -138,7 +136,7 @@ public class ClientServiceImp implements ClientService {
      */
     @Override
     public boolean deleteById(long id) {
-        var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        var client = clientRepository.findById(id).orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
         clientRepository.delete(client);
         return true;
     }
@@ -149,7 +147,7 @@ public class ClientServiceImp implements ClientService {
     @Override
     public boolean changePassword(long id, String newPassword) {
         CryptoHelper.setSecretKey(secretKey);
-        var client = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        var client = clientRepository.findById(id).orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
 
         client.getUser().setPassword(CryptoHelper.HMAC(newPassword));
         clientRepository.save(client);

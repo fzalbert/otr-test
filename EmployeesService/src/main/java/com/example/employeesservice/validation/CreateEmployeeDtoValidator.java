@@ -2,7 +2,6 @@ package com.example.employeesservice.validation;
 
 import com.example.employeesservice.common.validation.BaseValidator;
 import com.example.employeesservice.dto.request.CreateEmployeeDTO;
-import com.example.employeesservice.exception.FieldNotUniqueException;
 import com.example.employeesservice.exception.TemplateException;
 import com.example.employeesservice.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
