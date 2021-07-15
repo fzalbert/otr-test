@@ -81,7 +81,7 @@ public class CamundaAppealService implements AppealService {
     }
 
     @Override
-    public void appoint(Employee employee, Long appealId) {
+    public void appoint(String login, Long appealId) {
         Task task = taskService
                 .createTaskQuery()
                 .processInstanceBusinessKey(appealId.toString())
@@ -92,7 +92,7 @@ public class CamundaAppealService implements AppealService {
             return;
 
         taskService
-                .setAssignee(task.getId(), employee.getLogin());
+                .setAssignee(task.getId(), login);
     }
 
     private void update(Appeal appeal, Task task) {

@@ -25,7 +25,7 @@ public class CamundaReportService implements ReportService{
 
         Task task = taskService
                 .createTaskQuery()
-                .processInstanceBusinessKey(report.getAppeal().getId().toString())
+                .processInstanceBusinessKey(report.getAppealId().toString())
                 .singleResult();
 
         if(task == null)

@@ -17,7 +17,7 @@ public class Report {
 
     private String text;
 
-    private Appeal appeal;
+    private Long appealId;
 
     private ReportStatus reportStatus;
 

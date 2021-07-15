@@ -12,5 +12,5 @@ public interface AppealService {
 
     void changeStatus(AppealStatusChangedDto statusChangedDto);
 
-    void appoint(Employee employeeLogin, Long appealId);
+    void appoint(String login, Long appealId);
 }

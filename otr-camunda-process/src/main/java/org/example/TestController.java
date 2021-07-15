@@ -60,7 +60,7 @@ public class TestController {
         appeal.setId(11L);
 
         Report report = new Report();
-        report.setAppeal(appeal);
+        report.setAppealId(11L);
         report.setReportStatus(ReportStatus.Rejected);
         report.setText("reject");
 
@@ -74,7 +74,7 @@ public class TestController {
 
         Employee employee = createEmployee();
 
-        appealService.appoint(employee, 11L);
+        appealService.appoint(employee.getLogin(), 11L);
     }
 
     @GetMapping("user_created")
