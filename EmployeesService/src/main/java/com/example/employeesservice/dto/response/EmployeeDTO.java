@@ -21,6 +21,7 @@ public class EmployeeDTO implements Serializable {
     public String email;
     public Integer role;
     public String login;
+    private boolean isActive;
 
     public EmployeeDTO(Employee employee) {
         id = employee.getId();
@@ -29,5 +30,6 @@ public class EmployeeDTO implements Serializable {
         email = employee.getEmail();
         role = employee.getRoleType().getValue();
         login = employee.getPerson().getLogin();
+        isActive = employee.getPerson().isActive();
     }
 }

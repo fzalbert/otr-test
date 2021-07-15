@@ -65,7 +65,7 @@ public class EmployeeController extends AuthorizeController {
         this.employeeService.blockById(id);
     }
 
-    @PutMapping("unblock")
+    @GetMapping("unblock")
     public void unblockById(@RequestParam long id) {
 
         this.employeeService.unblockById(id);
