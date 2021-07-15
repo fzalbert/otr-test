@@ -9,6 +9,7 @@ import com.example.appealsservice.dto.response.AppealDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.exception.MissingRequiredFieldException;
 import com.example.appealsservice.exception.NotRightsException;
+import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.httpModel.CheckUser;
 import com.example.appealsservice.service.AppealService;
 import com.fasterxml.jackson.core.JsonParser;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.rmi.server.ExportException;
 import java.util.List;
 
 @Scope("prototype")
@@ -100,6 +102,8 @@ public class AppealController  extends AuthorizeController{
                         MediaType.MULTIPART_FORM_DATA_VALUE})
     public AppealDto create( @RequestParam("request") String request,
                             @RequestParam(value = "file", required = false) List<MultipartFile> files) throws IOException {
+
+
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);

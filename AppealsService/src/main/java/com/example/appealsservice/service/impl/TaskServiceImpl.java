@@ -1,9 +1,14 @@
 package com.example.appealsservice.service.impl;
 
 import com.example.appealsservice.domain.Task;
+import com.example.appealsservice.domain.enums.StatusAppeal;
+import com.example.appealsservice.domain.enums.TaskStatus;
+import com.example.appealsservice.dto.response.AppealStatusChangedDto;
+import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.dto.response.TaskDto;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.exception.TemplateException;
+import com.example.appealsservice.messaging.MessageSender;
 import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.TaskService;
@@ -23,9 +28,14 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final AppealRepository appealRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository, AppealRepository appealRepository) {
+    private final MessageSender msgSender;
+
+    public TaskServiceImpl(TaskRepository taskRepository,
+                           AppealRepository appealRepository,
+                           MessageSender msgSender) {
         this.taskRepository = taskRepository;
         this.appealRepository = appealRepository;
+        this.msgSender = msgSender;
     }
 
 
@@ -50,6 +60,9 @@ public class TaskServiceImpl implements TaskService {
 
         if (task.getEmployeeId() != null)
             throw new TemplateException("Задача занята");
+
+        appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
+        appealRepository.save(appeal);
 
         task.setEmployeeId(employeeId);
         taskRepository.save(task);
@@ -109,6 +122,8 @@ public class TaskServiceImpl implements TaskService {
         task.setEmployeeId(employeeId);
 
         taskRepository.save(task);
+
+
 
     }
 

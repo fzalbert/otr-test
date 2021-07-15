@@ -101,6 +101,8 @@ public class ReportServiceImpl implements ReportService {
                 task.getAppeal().getNameOrg(), appealId.toString(), subject, messageType);
         msgSender.sendEmail(model);
 
+        msgSender.sendReport(new ReportDto(report));
+
     }
 
     /**

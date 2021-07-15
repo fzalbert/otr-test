@@ -13,7 +13,7 @@ public class FilterAppealAdminDto {
     public Date date;
 
     @Nullable
-    public StatusAppeal statusAppeal;
+    public Integer statusAppeal;
 
     @Nullable
     public Long employeeId;

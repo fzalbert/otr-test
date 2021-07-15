@@ -18,7 +18,7 @@ public abstract class AuthorizeController {
 
         userModel = new UserModel(
                 Long.parseLong(request.getHeader("id")),
-                email,name, type);
+                email, name, type);
     }
 
 }

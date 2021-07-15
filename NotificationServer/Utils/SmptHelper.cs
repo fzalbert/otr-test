@@ -42,7 +42,7 @@ namespace Utils
             try
             {
                 MailMessage mail = new MailMessage();
-                mail.From = new MailAddress(SMTP_LOGIN);
+                mail.From = new MailAddress(SMTP_LOGIN, "OTR-TEST");
                 mail.To.Add(new MailAddress(model.MailTo));
                 mail.Subject = model.Subject;
                 mail.IsBodyHtml = true;

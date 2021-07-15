@@ -91,7 +91,7 @@ public class AppealServiceImpl implements AppealService {
                 .getByAppealIdAndIsOverFalse(appeal.getId())
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new TemplateException("Задача не взята в работу"));
+                .orElse(null);
 
 
         return new AppealDto(appeal, files, new ReportDto(report), new TaskDto(task));
@@ -371,7 +371,7 @@ public class AppealServiceImpl implements AppealService {
                     .collect(Collectors.toList());
 
         if (filter != null && filter.statusAppeal != null)
-            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == filter.statusAppeal)
+            appeals = appeals.stream().filter(x -> x.getStatusAppeal() == StatusAppeal.values()[filter.statusAppeal])
                     .collect(Collectors.toList());
 
         if (filter != null && filter.date != null)
