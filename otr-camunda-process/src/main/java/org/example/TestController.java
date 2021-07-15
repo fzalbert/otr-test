@@ -50,7 +50,7 @@ public class TestController {
 //        appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
 //        appeal.setTheme(theme);
 
-        appealService.create(appeal);
+//        appealService.create(appeal);
     }
 
     @GetMapping("report_create")
