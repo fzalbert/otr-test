@@ -8,6 +8,6 @@ import org.example.dto.user.Employee;
 @Setter
 public class AppealAppointedResponse {
 
-    private Employee employee;
+    private String login;
     private Long appealId;
 }

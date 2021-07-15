@@ -32,7 +32,7 @@ public class UserAppointedListener {
 
         AppealAppointedResponse message = objectMapper.readValue(messageJson, new TypeReference<AppealAppointedResponse>(){});
 
-        appealService.appoint(message.getEmployee(), message.getAppealId());
+        appealService.appoint(message.getLogin(), message.getAppealId());
     }
 
 }
