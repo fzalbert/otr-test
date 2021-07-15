@@ -3,6 +3,7 @@ package com.example.employeesservice.validation;
 import com.example.employeesservice.common.validation.BaseValidator;
 import com.example.employeesservice.dto.request.CreateEmployeeDTO;
 import com.example.employeesservice.exception.FieldNotUniqueException;
+import com.example.employeesservice.exception.TemplateException;
 import com.example.employeesservice.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CreateEmployeeDtoValidator implements BaseValidator<CreateEmployeeDTO> {
 
-    private static final String FIELD_EMAIL = "email";
-    private static final String FIELD_LOGIN = "login";
+    private static final String FIELD_EMAIL = "Данный email уже существует в базе";
+    private static final String FIELD_LOGIN = "Данный Логин уже существует в базе";
 
     private final EmployeeRepository employeeRepository;
 
@@ -34,7 +35,7 @@ public class CreateEmployeeDtoValidator implements BaseValidator<CreateEmployeeD
                 .anyMatch(x -> x.getPerson().getLogin().equals(createEmployeeDTO.getLogin()));
 
         if(checkLogin){
-            throw new FieldNotUniqueException((FIELD_LOGIN));
+            throw new TemplateException((FIELD_LOGIN));
         }
 
         var employee = employeeRepository
@@ -42,6 +43,6 @@ public class CreateEmployeeDtoValidator implements BaseValidator<CreateEmployeeD
                 .orElse(null);
 
         if (employee != null)
-            throw new FieldNotUniqueException(FIELD_EMAIL);
+            throw new TemplateException(FIELD_EMAIL);
     }
 }

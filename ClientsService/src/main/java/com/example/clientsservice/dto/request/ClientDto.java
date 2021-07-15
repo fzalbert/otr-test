@@ -19,7 +19,7 @@ public class ClientDto {
     @NotNull
     private Long id;
 
-    @Size(min = 5, message = "Минимальная длина ФИО 5 символов")
+    @Pattern(regexp = "^[А-ЯA-Z][а-яa-zА-ЯA-Z\\-]{0,}\\s[А-ЯA-Z][а-яa-zА-ЯA-Z\\-]{1,}(\\s[А-ЯA-Z][а-яa-zА-ЯA-Z\\-]{1,})?$", message = "Некорректное ФИО.")
     private String fio;
 
     @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "ИНН должен содержать 10 либо 12 символов")
@@ -34,11 +34,13 @@ public class ClientDto {
     @Size(min = 5, message = "Полный адрес организации должен содержать минимум 5 символов")
     private String fullAddress;
 
-    @Size(min= 5, message = "Полное наименование организации должно содержать минимум 5 символов ")
+    @Size(min= 2, max = 500, message = "Полное наименование организации должно содержать минимум 5 символов")
     private String fullNameOrg;
 
+    @Size(min= 2, max = 500, message = "Краткое наименование организации должно содержать минимум 5 символов")
     private String shortNameOrg;
 
+    @Size(min = 5, max = 20, message = "Длина логина минимум 5 символов, максимум 20")
     private String login;
 
     public ClientDto(Client client) {
