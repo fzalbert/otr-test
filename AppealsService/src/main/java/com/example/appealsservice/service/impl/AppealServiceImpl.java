@@ -127,10 +127,10 @@ public class AppealServiceImpl implements AppealService {
             appeal.setTnved(tnved);
         }
 
-        if(request.amount != null && request.amount <=0)
+        if (request.amount != null && request.amount <= 0)
             throw new TemplateException("Неверная сумма заявки");
 
-            appeal.setAmount(request.amount);
+        appeal.setAmount(request.amount);
 
         appeal.setCreateDate(new Date());
         appeal.setEmail(client.getEmail());
@@ -214,7 +214,7 @@ public class AppealServiceImpl implements AppealService {
             appeal.setTnved(tnved);
         }
 
-        if(request.amount != null && request.amount <=0)
+        if (request.amount != null && request.amount <= 0)
             throw new TemplateException("Неверная сумма заявки");
 
         appeal.setAmount(request.amount);
@@ -316,7 +316,7 @@ public class AppealServiceImpl implements AppealService {
             appeals = appeals.stream().filter(x -> x.getTheme().getId() == (filter.themeId))
                     .collect(Collectors.toList());
 
-        if (filter != null && filter.statusAppeal != null){
+        if (filter != null && filter.statusAppeal != null) {
             var status = StatusAppeal.values()[filter.statusAppeal];
             appeals = appeals.stream().filter(x -> x.getStatusAppeal() == status)
                     .collect(Collectors.toList());
@@ -378,7 +378,7 @@ public class AppealServiceImpl implements AppealService {
             appeals = appeals.stream().filter(x -> x.getTheme().getId() == (filter.themeId))
                     .collect(Collectors.toList());
 
-        if (filter != null && filter.statusAppeal != null){
+        if (filter != null && filter.statusAppeal != null) {
             var status = StatusAppeal.values()[filter.statusAppeal];
             appeals = appeals.stream().filter(x -> x.getStatusAppeal() == status)
                     .collect(Collectors.toList());
@@ -393,7 +393,7 @@ public class AppealServiceImpl implements AppealService {
             List<Appeal> appealList = new ArrayList<>();
             for (var appeal : appeals) {
                 var task = taskRepository.findByAppealIdAndIsOverFalse(appeal.getId());
-                if (task != null && task.getEmployeeId().equals(filter.employeeId)){
+                if (task != null && task.getEmployeeId().equals(filter.employeeId)) {
                     appealList.add(appeal);
                 }
             }

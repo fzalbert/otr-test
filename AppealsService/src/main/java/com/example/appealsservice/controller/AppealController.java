@@ -47,13 +47,13 @@ public class AppealController  extends AuthorizeController{
 
     @GetMapping("by-id")
     public AppealDto byId(@RequestParam Long id){
-        log.debug("Request method: appeal/by-id. UserId = " + userModel.getId().toString());
+        log.debug("Request method: appeal/by-id. UserId = " + userModel.getId());
         return appealService.getById(id);
     }
 
     @PostMapping("filter-for-client")
     public List<ShortAppealDto> filter(@RequestBody(required = false) FilterAppealDto request){
-        log.debug("Request method: appeal/filter-for-client. UserId = " + userModel.getId().toString());
+        log.debug("Request method: appeal/filter-for-client. UserId = " + userModel.getId());
         return appealService.filter(userModel.getId(), request);
     }
 
@@ -67,7 +67,7 @@ public class AppealController  extends AuthorizeController{
 
     @PostMapping("filter-for-admin")
     public List<ShortAppealDto> filterAdmin(@RequestBody(required = false) FilterAppealAdminDto request){
-        log.debug("Request method: appeal/filter-for-admin. EmployeeId = " + userModel.getId().toString());
+        log.debug("Request method: appeal/filter-for-admin. EmployeeId = " + userModel.getId());
         return appealService.filterAdmin(request);
     }
 
@@ -78,7 +78,7 @@ public class AppealController  extends AuthorizeController{
 
     @GetMapping("check")
     public void check(@RequestParam Long id, @RequestParam int status){
-        log.debug("Request method: appeal/check. EmployeeId = " + userModel.getId().toString());
+        log.debug("Request method: appeal/check. EmployeeId = " + userModel.getId());
         appealService.check(id, TaskStatus.values()[status]);
     }
 
@@ -93,7 +93,7 @@ public class AppealController  extends AuthorizeController{
     public AppealDto update( @RequestBody AppealRequestDto request,
                              @RequestParam("appeal-id") Long appealId) {
 
-        log.debug("Request method: appeal/update. EmployeeId = " + userModel.getId().toString());
+        log.debug("Request method: appeal/update. EmployeeId = " + userModel.getId());
         return appealService.update(userModel.getId(), appealId, request);
     }
 
@@ -101,7 +101,7 @@ public class AppealController  extends AuthorizeController{
     @RequestMapping(value = "create", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE,
                         MediaType.MULTIPART_FORM_DATA_VALUE})
-    public AppealDto create( @RequestParam("request") String request,
+    public AppealDto create(@RequestParam("request") String request,
                             @RequestParam(value = "file", required = false) List<MultipartFile> files) throws IOException {
 
         log.debug("Request method: appeal/create. UserId = " + userModel.getId().toString());
@@ -111,9 +111,9 @@ public class AppealController  extends AuthorizeController{
 
         var response =  appealService.create(files, userModel, appeal);
         if(response == null)
-            log.error("ERROR Request method : appeal/create. UserId = " + userModel.getId().toString());
+            log.error("ERROR Request method : appeal/create. UserId = " + userModel.getId());
 
-        log.error("SUCCESS Request method : appeal/create. UserId = " + userModel.getId().toString());
+        log.error("SUCCESS Request method : appeal/create. UserId = " + userModel.getId());
         return response;
     }
 }

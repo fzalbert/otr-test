@@ -1,9 +1,9 @@
 package com.example.appealsservice.dto.request;
 
+import lombok.Data;
 import org.springframework.lang.Nullable;
 
 import java.util.Date;
-
 
 public class AppealRequestDto {
 

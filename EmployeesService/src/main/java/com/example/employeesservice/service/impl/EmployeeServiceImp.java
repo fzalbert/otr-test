@@ -191,14 +191,14 @@ public class EmployeeServiceImp implements EmployeeService {
      */
     @Override
     public void unblockById(long id) {
-        var client = employeeRepository.findById(id).orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
+        var client = employeeRepository.findById(id).orElseThrow(()
+                -> new TemplateException("Сотрудник с таким id не найден"));
 
         var person = personRepository
                 .findById(client.getPerson().getId())
-                .get();
+                .orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
 
         person.setActive(true);
-
         personRepository.save(person);
     }
 }

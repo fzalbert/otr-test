@@ -11,8 +11,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ShortEmployeeDto implements Serializable {
 
-    public Long id;
-    public String lastName;
+    private Long id;
+    private String lastName;
 
     public ShortEmployeeDto(Employee employee) {
         BeanUtils.copyProperties(employee, this);

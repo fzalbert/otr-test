@@ -15,12 +15,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class EmployeeDto implements Serializable {
 
-    public Long id;
-    public String lastName;
-    public String firstName;
-    public String email;
-    public Integer role;
-    public String login;
+    private Long id;
+    private String lastName;
+    private String firstName;
+    private String email;
+    private Integer role;
+    private String login;
     private boolean isActive;
 
     public EmployeeDto(Employee employee) {

@@ -8,5 +8,5 @@ import javax.validation.constraints.NotNull;
 public class CreateRightDto {
 
     @NotNull
-    public String title;
+    private String title;
 }
