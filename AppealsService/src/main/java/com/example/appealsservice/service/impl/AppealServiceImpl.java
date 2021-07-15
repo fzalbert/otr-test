@@ -210,6 +210,9 @@ public class AppealServiceImpl implements AppealService {
             appeal.setTnved(tnved);
         }
 
+        if(request.amount != null && request.amount <=0)
+            throw new TemplateException("Неверная сумма заявки");
+
         appeal.setAmount(request.amount);
 
         appeal.setUpdateDate(new Date());

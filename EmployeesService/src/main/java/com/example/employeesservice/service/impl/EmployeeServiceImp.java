@@ -114,7 +114,7 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     /** Получить список всех сотрудников в системе */
-    @Cacheable(value = "itemCache")
+    //@Cacheable(value = "itemCache")
     @Override
     public List<EmployeeDTO> getList() {
         return employeeRepository
