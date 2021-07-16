@@ -71,7 +71,6 @@ public class FileController extends AuthorizeController {
 
     @GetMapping("download")
     public Resource download(@RequestParam Long id){
-
         return fileService.download(id, userModel);
     }
 

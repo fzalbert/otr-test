@@ -61,6 +61,9 @@ public class EmployeeServiceImp implements EmployeeService {
                 .findByLoginAndPassword(request.getLogin(), hmacPassword)
                 .orElseThrow(() -> new TemplateException("Пользователь не найден"));
 
+        if(!user.isActive())
+            throw new TemplateException("Вас заблокировали");
+
         var employee = user.getEmployee();
 
         return new EmployeeModelDto(employee.getId(),

@@ -1,6 +1,6 @@
 ﻿{
-  //"CONNECTION_STRING": "mongodb://localhost:27017",
-  "CONNECTION_STRING": "mongo-mongodb.default.svc.cluster.local",
+  "CONNECTION_STRING": "mongodb://localhost:27017",
+  //"CONNECTION_STRING": "mongo-mongodb.default.svc.cluster.local:27017",
   "PASSWORD": "mS5xkxzRbf",
   "DATABASE_NAME": "EmailMessages"
 }

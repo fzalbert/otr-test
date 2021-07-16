@@ -182,6 +182,7 @@ public class ClientServiceImp implements ClientService {
         User user = new User();
         user.setActive(true);
         user.setLogin(request.getLogin());
+        user.setAttemptsBlocking(0);
         user.setPassword(CryptoHelper.HMAC(request.getPassword()));
         user.setRegistrationDate(new Date());
 

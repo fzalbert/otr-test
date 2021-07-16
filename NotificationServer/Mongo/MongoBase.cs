@@ -13,15 +13,17 @@ namespace Mongo
     {
         public readonly static string CONNECTION_STRING;
         public readonly static string DATABASE_NAME;
+        public readonly static string PASSWORD;
 
 
-       static MongoBase()
+        static MongoBase()
         {
             using (var r = new StreamReader("mongosettings.json"))
             {
                 var json = r.ReadToEnd();
                 dynamic d = JObject.Parse(json);
 
+                PASSWORD = d.PASSWORD;
                 CONNECTION_STRING = d.CONNECTION_STRING;
                 DATABASE_NAME = d.DATABASE_NAME;
             }

@@ -35,10 +35,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/auth/**", "/client/api/account/register").permitAll()
                 .antMatchers("/employee/api/employee/update").hasRole(UserType.EMPLOYEE.name())
-                .antMatchers("/client/api/clients/**").hasRole(UserType.CLIENT.name())
+                .antMatchers("/client/api/clients/**").hasAnyRole(UserType.CLIENT.name(), UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
                 .antMatchers("/client/**", "/employee/**").hasAnyRole(UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
                 .anyRequest().authenticated();
-
     }
 
     @Bean
