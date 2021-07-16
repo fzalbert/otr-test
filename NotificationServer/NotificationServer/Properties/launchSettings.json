@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:61060",
+      "applicationUrl": "http://0.0.0.0:61060",
       "sslPort": 44339
     }
   },
@@ -19,7 +19,7 @@
     },
     "NotificationServer": {
       "commandName": "Project",
-      "applicationUrl": "http://localhost:5001;http://localhost:5000",
+      "applicationUrl": "http://0.0.0.0:5001;http://0.0.0.0:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
