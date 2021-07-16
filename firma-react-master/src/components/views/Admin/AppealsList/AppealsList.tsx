@@ -1,26 +1,77 @@
 import React, { useState, useEffect } from 'react';
 import './AppealsList.scss';
-import activityIcon from '../../../assets/images/sidebar/activity.svg';
-import creditCardIcon from '../../../assets/images/sidebar/credit-card.svg';
 import { CSSTransition } from 'react-transition-group';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
-import LogotypeIcon from '../../../assets/images/logotype.svg';
 import Filter from '../../../ui/Filter/Filter';
+import checkLoggedIn from '../../../../common/checkLoggedIn';
+import AppealsAPI from '../../../../api/appeals';
+import { AppealItemModel } from '../../../../api/models/response/appeals-response.model';
+import { setAppealsList, setSortList } from '../../../../store/actions/appeals-actions';
+import Moment from 'react-moment';
+import { FilterRequest } from '../../../../api/models/request/filter-body-request.model';
+import { Link, NavLink } from 'react-router-dom';
 
 const activityStyle = {
     // backgroundImage: `url(${activityIcon})`
 }
 
 const AppealsList = (props:any) => {
+    // checkLoggedIn()
+
+    const appealsState: AppealItemModel[] = useSelector((state:any) => state.AppealsReducer)
+
+    // const statusesList: string[] = ['СОЗДАНО', 'НА РАССМОТРЕНИИ', 'ВЫПОЛНЕНО', 'ОТКЛОНЕНО']
+
     const history = useHistory()
+    const dispatch = useDispatch()
+
+    const appealStatus:string[] = ['Создано', 'На рассмотрении', 'Выполнено', 'Отклонено']
+    const appealStatusClasses:string[] = ['not-proccessing-status', 'proccessing-status', 'complete-status', 'reject-status']
+
+    const [req, doReq] = useState(false)
+
+    const getAppealsList = (fitlerBody: FilterRequest) => {
+        AppealsAPI.getFilterForAdmin(fitlerBody)
+            .then((response:AxiosResponse<AppealItemModel[]>) => {
+                doReq(true)
+                console.log(response.data)
+                dispatch(setAppealsList(response.data))
+            })
+            .catch(err => console.log(err))
+    }
+
+    useEffect(() => {
+        if(!req) {
+            getAppealsList({
+                themeId: null,
+                date: null,
+                statusAppeal: null,
+                employeeId: null,
+                nameOrg: null
+            });
+        }
+    })
+
 
     return (
         <div className="appeals-list">
-            <Filter filterList={[0,1,2,3,4,5,6]} />
-            <button className="common-btn update-btn">ОБНОВИТЬ</button>
+            <Filter 
+                filterType={0}
+                sortingEvent={(type) => {
+                    // setAppealsList(appealsState?.sort((a,b) => !type ? +new Date(b.createDate) - +new Date(a.createDate) : +new Date(a.createDate) - +new Date(b.createDate)))
+                    dispatch(setSortList(type))
+                }}
+                filterEvent={(event: FilterRequest) => getAppealsList(event)}
+            />
+            {/* <button className="common-btn update-btn" onClick={() => getAppealsList({
+                themeId: null,
+                date: null,
+                statusAppeal: null,
+                employeeId: null,
+                nameOrg: null
+            })}>ОБНОВИТЬ</button> */}
             <table className="custom-table">
                 <thead>
                     <tr>
@@ -35,20 +86,23 @@ const AppealsList = (props:any) => {
                 </thead>
                 <tbody>
                     {
-                        [0,1,2,3,4,5,6].map(item => (
-                            <React.Fragment key={item}>
+                        appealsState?.map((item: AppealItemModel, index) => 
+                            <React.Fragment key={item.id}>
                                 <tr>
-                                    <td aria-label="№">{ 24 }</td>
-                                    <td aria-label="Дата создания">{ '24.05.2021 18:30' }</td>
-                                    <td aria-label="Статус"><span className="status">{ 'НА  РАССМОТРЕНИИ' }</span></td>
-                                    <td aria-label="Тема">{ 'Тема обращения в одну-две строки. длина - 400 пикселей' }</td>
-                                    <td aria-label="Организация">{ 'ООО “Рога и Копыта”' }</td>
-                                    <td aria-label="Исполнитель">{ 'Иванов Иван' }</td>
-                                    <td><button className="common-btn" onClick={() => history.push('/appeal')}>ПОДРОБНЕЕ</button></td>
+                                    <td aria-label="№">{ item.id }</td>
+                                    {/* { '24.05.2021 18:30' } */}
+                                    <td aria-label="Дата создания"><Moment format="DD.MM.YYYY hh:mm">{ item.createDate }</Moment></td>
+                                    <td aria-label="Статус"><span  className={"status " + appealStatusClasses[item.statusAppeal]}>{ appealStatus[item.statusAppeal] }</span></td>
+                                    {/* 'Тема обращения в одну-две строки. длина - 400 пикселей' */}
+                                    <td aria-label="Тема">{ item.theme.name }</td>
+                                    <td aria-label="Организация">{ item.nameOrg }</td>
+                                    {/* 'Иванов Иван' */}
+                                    <td aria-label="Исполнитель"><Link to={`/admin/staff/${item.employeeId}`}>{ item.employeeId }</Link></td>
+                                    <td><button className="common-btn" onClick={() => history.push(`/admin/appeal/${item.id}`)}>ПОДРОБНЕЕ</button></td>
                                 </tr>
                                 <tr className="spacer"></tr>
                             </React.Fragment>
-                        ))
+                        )
                     }
                 </tbody>
             </table>

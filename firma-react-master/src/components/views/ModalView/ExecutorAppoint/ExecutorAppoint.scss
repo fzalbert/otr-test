@@ -1,0 +1,88 @@
+@import '../../../../common/styles/variables.scss';
+@import '../../../../common/styles/mixins.scss';
+
+.executors-container {
+    width: 100%;
+    max-height: 80vh;
+    @extend %display-flex-column;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    h5 {
+        width: 100%;
+        text-align: center;
+        font-weight: 500;
+        font-size: 30px;
+        color: #333E43;        
+    }
+
+    .executors-list {
+        width: 100%;
+        overflow-y: auto;
+    }
+
+    .executor {
+        position: relative;
+        margin-top: 24px;
+        width: 100%;
+        height: 30px;
+        @extend %display-flex-row;
+        justify-content: flex-start;
+
+        &:first-child {
+            margin-top: 70px;
+        }
+
+        span {
+            margin-left: calc(20px + 21px);
+            font-weight: 500;
+            font-size: 24px;
+            color: #333E43;
+        }
+    }
+
+    .radio-label {
+        position: absolute;
+        top: 4.5px;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+        border: 2px solid #D2D2D2;
+        transition: 0.3s;
+    }
+
+    input[type=radio] {
+        position: absolute;
+        top: 0px;
+        left: 0;
+        // width: 100%;
+        width: 30px;
+        height: 30px;
+        // opacity: 0;
+        z-index: 25;
+    }
+
+    input[type=radio]:checked + label {
+        &:after {
+            position: absolute;
+            content: "";
+            display: block;
+            top: 7.5px;
+            left: 3px;
+            width: 14px;
+            height: 14px;
+            border-radius: 100%;
+            background: #EE825B;
+            z-index: 25;
+        }
+    }
+
+    .common-btn {
+        margin-top: 63px;
+        width: 249px;
+        height: 47px;
+        align-self: flex-end;
+        font-size: 18px;
+    }
+}

@@ -1,5 +1,3 @@
-import { CategoriesResponse } from './categories-response.model';
-import { ServantsResponse } from './servants-response.model';
 import { UserModel } from './../user.model';
 
 export interface TaskResponse {
@@ -9,7 +7,6 @@ export interface TaskResponse {
     owner: UserModel;
     city: City;
     // servant: ServantsResponse;
-    servant: CategoriesResponse;
     lat: number;
     lon: number;
     timeStart: Date;

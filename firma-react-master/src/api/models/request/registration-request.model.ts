@@ -1,11 +1,12 @@
 export class RegistrationRequest {
-    constructor(
-        public firstName:string,
-        public secondName:string,
-        public thirdName:string,
-        public email:string,
-        public password:string,
-        public address:string,
-        public passport:string
-    ) {}
+    constructor() {}
+    public email: string="";
+    public fio: string="";
+    public fullAddress: string="";
+    public fullNameOrg: string="";
+    public inn: string="";
+    public kpp: string="";
+    public login: string="";
+    public password?: string="";
+    public shortNameOrg: string="";
 }

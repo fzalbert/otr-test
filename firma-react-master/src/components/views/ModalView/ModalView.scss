@@ -1,0 +1,22 @@
+@import '../../../common/styles/variables.scss';
+@import '../../../common/styles/mixins.scss';
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    @extend %display-flex-row;
+    justify-content: center;
+    background: #e5e5e5ad;
+    z-index: 20;
+
+    .modal {
+        width: 608px;
+        padding: 39px 24px;
+        box-sizing: border-box;
+        background: #FFFFFF;
+        border-radius: 20px;
+    }
+}

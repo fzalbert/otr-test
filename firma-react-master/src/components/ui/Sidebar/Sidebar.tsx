@@ -6,7 +6,7 @@ import { CSSTransition } from 'react-transition-group';
 import ProfileMenu from '../ProfileMenu/ProfileMenu';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
 import { UserModel } from '../../../api/models/user.model';
 import LogotypeIcon from '../../../assets/images/logotype.svg';
@@ -23,6 +23,7 @@ const Sidebar = (props:any) => {
     const dispatch = useDispatch()
 
     const [clientWidth, changeClientWidth] = useState(document.documentElement.clientWidth)
+    const [isAdmin, setIsAdmin] = useState(false)
     const [menu, toggleMenu] = useState(false)
     const [wallet, walletVision] = useState(false)
     const [profileMenu, profileMenuVision] = useState(false)
@@ -49,6 +50,7 @@ const Sidebar = (props:any) => {
         // if(profileState.avatar === undefined) {
         //     setProfileState()
         // }
+        setIsAdmin(location.hash.slice(2,7) === 'admin')
         window.addEventListener('resize', () => {
             changeClientWidth(document.documentElement.clientWidth);
         })
@@ -77,6 +79,15 @@ const Sidebar = (props:any) => {
             <div className="logotype">
                 <img src={LogotypeIcon} alt="" /> ФИРМА
             </div>
+            {
+                isAdmin ?
+                    <nav className="admin-menu">
+                        <li><NavLink to="/admin/appeals" activeClassName="active-link"><i className="icon-appeal-icon"></i> Обращения</NavLink></li>
+                        <li><NavLink to="/admin/staffs" activeClassName="active-link"><i className="icon-staff-icon"></i> Сотрудники</NavLink></li>
+                        <li><NavLink to="/admin/clients" activeClassName="active-link"><i className="icon-clients-icon"></i> Клиенты</NavLink></li>
+                    </nav> :
+                    null
+            }
             <div className="profile-menu-toggle" onClick={showProfileMenu}>
                 {profileState && JSON.parse(profileState)?.avatar ? 
                     <img src={'http://185.22.63.194:998/' + JSON.parse(profileState ? profileState : '')?.avatar} alt=" " className="avatar"/> :
@@ -84,7 +95,7 @@ const Sidebar = (props:any) => {
                 }
                 Александр
             </div>
-            <button onClick={() => history.push('/settings')}><i className="icon-cog"></i></button>
+            {/* <button onClick={() => history.push('/settings')}><i className="icon-cog"></i></button> */}
             <button onClick={() => logout()}><i className="icon-logout-icon"></i></button>
 
             {/* <div className="profile-menu-container">

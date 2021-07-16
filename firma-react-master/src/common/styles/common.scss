@@ -97,10 +97,27 @@ i {
     background: #FDCF31;
     border-radius: 20px;
     text-align: center;
+    text-transform: uppercase;
     font-weight: 600;
     font-size: 14px;
     line-height: 32px;
     color: #FFFFFF;
+}
+
+.not-proccessing-status {
+    background: #6CB9FF;
+}
+
+.proccessing-status {
+    background: #FDCF31;
+}
+
+.complete-status {
+    background: #50AD92;
+}
+
+.reject-status {
+    background: #EE5B6D;
 }
 
 // text, email, password fields
@@ -119,11 +136,10 @@ textarea {
     outline: none;
 
     &:hover {
-        padding: 19px 15px;
-        border: 2px solid #BDBDBD;
+        border: 1px solid #BDBDBD;
     }
     &:focus {
-        border: 2px solid #81FEC6;
+        border: 1px solid #81FEC6;
     }
     &:disabled {
         background: #FAFAFA;
@@ -196,6 +212,7 @@ label {
         top: 56px;
         right: 0;
         width: 470px;
+        max-height: 270px;
         box-sizing: border-box;
         @extend %display-flex-column;
         justify-content: flex-start;
@@ -203,10 +220,13 @@ label {
         border: 1px solid #D2D2D2;
         border-radius: 10px;
         list-style-type: none;
+        overflow-y: auto;
+        z-index: 2;
 
         &_item {
             width: 100%;
-            height: 56px;
+            // min-height: 56px;
+            min-height: auto;
             padding: 19px 16px;
             box-sizing: border-box;
             border-bottom: 1px solid #D2D2D2;
@@ -215,6 +235,75 @@ label {
             color: #9EA3A6;
         }
     }
+}
+
+.attachment-label {
+    position: relative;
+    width: 268px;
+    height: 48px;
+    box-sizing: border-box;
+
+    input[type=file] {
+        position: absolute;
+        margin: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 10;
+    }
+
+    button {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
+
+.checkbox-label {
+    position: relative;
+    display: inline-block;
+    max-width: 100px;
+    word-wrap: break-word;
+    cursor: pointer;
+}
+
+.checkbox-label::before,
+.checkbox-label::after {
+    content: "";
+    position: absolute;
+    display: block;
+}
+
+.checkbox-label::before {
+    top: 7px;
+    left: 108px;
+    width: 32px;
+    height: 1px;
+    border-top: 1px solid #5a5a5a;
+}
+
+.checkbox-label::after {
+    top: 0px;
+    left: 100px;
+    width: 12px;
+    height: 12px;
+    background-color: #ffffff;
+    border: solid 2px #5a5a5a;
+    border-radius: 50%;
+    transition-duration: 200ms;
+    transition-timing-function: ease-in;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"]:checked ~ label::after {
+    transform: translateX(32px);
+    background-color: #EE825B;
+    border-color: #EE825B;
 }
 
 .custom-table {
@@ -800,6 +889,30 @@ label {
 
     .attachment {
         margin-left: 15px;
+        width: 150px;
+        height: 150px;
+        @extend %display-flex-row;
+        justify-content: center;
+        border: 2px solid #D2D2D2;
+        border-radius: 10px;
+        text-align: center;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        p {
+            width: 80%;
+            height: auto;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        a {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
     }
 }
 
@@ -1020,8 +1133,8 @@ label {
 
 .error-modal-container {
     position: relative;
-    width: 0;
-    height: 0;
+    width: 100vw;
+    height: 100vw;
 }
 
 // Tasks

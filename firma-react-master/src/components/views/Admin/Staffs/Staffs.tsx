@@ -9,6 +9,8 @@ import { NavLink } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
 import LogotypeIcon from '../../../assets/images/logotype.svg';
 import Filter from '../../../ui/Filter/Filter';
+import StaffsAPI from '../../../../api/staffs';
+import { EmployeeResponse } from '../../../../api/models/response/employee-response.model';
 
 const activityStyle = {
     // backgroundImage: `url(${activityIcon})`
@@ -17,17 +19,46 @@ const activityStyle = {
 const StaffsList = (props:any) => {
     const history = useHistory()
 
+    const [staffsList, setStaffsList] = useState<EmployeeResponse[]>([]);
+
+    const [req, doReq] = useState(false)
+
+    const roles:string[] = ['Суперадмин', 'Админ', 'Сотрудник']
+
+    const getStaffs = () => {
+        StaffsAPI.getAllEmployees()
+            .then((res:AxiosResponse<EmployeeResponse[]>) => {
+                doReq(true)
+                setStaffsList(res.data)
+            })
+            .catch(err => console.log(err))
+    }
+
+    const toggleBlock = (employee: EmployeeResponse) => {
+        (employee.active ?
+            StaffsAPI.blockById(employee.id as number) :
+            StaffsAPI.unblockById(employee.id as number)
+        ).then((response:AxiosResponse<void>) => {
+            let index = staffsList.findIndex(item => item.id === employee.id)
+            employee.active = !employee.active;
+            setStaffsList([...staffsList.slice(0,index), employee, ...staffsList.slice(index + 1)])
+        }).catch(err => console.log(err))
+    }
+
+    useEffect(() => {
+        !req ? getStaffs() : null
+    })
+
     return (
         <div className="staffs-list">
-            <button className="common-btn creation-btn">Создать нового</button>
+            <button className="common-btn creation-btn" onClick={() => history.push('/admin/staff-creation')}>Создать нового</button>
             <table className="custom-table">
                 <thead>
                     <tr>
                         <th>№</th>
-                        <th>ФИО</th>
+                        {/* <th>ФИО</th> */}
                         <th>E-mail</th>
                         <th>Логин</th>
-                        <th>Пароль</th>
                         <th>Роль</th>
                         <th></th>
                         <th></th>
@@ -35,10 +66,20 @@ const StaffsList = (props:any) => {
                 </thead>
                 <tbody>
                     {
-                        [0,1,2,3,4,5,6].map(item => (
-                            <React.Fragment key={item}>
+                        staffsList.map(item => (
+                            <React.Fragment key={item.id}>
                                 <tr>
-                                    <td aria-label="№">{ 24 }</td>
+                                    <td aria-label="№">{ item.id }</td>
+                                    {/* <td aria-label="ФИО">{ item.fio }</td> */}
+                                    <td aria-label="E-mail">{ item.email }</td>
+                                    <td aria-label="Логин">{ item.login }</td>
+                                    <td aria-label="Роль">{ roles[item.role] }</td>
+                                    <td><button className="common-btn" onClick={() => history.push(`/admin/staff/${item.id}`)}>Изменить</button></td>
+                                    <td><button className={`common-btn transparent-btn${!item.active ? ' blocked' : ''}`} onClick={() => toggleBlock(item)}>{ item.active ? 'ЗА' : 'РАЗ' }БЛОКИРОВАТЬ</button></td>
+                                </tr>
+                                <tr className="spacer"></tr>
+                                {/* <tr>
+                                    <td aria-label="№">{ item.id }</td>
                                     <td aria-label="ФИО">{ 'Иванов Иван Иванович' }</td>
                                     <td aria-label="E-mail">{ 'jackson.graham@example.com' }</td>
                                     <td aria-label="Логин">{ 'ivanov123432' }</td>
@@ -47,7 +88,7 @@ const StaffsList = (props:any) => {
                                     <td><button className="common-btn" onClick={() => history.push('/appeal')}>Изменить</button></td>
                                     <td><button className="common-btn transparent-btn" onClick={() => history.push('/appeal')}>ЗАБЛОКИРОВАТЬ</button></td>
                                 </tr>
-                                <tr className="spacer"></tr>
+                                <tr className="spacer"></tr> */}
                             </React.Fragment>
                         ))
                     }
