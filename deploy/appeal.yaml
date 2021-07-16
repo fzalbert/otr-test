@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: appealsservice
+  name: appealsservice
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: appealsservice
+  template:
+    metadata:
+      labels:
+        app: appealsservice
+    spec:
+      containers:
+      - image: registry.gitlab.com/fajb420/otr-prototype/appealsservice:latest
+        imagePullPolicy: Always
+        name: service
+ports:
+        - containerPort: 1111
+          name: service
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+apiVersion: v1
+kind: Service
+metadata:
+  name: appealsservice
+  labels:
+    app: appealsservice
+spec:
+  type: ClusterIP
+  ports:
+    - port: 1111
+      targetPort: 1111
+      protocol: TCP
+      name: http
+  selector:
+    app: appealsservice

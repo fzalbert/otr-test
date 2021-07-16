@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: camunda
+  name: camunda
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: camunda
+  template:
+    metadata:
+      labels:
+       app: camunda
+    spec:
+      containers:
+      - image: registry.gitlab.com/fajb420/otr-prototype/otr-camunda-process:lat
+est
+        imagePullPolicy: Always
+        name: service
+        ports:
+        - containerPort: 8080
+          name: service
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+apiVersion: v1
+kind: Service
+metadata:
+  name: camunda
+  labels:
+    app: camunda
+spec:
+  type: ClusterIP
+ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: camunda
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: camunda
+  labels:
+    app: camunda
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: camunda
+          servicePort: http
+        path: /lolo
