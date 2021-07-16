@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Registration.scss';
 import useFormState from '../../../../common/customHooks/useFormState';
 import { register } from '../../../../api/auth';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { RegistrationResponse } from '../../../../api/models/response/auth-response.model';
 import { CSSTransition } from 'react-transition-group';
 import ErrorModal from '../../../ui/ErrorModal/ErrorModal';
@@ -11,90 +11,97 @@ import { useHistory } from 'react-router';
 const Registration = () => {
 
     const account = {
-        firstName: useFormState(''),
-        secondName: useFormState(''),
-        thirdName: useFormState(''),
         email: useFormState(''),
+        fio: useFormState(''),
+        fullAddress: useFormState(''),
+        fullNameOrg: useFormState(''),
+        inn: useFormState(''),
+        kpp: useFormState(''),
+        login: useFormState(''),
         password: useFormState(''),
-        address: useFormState(''),
-        passport: useFormState('')
+        shortNameOrg: useFormState('')
     }
 
-    const [error, setError] = useState(false);
+    const [error, setError] = useState("");
 
     const history = useHistory()
 
-    const registerAccount = ({firstName, secondName, thirdName, email, password, address, passport}:any, e:any) => {
+    const registerAccount = ({email, fio, fullAddress, fullNameOrg, inn, kpp, login, password, shortNameOrg}:any, e:any) => {
         e.preventDefault();
         register({
-            firstName: firstName.value,
-            secondName: secondName.value,
-            thirdName: thirdName.value,
             email: email.value,
+            fio: fio.value,
+            fullAddress: fullAddress.value,
+            fullNameOrg: fullNameOrg.value,
+            inn: inn.value,
+            kpp: kpp.value,
+            login: login.value,
             password: password.value,
-            address: address.value,
-            passport: passport.value
+            shortNameOrg: shortNameOrg.value
         })
         .then((response:AxiosResponse<RegistrationResponse>) => {
             alert('Success')
+            history.push('/authorization')
         })
-        .catch(err => {
-            setError(true)
-            setTimeout(() => setError(false), 3500);
+        .catch((err:AxiosError) => {
+            setError(err.response?.data.message)
+            setTimeout(() => setError(""), 5000);
         })
     }
 
     return (
-        <form noValidate className="auth-form registration-form" onSubmit={(e) => registerAccount(account, e)}>
-            <CSSTransition in={error} timeout={300} unmountOnExit classNames="show-hide-animation">
-                <div className="error-modal-container"><ErrorModal /></div>
+        <form noValidate className="registration-form" onSubmit={(e) => registerAccount(account, e)}>
+            <CSSTransition in={error.length !== 0} timeout={300} unmountOnExit classNames="show-hide-animation">
+                <ErrorModal>
+                    { error }
+                </ErrorModal>
             </CSSTransition>
             <h1>Регистрация</h1>
             <fieldset>
                 <h3>Данные об организации</h3>
                 <label>
                     ИНН
-                    <input type="number" name="name" {...account.firstName} placeholder="Введите ИНН организации" className="main-input" />
+                    <input type="number" name="inn" {...account.inn} placeholder="Введите ИНН организации" className="main-input" />
                 </label>
                 <label>
                     КПП
-                    <input type="text" name="login" placeholder="Введите КПП" className="main-input" />
+                    <input type="text" name="kpp" {...account.kpp} placeholder="Введите КПП" className="main-input" />
                 </label>
                 <label>
                     Полное { window.document.documentElement.clientWidth < 1640 ? <br /> : '' } наименование { window.document.documentElement.clientWidth < 1640 ? <br /> : '' } организации
-                    <input type="password" name="password" {...account.password} placeholder="Введите полное наименование" className="main-input" />
+                    <input type="text" name="full" {...account.fullNameOrg} placeholder="Введите полное наименование" className="main-input" />
                 </label>
                 <label>
                     Краткое { window.document.documentElement.clientWidth < 1640 ? <br /> : '' } наименование { window.document.documentElement.clientWidth < 1640 ? <br /> : '' } организации
-                    <input type="email" name="email" {...account.email} placeholder="Введите краткое наименование" className="main-input" />
+                    <input type="text" name="short" {...account.shortNameOrg} placeholder="Введите краткое наименование" className="main-input" />
                 </label>
                 <label>
                     Адрес организации
-                    <input type="text" name="address" {...account.address} placeholder="Введите адрес организации" className="main-input" />
+                    <input type="text" name="address" {...account.fullAddress} placeholder="Введите адрес организации" className="main-input" />
                 </label>
             </fieldset>
             <fieldset>
                 <h3>Данные пользователя</h3>
                 <label>
                     ФИО
-                    <input type="text" name="name" {...account.firstName} placeholder="Введите КПП" className="main-input" />
+                    <input type="text" name="name" {...account.fio} placeholder="Введите ФИО" className="main-input" />
                 </label>
                 <label>
                     Логин
-                    <input type="text" name="login" placeholder="Введите полное наименование" className="main-input" />
+                    <input type="text" name="login" {...account.login} placeholder="Введите логин" className="main-input" />
                 </label>
                 <label>
                     Пароль
-                    <input type="password" name="password" {...account.password} placeholder="Введите краткое наименование" className="main-input" />
+                    <input type="password" name="password" {...account.password} placeholder="Введите пароль" className="main-input" />
                 </label>
                 <label>
                     E-mail
-                    <input type="email" name="email" {...account.email} placeholder="Введите краткое наименование" className="main-input" />
+                    <input type="email" name="email" {...account.email} placeholder="Введите адрес эл. почты" className="main-input" />
                 </label>
             </fieldset>
             <div className="common-controls">
                 <button className="common-btn transparent-btn" onClick={() => history.goBack()}>Назад</button>
-                <button type="submit" className="common-btn">Зарегистрироваться</button>
+                <button type="submit" className="common-btn" onClick={(event) => registerAccount(account, event)}>Зарегистрироваться</button>
             </div>
         </form>
     );

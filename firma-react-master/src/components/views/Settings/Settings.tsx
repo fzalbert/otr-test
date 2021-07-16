@@ -4,6 +4,7 @@ import useFormState from '../../../common/customHooks/useFormState';
 import { AxiosResponse } from 'axios';
 import { CSSTransition } from 'react-transition-group';
 import ArrowLeftIcon from '../../../assets/images/icons/arrow-left.svg'
+import { useHistory } from 'react-router';
 
 const Settings = () => {
 
@@ -16,6 +17,8 @@ const Settings = () => {
         address: useFormState(''),
         passport: useFormState('')
     }
+
+    const history = useHistory()
 
     const [error, setError] = useState(false);
 
@@ -41,7 +44,7 @@ const Settings = () => {
 
     return (
         <div className="settings">
-            <button className="back-btn"><img src={ArrowLeftIcon} alt="" /> Назад</button>
+            <button className="back-btn" onClick={() => history.goBack()}><img src={ArrowLeftIcon} alt="" /> Назад</button>
             <form>
                 <h1>Настройки</h1>
                 <fieldset>

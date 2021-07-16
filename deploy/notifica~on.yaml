@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: notificationservice
+  name: notificationservice
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notificationservice
+  template:
+    metadata:
+      labels:
+        app: notificationservice
+    spec:
+      containers:
+      - image: registry.gitlab.com/fajb420/otr-prototype/notificationserver:latest
+        imagePullPolicy: Always
+        name: service
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always

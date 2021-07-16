@@ -7,6 +7,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 // Common
 const common = {
+    
     entry: "./src/index.tsx",
     resolve: {
       extensions: ['.ts', '.tsx', '.js']

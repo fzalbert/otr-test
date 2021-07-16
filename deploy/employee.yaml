@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: employeesservice
+  name: employeesservice
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: employeesservice
+  template:
+    metadata:
+      labels:
+        app: employeesservice
+    spec:
+      containers:
+      - image: registry.gitlab.com/fajb420/otr-prototype/employeesservice:latest
+        imagePullPolicy: Always
+        name: service
+        ports:
+        - containerPort: 7777
+          name: service
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+apiVersion: v1
+kind: Service
+metadata:
+  name: employeesservice
+  labels:
+    app: employeesservice
+spec:
+  type: ClusterIP
+  ports:
+    - port: 7777
+      targetPort: 7777
+      protocol: TCP
+      name: http
+  selector:
+    app: employeesservice

@@ -7,7 +7,7 @@ const checkLoggedIn = () => {
     const state = useSelector((state:any) => state.AuthReducer);
     const history = useHistory();
     useEffect(() => {
-        if(!state.isLoggedIn && !localStorage.getItem('user')) {
+        if(!state.isLoggedIn) {
             history.push('/authorization');
         }
     });

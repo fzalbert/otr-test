@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: autorizeservice
+  name: autorizeservice
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autorizeservice
+  template:
+    metadata:
+      labels:
+        app: autorizeservice
+    spec:
+      containers:
+      - image: registry.gitlab.com/fajb420/otr-prototype/autorizeservice:latest
+        imagePullPolicy: Always
+        name: service
+ports:
+        - containerPort: 8090
+          name: service
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+apiVersion: v1
+kind: Service
+metadata:
+  name:  autorizeservice
+  labels:
+    app: autorizeservice
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8090
+      targetPort: 8090
+      protocol: TCP
+      name: http
+  selector:
+    app: autorizeservice

@@ -1,82 +1,29 @@
-import { UpdateTaskRequest } from './models/request/task-request.model';
-import { TaskResponse, TasksResponse } from './models/response/task-response.model';
-import { environment } from './environments/environment';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from "axios"
+import { environment } from "./environments/environment"
 
 const TasksAPI = {
-
-    getAllTasks: (pageSize: number, pageNumber: number, search: string):Promise<AxiosResponse<TasksResponse[]>> => {
-        return axios.get(`${environment.apiEndPoint}/AdminTask/list`, {
+    appoint: (employeeId: number, appealId: number):Promise<AxiosResponse<void>> => {
+        return axios.get(`${environment.apiEndPoint}appeal/api/tasks/appoint`, {
             headers: {
                 'Authorization' : localStorage.getItem('token'),
             },
-            params: { 
-                search: search,
-                PageSize: pageSize,
-                PageNumber: pageNumber
-            } 
-        });
-    },
-
-    getTasksByServantId: (servantId:number, pageSize: number, pageNumber: number, search: string):Promise<AxiosResponse<TasksResponse[]>> => {
-        return axios.get(`${environment.apiEndPoint}/Task/list/${servantId}`, {
-            headers: {
-                'Authorization' : localStorage.getItem('token'),
-            },
-            params: { 
-                servantId: servantId,
-                search: search,
-                PageSize: pageSize,
-                PageNumber: pageNumber
-            } 
-        });
-    },
-
-    getTask: (taskId:number):Promise<AxiosResponse<TaskResponse>> => {
-        return axios.get(`${environment.apiEndPoint}/Task/id`, {
-            headers: {
-                'Authorization' : localStorage.getItem('token'),
-            },
-            params: { 
-                id: taskId
-            } 
-        });
-    },
-
-    updateTask: (taskId:number, task: UpdateTaskRequest):Promise<AxiosResponse<TaskResponse>> => {
-        return axios.post(`${environment.apiEndPoint}/Task/update/${taskId}`, {
-            ...task
-        }, {
-            headers: {
-                'Authorization' : localStorage.getItem('token'),
-            },
-            params: { 
-                id: taskId
-            } 
-        });
-    },
-
-    banTask: (taskId:number, ban:boolean, text: string):Promise<AxiosResponse<TasksResponse>> => {
-        return axios.get(`${environment.apiEndPoint}/AdminTask/ban/${taskId}`, {
             params: {
-                id: taskId,
-                bane: ban,
-                text: text
-            },
+                employeeId: employeeId,
+                appealId: appealId
+            }
+        })
+    },
+    takeTask: (appealId: number):Promise<AxiosResponse<void>> => {
+        return axios.get(`${environment.apiEndPoint}appeal/api/tasks/take`, {
             headers: {
-                'Authorization' : localStorage.getItem('token')
+                'Authorization' : localStorage.getItem('token'),
+            },
+            params: {
+                appealId: appealId
             }
         })
     },
 
-    deleteTask: (taskId:number):Promise<AxiosResponse<any>> => {
-        return axios.delete(`${environment.apiEndPoint}/AdminTask/delete/${taskId}`, {
-            params: {id: taskId},
-            headers: {
-                'Authorization' : localStorage.getItem('token')
-            }
-        })
-    }
 
 }
 

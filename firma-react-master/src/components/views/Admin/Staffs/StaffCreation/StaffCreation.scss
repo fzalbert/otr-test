@@ -1,0 +1,24 @@
+@import '../../../../../common/styles/variables.scss';
+@import '../../../../../common/styles/mixins.scss';
+
+.staff-creation-component {
+    width: 100vw;
+    padding: 0 122px;
+    box-sizing: border-box;
+
+    h1 {
+        font-weight: 500;
+        font-size: 48px;
+        color: #333E43;        
+    }
+
+    label {
+        margin-top: 34px;
+    }
+
+    button {
+        &:last-child {
+            margin-top: 73px;
+        }
+    }
+}
