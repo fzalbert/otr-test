@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 
 import com.example.appealsservice.domain.File;
 import com.example.appealsservice.dto.response.FileDto;
+import com.example.appealsservice.exception.NotRightsException;
+import com.example.appealsservice.httpModel.UserModel;
+import com.example.appealsservice.httpModel.UserType;
 import org.springframework.core.io.Resource;
 import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.repository.AppealRepository;
@@ -95,10 +98,18 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Resource download(Long fileId) {
+    public Resource download(Long fileId, UserModel userModel) {
 
         var fileDb = fileRepository.findById(fileId).orElseThrow(()
                 -> new TemplateException("Файл не найден"));
+
+        if(userModel.getUserType().equals(UserType.ROLE_CLIENT.name()))
+        {
+            var appeal = appealRepository.findById(fileDb.getAppealId())
+                    .orElseThrow(() -> new TemplateException("Обращение не найдено"));
+            if (!appeal.getClientId().equals(userModel.getId()))
+                throw new NotRightsException("Нет прав");
+        }
 
         Path root = Paths.get(pathFile);
 

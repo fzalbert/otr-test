@@ -3,6 +3,7 @@ package com.example.appealsservice.controller;
 
 import com.example.appealsservice.dto.response.FileDto;
 import com.example.appealsservice.exception.ResponseMessage;
+import com.example.appealsservice.httpModel.UserModel;
 import com.example.appealsservice.service.FileService;
 import com.example.appealsservice.service.TNVEDService;
 
@@ -70,7 +71,8 @@ public class FileController extends AuthorizeController {
 
     @GetMapping("download")
     public Resource download(@RequestParam Long id){
-        return fileService.download(id);
+
+        return fileService.download(id, userModel);
     }
 
 }
