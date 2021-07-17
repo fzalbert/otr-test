@@ -36,37 +36,40 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
         String token = request.getHeader(AUTHORIZATION_HEADER);
 
         if (token != null) {
-            token = token.replace(BEARER_PREFIX  + " ", "");
+            token = token.replace(String.format("%s %s",BEARER_PREFIX, " "), "");
+
+            JwtParseResponseDto responseDto = parseJwt(token);
+            if (responseDto == null)
+                return;
+
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                    responseDto.getUsername(),
+                    null,
+                    responseDto.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+            );
+
+            //TODO Изменить JwtParseResponseDto так, чтобы не было необходимости
+            // в АПИГейтВей обращаться к значениям responseDto по числам
+            RequestContext ctx = RequestContext.getCurrentContext();
+            ctx.addZuulRequestHeader("id", responseDto.getAuthorities().get(0));
+            ctx.addZuulRequestHeader("name", URLEncoder.encode(responseDto.getAuthorities().get(1), "UTF-8"));
+            ctx.addZuulRequestHeader("email", responseDto.getAuthorities().get(2));
+            ctx.addZuulRequestHeader("role", responseDto.getAuthorities().get(3));
+
             try {
-                JwtParseResponseDto responseDto = parseJwt(token);
-
-                if (responseDto == null){
-                    //response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    return;
-                }
-
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        responseDto.getUsername(),
-                        null,
-                        responseDto.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
-                );
-
-                RequestContext ctx = RequestContext.getCurrentContext();
-                ctx.addZuulRequestHeader("id", responseDto.getAuthorities().get(0));
-                ctx.addZuulRequestHeader("name", URLEncoder.encode(responseDto.getAuthorities().get(1), "UTF-8"));
-                ctx.addZuulRequestHeader("email", responseDto.getAuthorities().get(2));
-                ctx.addZuulRequestHeader("role", responseDto.getAuthorities().get(3));
-
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception ignore) {
                 SecurityContextHolder.clearContext();
             }
         }
+
         filterChain.doFilter(request, response);
     }
 

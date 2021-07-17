@@ -1,5 +1,6 @@
 package com.example.apigateawayservice.config;
 
+import com.example.apigateawayservice.enums.UserType;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

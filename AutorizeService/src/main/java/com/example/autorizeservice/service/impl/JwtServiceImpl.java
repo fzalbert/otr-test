@@ -23,6 +23,7 @@ public class JwtServiceImpl implements JwtService {
         this.signingKey = signingKey;
     }
 
+    //TODO Изменить JwtParseResponseDto так, чтобы не было необходимости в АПИГейтВей обращаться к значениям по числам
     @Override
     public JwtParseResponseDto parseJwt(String token) {
         Objects.requireNonNull(token);

@@ -1,5 +1,6 @@
 package com.example.apigateawayservice.config;
 
+import com.example.apigateawayservice.enums.RouteRules;
 import com.example.apigateawayservice.enums.UserType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,20 +24,31 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(final HttpSecurity http) throws Exception {
+        //TODO Написать комментарии рядом с каждым методом или группой методов.
+        // Ничего не понятно.
         http.cors().and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .anonymous()
                 .and()
-                .exceptionHandling().authenticationEntryPoint((request, response, ex) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .exceptionHandling()
+                .authenticationEntryPoint(
+                        (request, response, ex) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+                )
                 .and()
                 .addFilterAfter(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/auth/**", "/client/api/account/register").permitAll()
-                .antMatchers("/employee/api/employee/update").hasRole(UserType.EMPLOYEE.name())
-                .antMatchers("/client/api/clients/**").hasAnyRole(UserType.CLIENT.name(), UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
-                .antMatchers("/client/**", "/employee/**").hasAnyRole(UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
+                //TODO Вынести это все дело в отдельный ENUM (Сделать метод getPaths() который возвращает результат antMatchers().hasRole())
+//                .antMatchers("/auth/**", "/client/api/account/register").permitAll()
+//                .antMatchers("/employee/api/employee/update").hasRole(UserType.EMPLOYEE.name())
+//                .antMatchers("/client/api/clients/**").hasAnyRole(UserType.CLIENT.name(), UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
+//                .antMatchers("/client/**", "/employee/**").hasAnyRole(UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
+                .antMatchers(RouteRules.FORALL.getPaths()).permitAll()
+                .antMatchers(RouteRules.FOR_CLIENT.getPaths()).hasRole(RouteRules.FOR_CLIENT.getRole().name())
+                .antMatchers(RouteRules.FOR_SUPER_ADMIN.getPaths()).hasRole(RouteRules.FOR_SUPER_ADMIN.getRole().name())
+                .antMatchers(RouteRules.FOR_ADMIN.getPaths()).hasRole(RouteRules.FOR_ADMIN.getRole().name())
                 .anyRequest().authenticated();
                // .anyRequest().permitAll();
     }

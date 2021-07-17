@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:experimental
 FROM openjdk:16-jdk-alpine as build
 WORKDIR /workspace/app
-
+#TODO Прокомментировать каждое значимое действие
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
