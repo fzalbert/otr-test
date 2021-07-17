@@ -84,7 +84,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
     private static String makeBody(HttpServletRequest request) throws IOException {
         if ("POST".equalsIgnoreCase(request.getMethod()))
         {
-            return request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            return "";
         }
         else return "";
     }
