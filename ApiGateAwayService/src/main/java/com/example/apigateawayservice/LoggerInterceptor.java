@@ -6,8 +6,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -20,7 +22,10 @@ public class LoggerInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         logger.info("[preHandle][" + request + "]" + "[" + request.getMethod()
-                + "]" + request.getRequestURI() + getParameters(request));
+                + "]" + request.getRequestURI() + getParameters(request) + "\n"
+                + makeUrl(request) + "\n"
+                + makeBody(request) + "\n"
+        );
         return true;
     }
 
@@ -69,5 +74,18 @@ public class LoggerInterceptor implements HandlerInterceptor {
             return ipFromHeader;
         }
         return request.getRemoteAddr();
+    }
+
+    private static String makeUrl(HttpServletRequest request)
+    {
+        return request.getRequestURL().toString() + "?" + request.getQueryString();
+    }
+
+    private static String makeBody(HttpServletRequest request) throws IOException {
+        if ("POST".equalsIgnoreCase(request.getMethod()))
+        {
+            return request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        }
+        else return "";
     }
 }
