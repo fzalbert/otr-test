@@ -2,6 +2,7 @@ package com.example.appealsservice.messaging;
 
 import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.response.AppealStatusChangedDto;
+import com.example.appealsservice.dto.response.ReportCamundaDto;
 import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.dto.response.ShortAppealDto;
 import com.example.appealsservice.kafka.model.AppealAppointedMessage;
@@ -58,7 +59,7 @@ public class MessageSender {
         }
     }
 
-    public void sendReport(ReportDto report) {
+    public void sendReport(ReportCamundaDto report) {
         try {
             String jsonMessage = objectMapper.writeValueAsString(report);
             var message =  MessageBuilder.withPayload(jsonMessage)

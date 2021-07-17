@@ -1,17 +1,21 @@
 package org.example.dto.appeal;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.example.dto.TaskStatus;
+import org.example.dto.Theme;
 
-@Getter
-@Setter
+import java.util.Date;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppealStatusChangedDto {
-    private Appeal appeal;
-    private TaskStatus taskStatus;
-
-    public AppealStatusChangedDto(Appeal appeal, TaskStatus taskStatus) {
-        this.appeal = appeal;
-        this.taskStatus = taskStatus;
-    }
+    private Long id;
+    private Long employeeId;
+    private String nameOrg;
+    private Theme theme;
+    private String description;
+    private Date createDate;
+    private Integer statusAppeal;
+    private String taskStatus;
 }

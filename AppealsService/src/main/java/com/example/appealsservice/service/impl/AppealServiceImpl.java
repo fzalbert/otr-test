@@ -298,7 +298,7 @@ public class AppealServiceImpl implements AppealService {
                 appeal.getNameOrg(), "APPEAL IS UPDATE", appeal.getId().toString(), MessageType.UPDATE);
 
         msgSender.sendEmail(model);
-        msgSender.sendAppeal(new ShortAppealDto(appeal));
+        msgSender.sendChangeStatus(new AppealStatusChangedDto(appeal, "NEEDCHECK"));
 
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null, null);
     }
@@ -361,7 +361,7 @@ public class AppealServiceImpl implements AppealService {
         newTask.setDate(new Date());
 
 
-        msgSender.sendChangeStatus(new AppealStatusChangedDto(new ShortAppealDto(appeal), status));
+        msgSender.sendChangeStatus(new AppealStatusChangedDto(appeal, status.name()));
         taskRepository.save(newTask);
     }
 

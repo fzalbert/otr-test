@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -25,16 +26,12 @@ public class CamundaAppealService implements AppealService {
     @Override
     public void create(Appeal appeal) {
         System.out.println("appeal: " + appeal.getId());
-
        runtimeService
                 .startProcessInstanceByKey(
                         "otr-camunda-process",
                         appeal.getId().toString(),
                         appeal.toVariableMap()
                 );
-
-
-
     }
 
     @Override
@@ -44,33 +41,33 @@ public class CamundaAppealService implements AppealService {
 
     @Override
     public void changeStatus(AppealStatusChangedDto statusChangedDto) {
+        Appeal appeal = new Appeal(statusChangedDto);
 
-        Appeal appeal = statusChangedDto.getAppeal();
         Task task = taskService
                 .createTaskQuery()
                 .processInstanceBusinessKey(appeal.getId().toString())
                 .singleResult();
 
         switch (statusChangedDto.getTaskStatus()){
-            case NEEDCHECK:
+            case "NEEDCHECK":
                 if(task.getTaskDefinitionKey().equals("change_appeal_key"))
                     this.update(appeal, task);
                 break;
-            case NEEDUPDATE:
+            case "NEEDUPDATE":
                 if(task.getTaskDefinitionKey().equals("check_appeal_key")){
                     Map<String, Object> variables = appeal.toVariableMap();
                     variables.put("status", AppealActStatus.Change);
                     taskService.complete(task.getId(), variables);
                 }
                 break;
-            case NEEDREJECT:
+            case "NEEDREJECT":
                 if(task.getTaskDefinitionKey().equals("check_appeal_key")) {
                     Map<String, Object> variables = new HashMap<>();
                     variables.put("status", AppealActStatus.Denied);
                     taskService.complete(task.getId(), variables);
                 }
                 break;
-            case NEEDSUCCESS:
+            case "NEEDSUCCESS":
                 if(task.getTaskDefinitionKey().equals("check_appeal_key")) {
                     Map<String, Object> variables = new HashMap<>();
                     variables.put("status", AppealActStatus.Allow);

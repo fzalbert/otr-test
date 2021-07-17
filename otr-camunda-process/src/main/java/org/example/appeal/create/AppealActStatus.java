@@ -19,8 +19,8 @@ public class AppealActStatus {
     }
 
     public static int getStatus(ReportStatus status){
-        switch (status){
-            case Success:
+        switch (status.name()){
+            case "SUCCESS":
                 return Allow;
             default:
                 return Denied;

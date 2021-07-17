@@ -4,14 +4,14 @@ import com.example.appealsservice.domain.Appeal;
 import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.Theme;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.kafka.common.protocol.types.Field;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 public class ShortAppealDto {
 
     private Long id;

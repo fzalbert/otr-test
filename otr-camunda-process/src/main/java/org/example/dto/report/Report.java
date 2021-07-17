@@ -1,14 +1,13 @@
 package org.example.dto.report;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.example.dto.appeal.Appeal;
 
 import java.util.Date;
 
-
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Report {
 
     private Long id;
@@ -22,7 +21,4 @@ public class Report {
     private ReportStatus reportStatus;
 
     private Date createDate;
-
-    public Report() {
-    }
 }

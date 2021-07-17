@@ -61,7 +61,7 @@ public class TestController {
 
         Report report = new Report();
         report.setAppealId(11L);
-        report.setReportStatus(ReportStatus.Rejected);
+        //report.setReportStatus(ReportStatus.Rejected);
         report.setText("reject");
 
 
@@ -97,11 +97,11 @@ public class TestController {
         appeal.setStatusAppeal(StatusAppeal.INPROCCESING.getValue());
         appeal.setTheme(theme);
 
-        AppealStatusChangedDto dto = new AppealStatusChangedDto(
+/*        AppealStatusChangedDto dto = new AppealStatusChangedDto(
                 appeal,
                 TaskStatus.values()[status]
-        );
-        appealService.changeStatus(dto);
+        );*/
+        //appealService.changeStatus(dto);
 
     }
 

@@ -1,18 +1,21 @@
 package org.example.dto.appeal;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.dto.FileDto;
 import org.example.dto.TNVED;
 import org.example.dto.Theme;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class Appeal {
 
     private Long id;
@@ -28,6 +31,12 @@ public class Appeal {
     private Date createDate;
 
     private Integer statusAppeal;
+
+    public Appeal(AppealStatusChangedDto request){
+        if (request == null)
+            return;
+        BeanUtils.copyProperties(request, this);
+    }
 
     public Map<String, Object> toVariableMap(){
         Map<String, Object> result = new HashMap<>();
