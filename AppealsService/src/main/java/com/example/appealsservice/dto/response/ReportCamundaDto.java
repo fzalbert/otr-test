@@ -3,13 +3,11 @@ package com.example.appealsservice.dto.response;
 import com.example.appealsservice.domain.Report;
 import com.example.appealsservice.domain.enums.ReportStatus;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 
 @Data
-public class ReportDto {
+public class ReportCamundaDto {
 
     private Long id;
 
@@ -19,13 +17,13 @@ public class ReportDto {
 
     private Long appealId;
 
-    private ReportStatus reportStatus;
+    private String reportStatus;
 
     private Date createDate;
 
-    public ReportDto() {}
+    public ReportCamundaDto() {}
 
-    public ReportDto (Report report) {
+    public ReportCamundaDto (Report report) {
 
         if(report == null)
             return;
@@ -34,7 +32,7 @@ public class ReportDto {
         employeeId = report.getEmployeeId();
         text = report.getText();
         this.appealId = report.getAppeal().getId();
-        reportStatus = report.getReportStatus();
+        reportStatus = report.getReportStatus().name();
         createDate = report.getCreateDate();
     }
 }

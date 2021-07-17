@@ -2,6 +2,7 @@ package com.example.autorizeservice.config;
 
 import com.example.autorizeservice.dto.AuthDto;
 import com.example.autorizeservice.dto.LoginDto;
+import com.example.autorizeservice.dto.ResponseModelDto;
 import com.example.autorizeservice.dto.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +22,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.FilterChain;
@@ -49,14 +53,20 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException {
-
+        var objectMapper = new ObjectMapper();
         LoginDto loginDto = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
-        var employee = CheckUser(loginDto.getUsername(), loginDto.getPassword());
+        var res = getResponse(loginDto.getUsername(), loginDto.getPassword());
 
-        if (employee == null) {
-            response.sendError(401);
+        if(res.status != HttpStatus.OK) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setContentType("text/html; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(res.content);
+            response.getWriter().flush();
             return null;
         }
+
+        var employee = objectMapper.readValue(res.content, UserDto.class);
 
         List<GrantedAuthority> list = new ArrayList<>();
         list.add(new SimpleGrantedAuthority(employee.getId().toString()));
@@ -101,5 +111,26 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
         AuthDto body = new AuthDto(login, password);
         var restTemplate = new RestTemplate();
         return restTemplate.postForObject(urlEmployee, body, UserDto.class);
+    }
+
+    private ResponseModelDto getResponse(String login, String password) {
+        ResponseModelDto model = new ResponseModelDto();
+        AuthDto body = new AuthDto(login, password);
+        var restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new ResponseErrorHandler() {
+            @Override
+            public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {
+                model.setStatus(clientHttpResponse.getStatusCode());
+                return false;
+            }
+
+            @Override
+            public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
+                model.setStatus(clientHttpResponse.getStatusCode());
+            }
+        });
+        var result = restTemplate.postForObject(urlEmployee, body, String.class);
+        model.content = result;
+        return model;
     }
 }

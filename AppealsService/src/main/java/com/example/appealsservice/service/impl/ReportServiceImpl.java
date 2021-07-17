@@ -6,6 +6,7 @@ import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.enums.ReportStatus;
 import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.enums.TaskStatus;
+import com.example.appealsservice.dto.response.ReportCamundaDto;
 import com.example.appealsservice.dto.response.ReportDto;
 import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
@@ -101,7 +102,7 @@ public class ReportServiceImpl implements ReportService {
                 task.getAppeal().getNameOrg(), appealId.toString(), subject, messageType);
         msgSender.sendEmail(model);
 
-        msgSender.sendReport(new ReportDto(report));
+        msgSender.sendReport(new ReportCamundaDto(report));
 
     }
 

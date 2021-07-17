@@ -11,6 +11,7 @@ import org.example.dto.appeal.Appeal;
 import org.example.dto.appeal.StatusAppealParser;
 import org.example.dto.report.Report;
 import org.example.service.report.CamundaReportService;
+import org.example.utils.JsonReaderHelper;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -33,13 +34,17 @@ public class ReportCreatedListener {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JsonReaderHelper jsonReader;
+
     @StreamListener(target = Sink.INPUT,
             condition="(headers['type']?:'')=='ReportCreated'")
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException, Exception {
 
-        Report message = objectMapper.readValue(messageJson, new TypeReference<Report>(){});
+        Report message = jsonReader.read(messageJson, Report.class);
 
+        if(message != null)
         service.create(message);
     }
 
