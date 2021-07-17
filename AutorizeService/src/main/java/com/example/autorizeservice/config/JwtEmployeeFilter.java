@@ -7,6 +7,7 @@ import com.example.autorizeservice.dto.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,8 @@ import java.util.stream.Collectors;
 import static com.example.autorizeservice.utils.SecurityConstants.AUTHORIZATION_HEADER;
 import static com.example.autorizeservice.utils.SecurityConstants.BEARER_PREFIX;
 
+
+@Log4j
 public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
 
     private final String signingKey;
@@ -45,6 +48,9 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
 
     public JwtEmployeeFilter(AuthenticationManager authenticationManager, String signingKey, String urlEmployee) {
         super(new AntPathRequestMatcher("/api/login/employee", "POST"));
+
+        logger.info("JwtEmployeeFilter.Constructor invoked");
+
         setAuthenticationManager(authenticationManager);
         this.signingKey = signingKey;
         this.urlEmployee = urlEmployee;
@@ -54,7 +60,18 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException {
         var objectMapper = new ObjectMapper();
+
+        logger.info("JwtEmployeeFilter.attemptAuthentication start");
+
         LoginDto loginDto = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
+
+        if(loginDto == null){
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setContentType("text/html; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+            return null;
+        }
+
         var res = getResponse(loginDto.getUsername(), loginDto.getPassword());
 
         if(res.status != HttpStatus.OK) {
@@ -80,7 +97,12 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
                 list
         );
 
+        logger.info("JwtEmployeeFilter.attemptAuthentication SecurityContextHolder start");
+
         SecurityContextHolder.getContext().setAuthentication(user);
+
+        logger.info("JwtEmployeeFilter.attemptAuthentication SecurityContextHolder ended");
+
         return user;
     }
 
@@ -88,6 +110,8 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication auth) {
         Instant now = Instant.now();
+
+        logger.info("token generation start" );
 
         String token = Jwts.builder()
                 .setSubject(auth.getName())
@@ -98,6 +122,7 @@ public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
                 .signWith(SignatureAlgorithm.HS256, signingKey.getBytes())
                 .compact();
 
+        logger.info("token: " + token);
         response.addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + " " + token);
         try {
             response.getWriter().write(token);
