@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.dto.appeal.Appeal;
 import org.example.dto.appeal.AppealAppointedResponse;
 import org.example.service.appeals.CamundaAppealService;
+import org.example.utils.JsonReaderHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -23,16 +25,16 @@ public class UserAppointedListener {
     private CamundaAppealService appealService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonReaderHelper jsonReaderHelper;
 
     @StreamListener(target = Sink.INPUT,
             condition="(headers['type']?:'')=='AppealAppointed'")
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException {
 
-        AppealAppointedResponse message = objectMapper.readValue(messageJson, new TypeReference<AppealAppointedResponse>(){});
-
-        appealService.appoint(message.getLogin(), message.getAppealId());
+        AppealAppointedResponse response = jsonReaderHelper.read(messageJson, AppealAppointedResponse.class);
+        if(response != null)
+            appealService.appoint(response.getLogin(), response.getAppealId());
     }
 
 }

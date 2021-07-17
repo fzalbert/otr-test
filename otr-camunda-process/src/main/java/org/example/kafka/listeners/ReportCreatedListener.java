@@ -32,9 +32,6 @@ public class ReportCreatedListener {
     private CamundaReportService service;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private JsonReaderHelper jsonReader;
 
     @StreamListener(target = Sink.INPUT,
@@ -42,10 +39,10 @@ public class ReportCreatedListener {
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException, Exception {
 
-        Report message = jsonReader.read(messageJson, Report.class);
+        Report response = jsonReader.read(messageJson, Report.class);
 
-        if(message != null)
-        service.create(message);
+        if(response != null)
+        service.create(response);
     }
 
 }
