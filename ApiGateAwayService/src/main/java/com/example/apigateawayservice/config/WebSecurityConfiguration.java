@@ -1,7 +1,6 @@
 package com.example.apigateawayservice.config;
 
 import com.example.apigateawayservice.enums.RouteRules;
-import com.example.apigateawayservice.enums.UserType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -45,7 +44,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/employee/api/employee/update").hasRole(UserType.EMPLOYEE.name())
 //                .antMatchers("/client/api/clients/**").hasAnyRole(UserType.CLIENT.name(), UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
 //                .antMatchers("/client/**", "/employee/**").hasAnyRole(UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
-                .antMatchers(RouteRules.FORALL.getPaths()).permitAll()
+                .antMatchers(RouteRules.FOR_ALL.getPaths()).permitAll()
                 .antMatchers(RouteRules.FOR_CLIENT.getPaths()).hasRole(RouteRules.FOR_CLIENT.getRole().name())
                 .antMatchers(RouteRules.FOR_SUPER_ADMIN.getPaths()).hasRole(RouteRules.FOR_SUPER_ADMIN.getRole().name())
                 .antMatchers(RouteRules.FOR_ADMIN.getPaths()).hasRole(RouteRules.FOR_ADMIN.getRole().name())
