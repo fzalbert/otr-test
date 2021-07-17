@@ -16,12 +16,12 @@ public class CamundaUserService implements UserService {
 
     @Override
     public void create(Employee user) {
+
             User newUser = identityService.newUser(user.getLogin());
             newUser.setEmail(user.getEmail());
             newUser.setFirstName(user.getName());
             newUser.setLastName(user.getLastName());
             newUser.setPassword(user.getPassword());
-
 
             identityService
                     .saveUser(newUser);

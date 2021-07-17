@@ -1,6 +1,5 @@
 package org.example.dto.appeal;
 
-import org.example.dto.appeal.StatusAppeal;
 
 public class StatusAppealParser {
 

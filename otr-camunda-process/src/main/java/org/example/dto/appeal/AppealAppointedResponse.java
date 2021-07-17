@@ -1,11 +1,11 @@
 package org.example.dto.appeal;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.dto.user.Employee;
 
-@Getter
-@Setter
+@Data
 public class AppealAppointedResponse {
 
     private String login;

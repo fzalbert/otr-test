@@ -21,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -79,16 +80,7 @@ public class EmployeeServiceImp implements EmployeeService {
         var employee = this.dtoToEntity(request, new Employee());
 
         employeeRepository.save(employee);
-
-        var model = new EmployeeModel();
-        model.setEmail(request.getEmail());
-        model.setId(employee.getId());
-        model.setPassword(request.getPassword());
-        model.setName(request.getFirstName());
-        model.setLogin(request.getLogin());
-        model.setLastName(request.getLastName());
-        model.setRole(request.getRoleType());
-        kafkaSender.sendEmployee(model);
+        kafkaSender.sendEmployee(new EmployeeModel(employee));
 
         return true;
     }
@@ -101,6 +93,8 @@ public class EmployeeServiceImp implements EmployeeService {
 
         var updatedEmployee = this.dtoToEntity(request, employee);
         employeeRepository.save(updatedEmployee);
+
+        kafkaSender.sendUpdateEmployee(new EmployeeModel(updatedEmployee));
         return new EmployeeDto(updatedEmployee);
     }
 
@@ -114,13 +108,11 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     /** Получить список всех сотрудников в системе */
-    //@Cacheable(value = "itemCache")
     @Override
     public List<EmployeeDto> getList() {
         return employeeRepository
-                .findAll()
+                .findAll(Sort.by(Sort.Direction.ASC, "id"))
                 .stream()
-                .sorted(Comparator.comparing(Employee::getLastName, Comparator.reverseOrder()))
                 .map(EmployeeDto::new)
                 .collect(Collectors.toList());
     }
@@ -141,6 +133,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
         employee.setRoleType(role);
         employeeRepository.save(employee);
+        kafkaSender.sendUpdateEmployee(new EmployeeModel(employee));
         return true;
     }
 

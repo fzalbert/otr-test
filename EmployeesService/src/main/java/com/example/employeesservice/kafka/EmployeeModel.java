@@ -1,6 +1,6 @@
 package com.example.employeesservice.kafka;
 
-import com.example.employeesservice.domain.enums.RoleType;
+import com.example.employeesservice.domain.Employee;
 import lombok.Data;
 
 @Data
@@ -12,6 +12,18 @@ public class EmployeeModel {
     private String lastName;
     private String email;
     private String password;
-    private RoleType role;
+
+    public EmployeeModel(){
+
+    }
+
+    public EmployeeModel(Employee employee)
+    {
+        id = employee.getId();
+        login = employee.getPerson().getLogin();
+        name = employee.getFirstName();
+        lastName = employee.getLastName();
+        email = employee.getEmail();
+    }
 }
 

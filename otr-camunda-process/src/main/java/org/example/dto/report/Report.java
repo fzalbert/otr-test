@@ -1,7 +1,6 @@
 package org.example.dto.report;
 
 import lombok.*;
-import org.example.dto.appeal.Appeal;
 
 import java.util.Date;
 

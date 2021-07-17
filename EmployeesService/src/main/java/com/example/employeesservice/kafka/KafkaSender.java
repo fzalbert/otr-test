@@ -18,11 +18,20 @@ import org.springframework.stereotype.Component;
 
         public void sendEmployee(EmployeeModel m) {
             try {
-                // avoid too much magic and transform ourselves
                 String jsonMessage = objectMapper.writeValueAsString(m);
-                // wrap into a proper message for the transport (Kafka/Rabbit) and send it
-                var message =                     MessageBuilder.withPayload(jsonMessage)
+                var message = MessageBuilder.withPayload(jsonMessage)
                         .setHeader("type", "UserCreated")
+                        .build();
+                kafkaProcessor.output2().send(message);
+            } catch (Exception e) {
+                throw new RuntimeException("Could not tranform and send message due to: " + e.getMessage(), e);
+            }
+        }
+        public void sendUpdateEmployee(EmployeeModel m) {
+            try {
+                String jsonMessage = objectMapper.writeValueAsString(m);
+                var message = MessageBuilder.withPayload(jsonMessage)
+                        .setHeader("type", "UserUpdated")
                         .build();
                 kafkaProcessor.output2().send(message);
             } catch (Exception e) {
