@@ -145,6 +145,7 @@ public class AppealServiceImpl implements AppealService {
         if (files != null && !files.isEmpty()) {
 
             for (MultipartFile f :
+
                     files) {
                 fileServiceImpl.store(f, appeal.getId(), appeal.getClientId());
             }

@@ -1,7 +1,7 @@
 package com.example.apigateawayservice.enums;
 
 public enum RouteRules {
-    FORALL(null) {
+    FOR_ALL(null) {
         @Override
         public String[] getPaths() {
             return new String[] {
@@ -14,7 +14,14 @@ public enum RouteRules {
         @Override
         public String[] getPaths() {
             return new String[] {
-                    "/client/**",
+                    "/appeal/**",
+                    "/appeal/api/appeals/filter-for-admin",
+                    "/appeal/api/appeals/delete",
+                    "/appeal/api/appeals/check",
+                    "/appeal/api/reports/approve-or-reject",
+                    "/appeal/api/tasks/**",
+                    "/client/api/clients/**",
+                    "/client/api/ban/**",
                     "/employee/**"
             };
         }
@@ -23,7 +30,14 @@ public enum RouteRules {
         @Override
         public String[] getPaths() {
             return new String[] {
-                    "/client/**",
+                    "/appeal/**",
+                    "/appeal/api/appeals/filter-for-admin",
+                    "/appeal/api/appeals/delete",
+                    "/appeal/api/appeals/check",
+                    "/appeal/api/reports/approve-or-reject",
+                    "/appeal/api/tasks/**",
+                    "/client/api/clients/**",
+                    "/client/api/ban/**",
                     "/employee/**"
             };
         }
@@ -32,6 +46,7 @@ public enum RouteRules {
         @Override
         public String[] getPaths() {
             return new String[] {
+                    "/appeal/**",
                     "/client/api/clients/**"
             };
         }
