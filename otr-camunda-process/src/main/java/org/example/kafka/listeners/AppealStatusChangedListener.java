@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dto.appeal.AppealStatusChangedDto;
 import org.example.service.appeals.CamundaAppealService;
+import org.example.utils.JsonReaderHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -23,19 +24,17 @@ public class AppealStatusChangedListener {
     private CamundaAppealService appealService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonReaderHelper jsonReader;
 
     @StreamListener(target = Sink.INPUT,
             condition="(headers['type']?:'')=='AppealStatusChanged'")
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException {
 
-        AppealStatusChangedDto message = objectMapper.readValue(
-                messageJson,
-                new TypeReference<AppealStatusChangedDto>(){}
-        );
+        AppealStatusChangedDto response = jsonReader.read(messageJson, AppealStatusChangedDto.class);
 
-        appealService.changeStatus(message);
+        if(response != null)
+            appealService.changeStatus(response);
     }
 
 }
