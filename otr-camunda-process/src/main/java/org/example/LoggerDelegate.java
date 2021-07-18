@@ -11,12 +11,6 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
-/**
- * This is an easy adapter implementation 
- * illustrating how a Java Delegate can be used 
- * from within a BPMN 2.0 Service Task.
- */
 @Component("logger")
 public class LoggerDelegate implements JavaDelegate {
 
@@ -36,6 +30,5 @@ public class LoggerDelegate implements JavaDelegate {
             + ", executionId=" + execution.getId()
             + " \n\n");
   }
-
 
 }
