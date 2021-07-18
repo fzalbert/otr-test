@@ -48,6 +48,15 @@ h3 {
     color: #222222;
 }
 
+.no-data {
+    margin: 100px -122px;
+    width: 100vw;
+    text-align: center;
+    font-weight: 500;
+    font-size: 26px;
+    color: #333E43;    
+}
+
 button, a {
     outline: none;
     cursor: pointer;
@@ -514,50 +523,6 @@ input[type="checkbox"]:checked ~ label::after {
     transition: 0.3s;
 }
 
-.page-switches {
-    margin-right: -35px;
-    width: 120px;
-    @extend %display-flex-row;
-    background: #2862C4;
-    border: 1px solid #2862C4;
-    border-radius: 4px;
-    button {
-        width: 40px;
-        height: 40px;
-        box-sizing: border-box;
-        background: transparent url('../../assets/images/icons/prev-page.svg');
-        background-position: center;
-        background-repeat: no-repeat;
-        border: 0;
-        font-size: 18px;
-        color: #ffffff;
-
-        &:first-child {
-            border-radius: 15px 0 0 15px;
-            
-        }
-
-        &:last-child {
-            transform: rotate(180deg);
-            border-radius: 15px 0 0 15px;
-        }
-    }
-
-    div {
-        width: 40px;
-        height: 40px;
-        @extend %display-flex-row;
-        justify-content: center;
-        box-sizing: border-box;
-        border-left: 1px solid #e3eafd;
-        border-right: 1px solid #e3eafd;
-        text-align: center;
-        font-size: 18px;
-        color: #ffffff;
-        transition: 0.5s;
-    }
-}
-
 .main-input_with-label,
 .main-textarea_with-label {
     width: 312px;
@@ -615,101 +580,6 @@ input[type="checkbox"]:checked ~ label::after {
         font-size: 12px;
         letter-spacing: 0.4px;
         color: #222222;
-    }
-}
-
-.input-container {
-    width: 100%;
-    margin-top: 55px;
-    @extend %display-flex-row;
-    flex-wrap: wrap;
-    input {
-        width: calc(50% - 17.5px);
-        margin-top: 30px;
-        &:first-child,
-        &:nth-child(2) {
-            margin-top: 0;
-        }
-    }
-}
-
-.country-picker {
-    position: relative;
-    width: 312px;
-    height: auto;
-    .countries-list {
-        position: absolute;
-        top: 105%;
-        left: 0;
-        width: 100%;
-        max-height: 192px;
-        background: #f2f7fc;
-        border-radius: 6px;
-        box-shadow: 0 0 5px #568cdd;
-        overflow-y: auto;
-        scroll-behavior: smooth;
-        z-index: 5;
-        &::-webkit-scrollbar {
-            width: 5px;
-        }
-        /* Track */
-        &::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 5px rgba(68, 98, 182, 0.3); 
-            -webkit-border-radius: 10px;
-            border-radius: 10px;
-        }
-        /* Handle */
-        &::-webkit-scrollbar-thumb {
-            -webkit-border-radius: 10px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1); 
-            -webkit-box-shadow: inset 0 0 5px rgba(43, 68, 102, 0.8);
-        }
-        p {
-            width: 100%;
-            // height: 36px;
-            padding: 10px 13px;
-            box-sizing: border-box;
-            border-bottom: 0.5px solid #568cdd;
-            font-size: 16px;
-            color: #4D5066;
-            z-index: 6;
-            &:last-child {
-                border-bottom: none;
-            }
-        }
-    }
-    .black-list-icon {
-        position: absolute;
-        left: 105%;
-        top: 25px;
-        width: 20px;
-        height: 20px;
-        @extend %display-flex-row;
-        justify-content: center;
-        border-radius: 50%;
-        border: 0.5px solid #4D5066;
-        background-color: #181923;
-        font-size: 14px;
-        color: #4D5066;
-    }
-    .black-list {
-        position: absolute;
-        left: 115%;
-        top: -10%;
-        width: 200px;
-        padding: 10px 25px;
-        box-sizing: border-box;
-        background-color: #181923;
-        border-radius: 6px;
-        transition: 0.3s;
-        z-index: 10;
-        p {
-            margin-left: -15px;
-        }
-        li {
-            color: #4D5066;
-        }
     }
 }
 
@@ -800,52 +670,6 @@ input[type="checkbox"]:checked ~ label::after {
     &:focus {
         // border: 1.5px solid #7999ce;
         box-shadow: 0 0 10px #5a98b4a8, inset 0 0 2px #5a98b4a8;
-    }
-}
-
-.search-head {
-    @extend %display-flex-row;
-    justify-content: flex-start;
-
-    .select-row {
-        margin: -30px 40px 0;
-        width: 320px;
-        position: relative;
-        @extend %display-flex-row;
-    
-        .custom-option {
-            width: 150px;
-            padding: 7px 10px 13px;
-            border-radius: 4px;
-            border: 0;
-            background: #0F5ADA;
-            box-shadow: 0 0 5px #1b396d;
-            text-align: center;
-            font-size: 20px;
-            line-height: 20px;
-            color: #ffffff;
-            transition: 0.3s;
-    
-            &:not(.custom-option:first-child) {
-                margin-left: 20px;
-            }
-    
-            &:hover {
-                background: #0f59dada;
-            }
-        }
-    
-        .selected-border {
-            position: absolute;
-            left: 0;
-            top: 110%;
-            width: 150px;
-            height: 3px;
-            background: #48cc7f;
-            border-radius: 3px;
-            box-shadow: 0 0 5px #19ac94ce, inset 0 0 1px #18917cce;
-            transition: 0.5s;
-        }
     }
 }
 
@@ -1080,155 +904,8 @@ input[type="checkbox"]:checked ~ label::after {
     }
 }
 
-.table-container {
-    height: 745px;
-    padding-bottom: 40px;
-    // overflow-y: hidden;
-
-    // not-adaptive
-    @include sm-down {
-        height: 550px;
-    }
-}
-
-.password-changing {
-    padding: 23px 0 23px;
-    &_form {
-        width: 100%;
-        margin-top: 23px;
-        @extend %display-flex-row;
-        input {
-            width: 209px;
-            height: 53px;
-            padding: 20px 11px;
-            box-sizing: border-box;
-            background: #FBFBFB;
-            border: 0.5px solid #DDDDDD;
-            box-sizing: border-box;
-            border-radius: 10px;
-            font-size: 16px;
-            color: #000000;
-        }
-        button {
-            width: 160px;
-            height: 53px;
-            @extend %display-flex-row;
-            padding: 17px 24px;
-            box-sizing: border-box;
-            background: linear-gradient(180deg, #3173AD 0%, #075497 100%);
-            box-shadow: inset 0px 4px 30px rgba(0, 0, 0, 0.05);
-            border: 0;
-            border-radius: 10px;
-            font-size: 16px;
-            color: #FFFFFF;
-            &:disabled {
-                background: #EEEEEE;
-                box-shadow: inset 0px 4px 30px rgba(0, 0, 0, 0.05);
-                border-radius: 10px;
-                cursor: default;
-            }
-        }
-    }
-}
-
 .error-modal-container {
     position: relative;
     width: 100vw;
     height: 100vw;
 }
-
-// Tasks
-.task-form {
-    padding-bottom: 50px;
-    @extend %display-flex-column;
-    align-items: flex-start;
-    a {
-        width: 312px;
-        margin-top: 15px;
-        text-align: center;
-        font-size: 13px;
-        font-weight: 400;
-        color: rgb(219, 69, 69);
-        vertical-align: middle;
-        cursor: pointer;
-    }
-
-    .main-input_with-label {
-        margin-top: 30px;
-    }
-
-    .main-textarea_with-label {
-        margin-top: 30px;
-    }
-
-    .common-btn {
-        margin-top: 30px;
-    }
-
-    .baned-btn {
-        background: #a83a3a;
-        
-        &:hover {
-            box-shadow: 0 0 10px #e296a2;
-        }
-    }
-}
-
-// USERS
-.user-smart-card {
-    width: 250px;
-    height: 60px;
-    padding: 0 20px;
-    box-sizing: border-box;
-    @extend %display-flex-row;
-    justify-content: flex-start;
-    background: #fafbfc;
-    border-radius: 6px;
-    box-shadow: 0 0 5px #81abebd8;
-    transition: 0.3s;
-    cursor: pointer;
-
-    &:hover {
-        box-shadow: 0 0 9px #81abebf3;
-    }
-
-    .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-    }
-
-    .no-avatar {
-        width: 30px;
-        height: 30px;
-    }
-
-    span {
-        margin-left: 20px;
-        font-size: 24px;
-        font-weight: 500;
-    }
-}
-
-
-// Mobile
-// @media screen and (max-width: 600px) {
-//     .input-container {
-//         input {
-//             width: 100%;
-//             &:first-child,
-//             &:nth-child(2) {
-//                 margin-top: 30px;
-//             }
-//         }
-//     }
-//     .auth-component {
-//         width: 100vw;
-//         height: 100vh;
-//         padding: 24px;
-//         box-sizing: border-box;
-//         .auth-form {
-//             width: 100%;
-//         }
-//     }
-// }

@@ -35,9 +35,9 @@ const StaffCreation = (props: any) => {
     const [req, doReq] = useState(false);
 
     const getEmployeeById = () => {
+        doReq(true)
         StaffsAPI.getEmployeeById(+employeeId)
             .then((response:AxiosResponse<EmployeeResponse>) => {
-                doReq(true)
                 setEmployeeData(response.data)
                 employee.firstName.onChange({target: { value: response.data.firstName }})
                 employee.lastName.onChange({target: { value: response.data.lastName }})
@@ -74,7 +74,7 @@ const StaffCreation = (props: any) => {
         StaffsAPI.update(+employeeId, {
             firstName: employee.firstName.value,
             lastName: employee.lastName.value,
-            login: employee.login.value,
+            // login: employee.login.value,
             email: employee.email.value,
             roleType: employee.role.value
         }).then((response:AxiosResponse<EmployeeResponse>) => {
@@ -109,10 +109,14 @@ const StaffCreation = (props: any) => {
                 Фамилия
                 <input type="text" name="name" {...employee.lastName} placeholder="Введите фамилию" className="main-input"  />
             </label>
-            <label>
-                Логин
-                <input type="text" name="login" {...employee.login} placeholder="Введите логин" className="main-input"  />
-            </label>
+            {
+                !employeeId ?
+                    <label>
+                        Логин
+                        <input type="text" name="login" {...employee.login} placeholder="Введите логин" className="main-input"  />
+                    </label> :
+                    null
+            }
             {
                 !employeeId ?
                     <label>
@@ -143,7 +147,7 @@ const StaffCreation = (props: any) => {
                         null
                 }
             </label>
-            <button className="common-btn" onClick={() => employeeId ? updateEmployee() : addEmployee()}>СОЗДАТЬ</button>
+            <button className="common-btn" onClick={() => employeeId ? updateEmployee() : addEmployee()}>{employeeId ? "ОБНОВИТЬ" : "СОЗДАТЬ"}</button>
         </div>
     )
 }

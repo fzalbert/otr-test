@@ -10,6 +10,7 @@
     padding: 31px calc(122px + 48px) 0 122px;
     box-sizing: border-box;
     @extend %display-flex-row;
+    justify-content: flex-start;
 
     // not-adaptive
     // @include sm-down {
@@ -89,6 +90,7 @@
 }
 
 .admin-menu {
+    margin-left: 88px;
     @extend %display-flex-row;
     justify-content: flex-start;
 

@@ -1,0 +1,24 @@
+@import '../../../common/styles/variables.scss';
+@import '../../../common/styles/mixins.scss';
+
+.success-modal {
+    position: fixed;
+    margin: 0 auto;
+    top: calc(50vh - 80px);
+    left: calc(50vw - 225px);
+    width: 450px;
+    min-height: 160px;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #50AD92;
+    text-align: center;
+    
+    p {
+        width: 100%;
+        text-align: center;
+        font-size: 26px;
+        line-height: 120px;
+    }
+}

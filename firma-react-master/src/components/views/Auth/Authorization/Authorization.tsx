@@ -27,8 +27,6 @@ const Authorization = () => {
             auth(login, password)
                 .then((response:AxiosResponse<AuthResponse>) => {
                     localStorage.setItem('token', `Bearer ${response.data}`);
-                    // localStorage.setItem('expireDate', response.data.token.expireDate);
-                    // localStorage.setItem('user', JSON.stringify(response.data.user))
                     dispatch(setAuthState({isLoggedIn: true, token: `Bearer ${response.data}`}));
                     history.push('/admin/appeals');
                 })
@@ -55,7 +53,6 @@ const Authorization = () => {
     })
 
     return (
-        // <div className="auth-component authorization-component">
         <React.Fragment>
             <CSSTransition in={error.length !== 0} timeout={300} unmountOnExit classNames="show-hide-animation">
                 <ErrorModal>{error}</ErrorModal>
@@ -76,7 +73,6 @@ const Authorization = () => {
                 </div>
             </form>
         </React.Fragment>
-        // </div>
     );
 }
 

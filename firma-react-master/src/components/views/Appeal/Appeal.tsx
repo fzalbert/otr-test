@@ -36,12 +36,20 @@ const Appeal = (props:any) => {
     const appealStatusClasses:string[] = ['not-proccessing-status', 'proccessing-status', 'complete-status', 'reject-status']
 
     const getAppealById = () => {
+        doReq(true)
         AppealsAPI.getAppealById(+id)
             .then((response:AxiosResponse<AppealItemClientModel>) => {
-                doReq(true)
                 response.data.createDate = new Date((response.data.createDate as string).slice(0,19))
                 response.data.report ? response.data.report.createDate = new Date((response.data.report.createDate as string)?.slice(0,19)) : null
                 setAppeal(response.data)
+            })
+            .catch(err => console.log(err))
+    }
+
+    const takeTask = () => {
+        TasksAPI.takeTask(appeal.id)
+            .then((response:AxiosResponse<void>) => {
+                getAppealById()
             })
             .catch(err => console.log(err))
     }
@@ -59,15 +67,6 @@ const Appeal = (props:any) => {
         setTimeout(() => {
             toggleReportModal(true);
         }, 0);
-        // check(1)
-    }
-
-    const takeTask = () => {
-        TasksAPI.takeTask(appeal.id)
-            .then((response:AxiosResponse<void>) => {
-                getAppealById()
-            })
-            .catch(err => console.log(err))
     }
 
     const renderSwitchCase = () => {

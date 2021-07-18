@@ -26,9 +26,9 @@ const ClientDetails = () => {
     }
 
     const getClient = () => {
+        doReq(true)
         ClientsAPI.getClientById(+clientId)
             .then((response:AxiosResponse<ClientDetailsResponse>) => {
-                doReq(true)
                 clientData.email.onChange({target: { value: response.data.email }})
                 clientData.fio.onChange({target: { value: response.data.fio }})
                 clientData.fullAddress.onChange({target: { value: response.data.fullAddress }})

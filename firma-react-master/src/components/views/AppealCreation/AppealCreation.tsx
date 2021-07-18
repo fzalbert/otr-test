@@ -19,8 +19,17 @@ import { setCatCostList } from '../../../store/actions/cat-cost-actions';
 import ErrorModal from '../../ui/ErrorModal/ErrorModal';
 
 const AppealCreation = (props:any) => {
+
+    const { id } = useParams<{id:string}>();
+    const history = useHistory()
+    const dispatch = useDispatch()
+
+    const themesList = useSelector((state: any) => state.ThemesReducer)
+    const tnvedList = useSelector((state: any) => state.TnvedReducer)
+    const catCostList = useSelector((state: any) => state.CatCostReducer)
+
     const [subjectVision, toggleSubjectVision] = useState(false)
-    const [subject, setSubject] = useState<number | null>(0)
+    const [subject, setSubject] = useState<number>(0)
 
     const [tnvedVision, toggleTnvedVision] = useState(false)
     const [tnved, setTnved] = useState(0)
@@ -34,10 +43,6 @@ const AppealCreation = (props:any) => {
     const [fileName, setFileName] = useState('')
     const [fileUrl, setFileUrl] = useState('')
     const fileRef = useRef<HTMLAnchorElement>(null)
-
-    const { id } = useParams<{id:string}>();
-    const history = useHistory()
-    const dispatch = useDispatch()
 
     const [error, setError] = useState("");
 
@@ -61,13 +66,8 @@ const AppealCreation = (props:any) => {
     const [reqTnved, doReqTnved] = useState(false)
     const [reqCatCost, doReqCatCost] = useState(false)
 
-    const themesList = useSelector((state: any) => state.ThemesReducer)
-    const tnvedList = useSelector((state: any) => state.TnvedReducer)
-    const catCostList = useSelector((state: any) => state.TnvedReducer)
-
     const createAppeal = () => {
         let formData: FormData = new FormData();
-        //filesList.length ? formData = appendArray(formData, filesList, 'file') : formData.append('file', '')
         filesList.forEach((f, i) => {
             formData.append('file', f, f.name);
         })
@@ -79,11 +79,9 @@ const AppealCreation = (props:any) => {
             amount: appeal.amount.value,
             description: appeal.description.value
         }))
-        console.log(formData)
         AppealsAPI.createAppeal(formData)
             .then((response:AxiosResponse<AppealItemClientModel>) => {
                 history.push(`${location.hash.slice(2,7) === 'admin' ? '/admin' : ''}/appeals`)
-                // history.push(`${location.hash.slice(2,7) === 'admin' ? '/admin' : ''}/appeal/${response.data.id}`)
             })
             .catch((err:AxiosError) => {
                 console.log(err)
@@ -104,7 +102,7 @@ const AppealCreation = (props:any) => {
         AppealsAPI.updateAppeal(+id, body)
             .then((response: AxiosResponse<AppealItemClientModel>) => {
                 history.push(`/admin/appeals`)
-                uploadPhotos()
+                // uploadPhotos()
             })
             .catch((err:AxiosError) => {
                 console.log(err)
@@ -113,18 +111,18 @@ const AppealCreation = (props:any) => {
             })
     }
 
-    const uploadPhotos = () => {
-        const formData = new FormData();
-        appendArray(formData, filesList, 'file')
-        AppealsAPI.uploadAppealPhotos(+id, formData)
-            .then((response: AxiosResponse<void>) => {
+    // const uploadPhotos = () => {
+    //     const formData = new FormData();
+    //     appendArray(formData, filesList, 'file')
+    //     AppealsAPI.uploadAppealPhotos(+id, formData)
+    //         .then((response: AxiosResponse<void>) => {
 
-            }).catch((err:AxiosError) => {
-                console.log(err)
-                setError(err.response?.data.message)
-                setTimeout(() => setError(""), 5000);
-            })
-    }
+    //         }).catch((err:AxiosError) => {
+    //             console.log(err)
+    //             setError(err.response?.data.message)
+    //             setTimeout(() => setError(""), 5000);
+    //         })
+    // }
 
     const downloadPhotos = (id: number, fileName: string) => {
         AppealsAPI.downloadAppealFile(id)
@@ -140,9 +138,9 @@ const AppealCreation = (props:any) => {
     }
 
     const getAppealById = () => {
+        doReqAppeal(true)
         AppealsAPI.getAppealById(+id)
             .then((response:AxiosResponse<AppealItemClientModel>) => {
-                doReqAppeal(true)
                 response.data.createDate = new Date((response.data.createDate as string).slice(0,19))
                 response.data.report ? response.data.report.createDate = new Date((response.data.report.createDate as string)?.slice(0,19)) : null
                 setAppealData(response.data)
@@ -165,9 +163,9 @@ const AppealCreation = (props:any) => {
     }
 
     const getSubjects = () => {
+        doReqSubjects(true)
         ThemeAPI.getAllThemes()
             .then((response:AxiosResponse<ThemeResponse[]>) => {
-                doReqSubjects(true)
                 dispatch(setThemesList(response.data))
                 if(!id) {
                     appeal.themeId.onChange({target: { value: response.data[0].id }})
@@ -178,9 +176,9 @@ const AppealCreation = (props:any) => {
     }
 
     const getTnvedList = () => {
+        doReqTnved(true)
         TnvedAPI.getAllTnved()
             .then((response:AxiosResponse<TnvedResponse[]>) => {
-                doReqTnved(true)
                 dispatch(setTnvedList(response.data))
                 if(!id) {
                     appeal.tnvedId.onChange({target: { value: response.data[0].id }})
@@ -191,9 +189,9 @@ const AppealCreation = (props:any) => {
     }
 
     const getCatCostList = () => {
+        doReqCatCost(true)
         AppealsAPI.getCatCostList()
             .then((response:AxiosResponse<{id:number, name: string}[]>) => {
-                doReqCatCost(true)
                 dispatch(setCatCostList(response.data))
                 if(!id) {
                     appeal.catCostId.onChange({target: { value: response.data[0].id }})
@@ -205,16 +203,15 @@ const AppealCreation = (props:any) => {
 
     const onChangeFile = (event: any) => {
         event.persist()
-        if (event.target && event.target.files && event.target.files[0]) {
+        if (event.target.files && event.target.files[0]) {
             setFilesList((state: any) => [...state, ...Array.from(event.target.files)]);
             const reader = new FileReader();
             let images = event.target.files;
             let counter = 0;
             reader.readAsDataURL(images[counter])
             reader.onload = (e: any) => {
-                console.log(e.target.result)
                 setAttachments((state) => [...state, e.target.result]);
-                counter < images.length - 1 ? reader.readAsDataURL(images[++counter]) : event.target.files = [];
+                counter < images.length - 1 ? reader.readAsDataURL(images[++counter]) : null;
             }
         }
     }
@@ -224,7 +221,8 @@ const AppealCreation = (props:any) => {
         !reqTnved && !tnvedList?.length ? getTnvedList() : null;
         !reqCatCost && !catCostList?.length ? getCatCostList() : null;
         !reqAppeal && id ? getAppealById() : null;
-    }, [subject, appeal.description.value, appeal.endDate.value, appeal.catCostId.value, appeal.themeId.value, appeal.tnvedId.value, appeal.amount.value, filesList, attachments])
+    }, []
+    )
 
     return (
         <div className="appeal-creation-component">
@@ -257,32 +255,36 @@ const AppealCreation = (props:any) => {
                 Текст обращения
                 <textarea name="appeal-text" className="main-input" cols={30} rows={10} {...appeal.description} placeholder="Введите текст обращения"></textarea>
             </label>
-                <div className="attachments-container">
-                    <label className="attachment-label">
-                        <input type="file" name="attachment" multiple onChange={(e) => onChangeFile(e)} />
-                        <button>Прикрепить файл</button>
-                    </label>
-                    {
-                        attachments.length || attachmentsForEdit.length ?
-                            <div className="attachments">
-                                {
-                                    !id ?
-                                        attachments.map((item, index) => (
-                                            <div className="attachment" key={item.slice(40,50)}>
-                                                <a href={item} download>{ filesList[index].name }</a>
-                                            </div>
-                                        )) :
-                                        attachmentsForEdit.map((item, index) => (
-                                            <div className="attachment" key={item.id}>
-                                                <p onClick={() => downloadPhotos(item.id, item.name)}>{item.name.slice(0,66)}</p>
-                                            </div>
-                                        ))
-                                }
-                            </div> :
-                            null
-                    }
-                    <a href={fileUrl} style={{opacity: 0}} download={fileName} ref={fileRef}></a>
-                </div>
+            <div className="attachments-container">
+                {
+                    !id ?
+                        <label className="attachment-label">
+                            <input type="file" name="attachment" multiple onChange={(e) => onChangeFile(e)} />
+                            <button>Прикрепить файл</button>
+                        </label> :
+                        null
+                }
+                {
+                    attachments.length || attachmentsForEdit.length ?
+                        <div className="attachments">
+                            {
+                                !id ?
+                                    attachments.map((item, index) => (
+                                        <div className="attachment" key={item.slice(40,50)}>
+                                            <a href={item} download>{ filesList[index].name }</a>
+                                        </div>
+                                    )) :
+                                    attachmentsForEdit.map((item, index) => (
+                                        <div className="attachment" key={item.id}>
+                                            <p onClick={() => downloadPhotos(item.id, item.name)}>{item.name.slice(0,66)}</p>
+                                        </div>
+                                    ))
+                            }
+                        </div> :
+                        null
+                }
+                <a href={fileUrl} style={{opacity: 0}} download={fileName} ref={fileRef}></a>
+            </div>
             <label>
                 Срок реализации проекта
                 <input type="date" className="main-input" {...appeal.endDate} placeholder="Введите срок" />
@@ -295,10 +297,12 @@ const AppealCreation = (props:any) => {
                         <ul className="select-list">
                             { 
                                 catCostList.map((item: {id:number, name: string}) => 
-                                    <li className="select-list_item" key={item.id} onMouseDown={() => {
-                                        setCatCost(item.id)
-                                        appeal.catCostId.onChange({target: { value: item.id }})
-                                    }}>{ item.name }</li>
+                                    <li className="select-list_item" key={item.id} 
+                                        onMouseDown={() => {
+                                            setCatCost(item.id)
+                                            appeal.catCostId.onChange({target: { value: item.id }})
+                                        }
+                                    }>{ item.name }</li>
                                 )
                             }
                         </ul> :
@@ -307,16 +311,18 @@ const AppealCreation = (props:any) => {
             </label>
             <label className="select-label" onFocus={() => toggleTnvedVision(!tnvedVision)} onBlur={() => toggleTnvedVision(false)}>
                 ТН ВЭД
-                <input type="text" className="main-input" value={`${tnvedList?.find((item:ThemeResponse) => item.id === tnved)?.code} ${tnvedList?.find((item:ThemeResponse) => item.id === tnved)?.name}`} placeholder="Введите ТН ВЭД" readOnly />
+                <input type="text" className="main-input" value={tnvedList.length ? `${tnvedList?.find((item:ThemeResponse) => item.id === tnved)?.code} ${tnvedList?.find((item:ThemeResponse) => item.id === tnved)?.name}` : 'Выберите ТН ВЭД'} placeholder="Введите ТН ВЭД" readOnly />
                 {
                     tnvedVision ?
                         <ul className="select-list">
                             { 
                                 tnvedList.map((item: TnvedResponse) => 
-                                    <li className="select-list_item" key={item.id} onMouseDown={() => {
-                                        setTnved(item.id)
-                                        appeal.tnvedId.onChange({target: { value: item.id }})
-                                    }}>{ `${item.code} ${item.name}` }</li>
+                                    <li className="select-list_item" key={item.id} 
+                                        onMouseDown={() => {
+                                            setTnved(item.id)
+                                            appeal.tnvedId.onChange({target: { value: item.id }})
+                                        }
+                                    }>{ `${item.code} ${item.name}` }</li>
                                 )
                             }
                         </ul> :

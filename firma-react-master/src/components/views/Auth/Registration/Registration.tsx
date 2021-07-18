@@ -7,8 +7,11 @@ import { RegistrationResponse } from '../../../../api/models/response/auth-respo
 import { CSSTransition } from 'react-transition-group';
 import ErrorModal from '../../../ui/ErrorModal/ErrorModal';
 import { useHistory } from 'react-router';
+import SuccessModal from '../../../ui/SuccessModal/SuccessModal';
 
 const Registration = () => {
+
+    const history = useHistory()
 
     const account = {
         email: useFormState(''),
@@ -22,9 +25,8 @@ const Registration = () => {
         shortNameOrg: useFormState('')
     }
 
+    const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
-
-    const history = useHistory()
 
     const registerAccount = ({email, fio, fullAddress, fullNameOrg, inn, kpp, login, password, shortNameOrg}:any, e:any) => {
         e.preventDefault();
@@ -40,8 +42,12 @@ const Registration = () => {
             shortNameOrg: shortNameOrg.value
         })
         .then((response:AxiosResponse<RegistrationResponse>) => {
-            alert('Success')
-            history.push('/authorization')
+            setSuccess('Вы успешно зарегистрированы')
+            setTimeout(() => {
+                setSuccess("")
+                history.push('/authorization')
+            }
+            , 3000);
         })
         .catch((err:AxiosError) => {
             setError(err.response?.data.message)
@@ -55,6 +61,11 @@ const Registration = () => {
                 <ErrorModal>
                     { error }
                 </ErrorModal>
+            </CSSTransition>
+            <CSSTransition in={success.length !== 0} timeout={300} unmountOnExit classNames="show-hide-animation">
+                <SuccessModal>
+                    { success }
+                </SuccessModal>
             </CSSTransition>
             <h1>Регистрация</h1>
             <fieldset>

@@ -1,5 +1,5 @@
 export interface EmployeeResponse {
-    id: number | null;
+    id: number;
     firstName: string;
     lastName: string;
     email: string;

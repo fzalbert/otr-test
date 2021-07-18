@@ -35,11 +35,11 @@
 
         th,
         td {
-            &:nth-child(6) {
+            &:nth-child(8) {
                 width: 160px;
             }
 
-            &:nth-child(7),
+            &:nth-child(9),
             &:last-child {
                 position: relative;
                 width: 162px;
@@ -51,7 +51,7 @@
                 }
             }
 
-            &:nth-child(5) {
+            &:nth-child(7) {
                 text-align: right;
 
                 button {

@@ -26,9 +26,9 @@ const StaffsList = (props:any) => {
     const roles:string[] = ['Суперадмин', 'Админ', 'Сотрудник']
 
     const getStaffs = () => {
+        doReq(true)
         StaffsAPI.getAllEmployees()
             .then((res:AxiosResponse<EmployeeResponse[]>) => {
-                doReq(true)
                 setStaffsList(res.data)
             })
             .catch(err => console.log(err))
@@ -57,6 +57,8 @@ const StaffsList = (props:any) => {
                     <tr>
                         <th>№</th>
                         {/* <th>ФИО</th> */}
+                        <th>Имя</th>
+                        <th>Фамилия</th>
                         <th>E-mail</th>
                         <th>Логин</th>
                         <th>Роль</th>
@@ -71,6 +73,8 @@ const StaffsList = (props:any) => {
                                 <tr>
                                     <td aria-label="№">{ item.id }</td>
                                     {/* <td aria-label="ФИО">{ item.fio }</td> */}
+                                    <td aria-label="Имя">{ item.firstName }</td>
+                                    <td aria-label="Фамилия">{ item.lastName }</td>
                                     <td aria-label="E-mail">{ item.email }</td>
                                     <td aria-label="Логин">{ item.login }</td>
                                     <td aria-label="Роль">{ roles[item.role] }</td>

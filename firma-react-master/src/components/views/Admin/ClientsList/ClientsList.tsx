@@ -20,9 +20,9 @@ const ClientsList = (props:any) => {
     const [req, doReq] = useState(false)
 
     const getClients = () => {
+        doReq(true)
         ClientsAPI.getAllClients()
             .then((res:AxiosResponse<ClientResponse[]>) => {
-                doReq(true)
                 setClientsList(res.data)
             })
             .catch(err => console.log(err))

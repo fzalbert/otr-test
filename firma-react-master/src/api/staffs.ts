@@ -52,13 +52,6 @@ const StaffsAPI = {
             }
         })
     },
-    // appointRole: (employeeId: number, role: string):Promise<AxiosResponse<boolean>> => {
-    //     return axios.put(`${environment.apiEndPoint}api/employee/appoint-role`, employeeId, role, {
-    //         headers: {
-    //             'Authorization' : localStorage.getItem('token'),
-    //         }
-    //     })
-    // },
     create: (employeeData: EmployeeRequest):Promise<AxiosResponse<EmployeeResponse>> => {
         return axios.post(`${environment.apiEndPoint}employee/api/employee/create`, employeeData, {
             headers: {
