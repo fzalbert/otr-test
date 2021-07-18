@@ -16,6 +16,10 @@ import org.springframework.stereotype.Component;
         @Autowired
         private ObjectMapper objectMapper;
 
+        /**
+         * Сообщение на создание сотрудника
+         * @param m
+         */
         public void sendEmployee(EmployeeModel m) {
             try {
                 String jsonMessage = objectMapper.writeValueAsString(m);
@@ -27,6 +31,11 @@ import org.springframework.stereotype.Component;
                 throw new RuntimeException("Could not tranform and send message due to: " + e.getMessage(), e);
             }
         }
+
+        /**
+         * Сообщение на обновление сотрудника
+         * @param m
+         */
         public void sendUpdateEmployee(EmployeeModel m) {
             try {
                 String jsonMessage = objectMapper.writeValueAsString(m);

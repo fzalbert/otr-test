@@ -7,7 +7,9 @@ import org.springframework.lang.Nullable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
-
+/**
+ * Модель для обновления сотрудника
+ */
 @Data
 public class UpdateEmployeeDto {
 

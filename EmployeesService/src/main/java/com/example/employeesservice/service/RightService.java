@@ -7,6 +7,8 @@ import java.util.List;
 public interface RightService {
 
     boolean appointRole(long id, long roleId);
+
     List<RightDto> getList();
+
     List<RightDto> getListByRoleId(long roleId);
 }

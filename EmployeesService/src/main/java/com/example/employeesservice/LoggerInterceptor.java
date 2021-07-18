@@ -61,7 +61,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
         }
         String ip = request.getHeader("X-FORWARDED-FOR");
         String ipAddr = (ip == null) ? getRemoteAddr(request) : ip;
-        if (ipAddr!=null && !ipAddr.equals("")) {
+        if (ipAddr != null && !ipAddr.equals("")) {
             posted.append("&_psip=" + ipAddr);
         }
         return posted.toString();
@@ -76,16 +76,13 @@ public class LoggerInterceptor implements HandlerInterceptor {
         return request.getRemoteAddr();
     }
 
-    private static String makeUrl(HttpServletRequest request)
-    {
+    private static String makeUrl(HttpServletRequest request) {
         return request.getRequestURL().toString() + "?" + request.getQueryString();
     }
 
     private static String makeBody(HttpServletRequest request) throws IOException {
-        if ("POST".equalsIgnoreCase(request.getMethod()))
-        {
+        if ("POST".equalsIgnoreCase(request.getMethod())) {
             return "";
-        }
-        else return "";
+        } else return "";
     }
 }
