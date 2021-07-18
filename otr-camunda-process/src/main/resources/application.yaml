@@ -5,12 +5,12 @@
 #  username: postgres
 #  password: Ivan230691
 #spring.h2.console.enabled: true # http://localhost:8080/h2-console/
-spring.datasource:
-  url: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-  #shareable h2 database: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
-  username: sa
-  password: sa
-spring.h2.console.enabled: true # http://localhost:/h2-console/
+#spring.datasource:
+#  url: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+##  shareable h2 database: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
+#  username: sa
+#  password: sa
+#spring.h2.console.enabled: true # http://localhost:/h2-console/
 camunda.bpm:
   admin-user:
     id: demo
