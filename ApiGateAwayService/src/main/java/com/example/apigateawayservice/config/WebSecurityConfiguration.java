@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -15,25 +17,37 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import reactor.core.publisher.Mono;
+
+import java.util.Arrays;
 
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 public class WebSecurityConfiguration {
+
+    private static final String FRONTEND_LOCALHOST = "http://192.168.1.101";
+    private static final String FRONTEND_STAGING = "https://somehost.github.io";
 
     @Autowired
     private SecurityContextRepository securityContextRepository;
 
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) throws Exception {
-        http.cors().and()
+        http.exceptionHandling()
+                .authenticationEntryPoint((swe, e) ->
+                        Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
+                ).accessDeniedHandler((swe, e) ->
+                        Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN)))
+                .and()
                 .csrf().disable()
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange()
-                .pathMatchers("/auth/**", "/client/api/account/register").permitAll()
+/*                .pathMatchers("/auth/**", "/client/api/account/register").permitAll()
                 .pathMatchers("/employee/api/employee/update").hasRole(UserType.EMPLOYEE.name())
                 .pathMatchers("/client/api/clients/**").hasAnyRole(UserType.CLIENT.name(), UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
                 .pathMatchers("/client/**", "/employee/**").hasAnyRole(UserType.ADMIN.name(), UserType.SUPER_ADMIN.name())
-                .pathMatchers().authenticated();
+                .anyExchange().authenticated();*/
+                .anyExchange().permitAll();
         return http.build();
     }
 
@@ -43,9 +57,27 @@ public class WebSecurityConfiguration {
     }
 
     @Bean
+    CorsConfigurationSource corsConfiguration() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.
+        corsConfig.applyPermitDefaultValues();
+        corsConfig.addAllowedMethod(HttpMethod.POST);
+        corsConfig.addAllowedMethod(HttpMethod.GET);
+        corsConfig.addAllowedMethod(HttpMethod.DELETE);
+        corsConfig.addAllowedMethod(HttpMethod.PUT);
+
+        corsConfig.setAllowedOrigins(Arrays.asList(FRONTEND_LOCALHOST, FRONTEND_STAGING));
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+        return source;
+    }
+
+/*    @Bean
     CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
-    }
+    }*/
 }
