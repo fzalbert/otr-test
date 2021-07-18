@@ -52,7 +52,7 @@ public class ClientServiceImp implements ClientService {
     }
 
     /**
-     * Получение всех клиентов
+     * Получение списка клиентов
      */
     @Override
     public List<ShortClientDto> getAll() {
@@ -80,35 +80,13 @@ public class ClientServiceImp implements ClientService {
      * Заблокировать клиента по Id
      */
     @Override
-    public void blockById(long id) {
-
-        var client = clientRepository.findById(id).orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
-
-        var user = userRepository
-                .findById(client.getUser().getId())
-                .get();
-
-        user.setActive(false);
-
-        userRepository.save(user);
-    }
+    public void blockById(long id) { this.changeActiveClient(false, id);}
 
     /**
      * Разблокировать клиента по id
      */
     @Override
-    public void unblockById(long id) {
-        var client = clientRepository.findById(id).orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
-
-        var user = userRepository
-                .findById(client.getUser().getId())
-                .get();
-
-        user.setActive(true);
-        user.setAttemptsBlocking(0);
-
-        userRepository.save(user);
-    }
+    public void unblockById(long id) { this.changeActiveClient(true, id);}
 
     /**
      * Обновить клиента
@@ -118,8 +96,6 @@ public class ClientServiceImp implements ClientService {
     public ClientDto update(ClientDto clientRequest) {
         dtoValidator.validate(clientRequest);
         var client = clientRepository.findById(clientRequest.getId()).orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
-        if (client == null)
-            return null;
 
         client.getUser().setLogin(clientRequest.getLogin());
 
@@ -132,7 +108,7 @@ public class ClientServiceImp implements ClientService {
     }
 
     /**
-     * Удалить клиента по id
+     * Удалить клиента
      */
     @Override
     public boolean deleteById(long id) {
@@ -163,7 +139,7 @@ public class ClientServiceImp implements ClientService {
         authDtoValidator.validate(authRequest);
         var user = userRepository
                 .findByLogin(authRequest.getLogin())
-                .orElse(null);
+                .orElseThrow(() -> new TemplateException("Пользователь не найден"));
 
         var client = user.getClient();
         return new ClientModelDto(client.getId(), client.getEmail(), client.getFullNameOrg(), "CLIENT");
@@ -195,6 +171,24 @@ public class ClientServiceImp implements ClientService {
         model.setSubject("SUCCESSFUL REGISTRATION");
         model.setContent("Вы успешно зарегистрировались! ");
         messageSender.sendEmail(model);
+    }
+
+    /**
+     * Изменить статус клиента
+     */
+    private void changeActiveClient(boolean isActive, long id) {
+
+        var client = clientRepository
+                .findById(id)
+                .orElseThrow(() -> new TemplateException("Клиент с таким id не найден"));
+
+        var user = userRepository
+                .findById(client.getUser().getId())
+                .orElseThrow(() -> new TemplateException("Пользователь не найден"));
+
+        user.setActive(isActive);
+        user.setAttemptsBlocking(0);
+        userRepository.save(user);
     }
 
 

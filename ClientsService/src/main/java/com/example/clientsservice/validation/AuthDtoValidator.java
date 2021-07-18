@@ -32,7 +32,7 @@ public class AuthDtoValidator implements BaseValidator<AuthDto> {
     private void validateUniqueCode(AuthDto authDto) {
         var user = userRepository
                 .findByLogin(authDto.getLogin())
-                .orElse(null);
+                .orElseThrow(() -> new TemplateException("Пользователь не найден"));
 
         if(user != null) {
             CryptoHelper.setSecretKey(secretKey);

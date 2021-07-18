@@ -19,12 +19,20 @@ public class BanController {
         this.clientService = clientService;
     }
 
+    /**
+     * Заблокировать пользователя
+     * @param id
+     */
     @GetMapping("block")
     public void blockById(@RequestParam long id) {
         log.debug("Request method: for ban/block  UserId= " + id );
         this.clientService.blockById(id);
     }
 
+    /**
+     * Разблокировать пользователя
+     * @param id
+     */
     @GetMapping("unblock")
     public void unblockById(@RequestParam long id) {
         log.debug("Request method: for ban/unblock  UserId= " + id );

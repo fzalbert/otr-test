@@ -26,28 +26,49 @@ public class ClientController {
     }
 
 
+    /**
+     * Получение списка клиентов
+     * @param request
+     */
     @GetMapping("list")
     public List<ShortClientDto> geAll(HttpServletRequest request) {
         return this.clientService.getAll();
     }
 
+    /**
+     * Получение клиента по id
+     * @param id
+     */
     @GetMapping("by-id")
     public ClientDto getById(@RequestParam long id) {
         return this.clientService.getById(id);
     }
 
+    /**
+     * Обновить клиента
+     * @param request
+     */
     @PostMapping("update")
     public ClientDto update(@RequestBody @Valid ClientDto request) {
         log.debug("Request method: clients/update user: " + request.getLogin());
         return this.clientService.update(request);
     }
 
+    /**
+     * Удалить клиента
+     * @param id
+     */
     @DeleteMapping("delete")
     public boolean deleteById(@RequestParam long id) {
         log.debug("Request method: clients/delete userId: " + id);
         return this.clientService.deleteById(id);
     }
 
+    /**
+     * Сменить пароль
+     * @param id
+     * @param newPassword
+     */
     @PutMapping("change-password")
     public boolean changePassword(@RequestParam long id, @RequestParam(required = true) String newPassword) {
         log.debug("Request method: clients/change-password userId: " + id);

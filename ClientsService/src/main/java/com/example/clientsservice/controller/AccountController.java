@@ -24,6 +24,10 @@ public class AccountController {
         this.clientService = clientService;
     }
 
+    /**
+     * Регистрация клиента
+     * @param request
+     */
     @PostMapping("register")
     public void register(@RequestBody @Valid CreateClientDto request){
 
@@ -31,6 +35,10 @@ public class AccountController {
         this.clientService.register((request));
     }
 
+    /**
+     * Авторизация клиента
+     * @param request
+     */
     @PostMapping("auth")
     public ClientModelDto auth(@RequestBody @Valid AuthDto request) {
         log.debug("Request method: account/auth user with login: " + request.getLogin());

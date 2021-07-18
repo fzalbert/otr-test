@@ -16,6 +16,10 @@ public class MessageSender {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Сообщение об успешной регистрации клиента
+     * @param m
+     */
     public void sendEmail(ModelMessage m) {
         try {
             String jsonMessage = objectMapper.writeValueAsString(m);

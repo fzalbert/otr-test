@@ -2,6 +2,9 @@ package com.example.clientsservice.kafka;
 
 import lombok.Data;
 
+/**
+ * Модель сообщения для kafka
+ */
 @Data
 public class ModelMessage {
 
