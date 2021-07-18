@@ -1,17 +1,12 @@
 package org.example.dto.appeal;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.example.dto.FileDto;
-import org.example.dto.TNVED;
 import org.example.dto.Theme;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Data
