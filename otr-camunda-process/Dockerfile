@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM openjdk:8-jdk-alpine as build
+FROM openjdk:16-jdk as build
 WORKDIR /workspace/app
 
 COPY mvnw .
@@ -7,12 +7,12 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 
-RUN --mount=type=cache,target=/root/.m2 ./mvnw install -DskipTests
+RUN ./mvnw install -DskipTests
 WORKDIR /workspace/app/target/dependency
 RUN jar -xf ../*.jar
 
-FROM openjdk:8-jdk-alpine
-RUN addgroup -S demo && adduser -S demo -G demo
+FROM openjdk:16-jdk
+RUN groupadd demo && useradd -g demo demo
 VOLUME /tmp
 USER demo
 ARG DEPENDENCY=/workspace/app/target/dependency

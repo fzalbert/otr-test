@@ -1,16 +1,3 @@
-
-#spring.datasource:
-#  url: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-#  #shareable h2 database: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
-#  username: postgres
-#  password: Ivan230691
-#spring.h2.console.enabled: true # http://localhost:8080/h2-console/
-#spring.datasource:
-#  url: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-##  shareable h2 database: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
-#  username: sa
-#  password: sa
-#spring.h2.console.enabled: true # http://localhost:/h2-console/
 camunda.bpm:
   admin-user:
     id: demo
@@ -26,7 +13,6 @@ spring.devtools:
   restart:
     enabled: false
 camunda.bpm.job-execution:
-  #   deployment-aware: true
   wait-time-in-millis: 5000
   max-wait: 10000
 
@@ -34,10 +20,7 @@ camunda.bpm.job-execution:
 spring.cloud.stream.bindings.input.destination: ComundaTopic
 spring.cloud.stream.bindings.input.content-type: application/json
 
-
-#spring.cloud.stream.kafka.binder.zkNodes: localhost:2181
 spring.cloud.stream.kafka.binder.zkNodes: kafka-zookeeper.default.svc.cluster.local:2181
-#spring.cloud.stream.kafka.binder.brokers: localhost:9092
 spring.cloud.stream.kafka.binder.brokers: kafka-0.kafka-headless.default.svc.cluster.local:9092
 
 spring:
@@ -56,7 +39,6 @@ spring:
     password: Ivan230691
 
     hikari:
-      #jdbc-url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/camunda
       jdbc-url: jdbc:postgresql://10.0.1.1:5432/camunda
       username: postgres
       password: Ivan230691
