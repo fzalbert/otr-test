@@ -32,7 +32,7 @@ public class CryptoHelper {
             byte[] macData = sha512Hmac.doFinal(password.getBytes(StandardCharsets.UTF_8));
 
             // Can either base64 encode or put it right into hex
-            result =  Base64.getEncoder().encodeToString(macData);
+            result = Base64.getEncoder().encodeToString(macData);
             //result = bytesToHex(macData);
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
             e.printStackTrace();

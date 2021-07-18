@@ -8,7 +8,10 @@ import java.util.List;
 public interface RoleService {
 
     boolean create(CreateRoleDto request);
+
     RoleDto update(CreateRoleDto request, long id);
+
     List<RoleDto> getList();
+
     boolean delete(long id);
 }

@@ -5,13 +5,17 @@ import com.example.employeesservice.repository.EmployeeRepository;
 
 import javax.servlet.http.HttpServletRequest;
 
+
+/**
+ * Базовый контроллер авторизации
+ */
 public abstract class AuthorizeController {
 
-    protected final Employee employee;
+    protected Employee employee;
 
     public AuthorizeController(HttpServletRequest request, EmployeeRepository employeeRepository) {
-
-        Long employeeId = Long.parseLong(request.getHeader("id"));
-        this.employee = employeeRepository.findById(employeeId).orElse(null);
+        var employeeId = request.getHeader("id");
+        if (employeeId != null)
+            this.employee = employeeRepository.findById(Long.parseLong(employeeId)).orElse(null);
     }
 }

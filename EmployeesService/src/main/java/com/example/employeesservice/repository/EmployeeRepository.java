@@ -9,8 +9,6 @@ import java.util.Optional;
 
 @Scope("prototype")
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-
     Optional<Employee> findByEmail(String email);
-
     boolean existsByRoleType(RoleType roleType);
 }

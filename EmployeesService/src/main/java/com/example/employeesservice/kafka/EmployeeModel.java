@@ -3,6 +3,9 @@ package com.example.employeesservice.kafka;
 import com.example.employeesservice.domain.Employee;
 import lombok.Data;
 
+/**
+ * Модель сотрудника для kafka
+ */
 @Data
 public class EmployeeModel {
 

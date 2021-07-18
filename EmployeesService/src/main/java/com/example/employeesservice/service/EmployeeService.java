@@ -12,13 +12,21 @@ import java.util.List;
 public interface EmployeeService {
 
     EmployeeModelDto auth(AuthDto request);
+
     boolean create(CreateEmployeeDto request);
-    EmployeeDto update (UpdateEmployeeDto request, long id);
-    boolean delete (long id);
+
+    EmployeeDto update(UpdateEmployeeDto request, long id);
+
+    boolean delete(long id);
+
     List<EmployeeDto> getList();
+
     EmployeeDto getById(long id);
+
     boolean appointRole(long id, RoleType role);
+
     void blockById(long id);
+
     void unblockById(long id);
 
 }

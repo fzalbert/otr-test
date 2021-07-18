@@ -23,6 +23,10 @@ public class EmployeeAccountController {
         this.employeeService = employeeService;
     }
 
+    /**
+     * Авторизация сотрудника
+     * @param request
+     */
     @PostMapping("auth")
     public EmployeeModelDto auth(@RequestBody @Valid AuthDto request) {
         log.debug("Request method: employee-account/auth. User = " + request.getLogin());

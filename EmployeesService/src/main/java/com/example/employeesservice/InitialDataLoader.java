@@ -37,13 +37,13 @@ public class InitialDataLoader implements ApplicationRunner {
         createSuperAdmin();
     }
 
-    private void createSuperAdmin(){
+    private void createSuperAdmin() {
 
         var isExists = employeeRepository.existsByRoleType(RoleType.SUPER_ADMIN);
 
-        if(!isExists) {
+        if (!isExists) {
             var admin = loadAdmin();
-            if(admin == null)
+            if (admin == null)
                 return;
 
             admin.setRoleType(RoleType.SUPER_ADMIN);
@@ -57,8 +57,7 @@ public class InitialDataLoader implements ApplicationRunner {
         File file;
         try {
             file = Paths.get(res.toURI()).toFile();
-        }
-        catch (URISyntaxException | NullPointerException ex){
+        } catch (URISyntaxException | NullPointerException ex) {
             ex.printStackTrace();
             return null;
         }
@@ -66,8 +65,7 @@ public class InitialDataLoader implements ApplicationRunner {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.readValue(file, CreateEmployeeDto.class);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }

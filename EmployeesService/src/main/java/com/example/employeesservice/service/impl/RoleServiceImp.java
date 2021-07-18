@@ -4,12 +4,14 @@ import com.example.employeesservice.domain.Role;
 import com.example.employeesservice.dto.request.CreateRoleDto;
 import com.example.employeesservice.dto.response.RoleDto;
 import com.example.employeesservice.exception.ResourceNotFoundException;
+import com.example.employeesservice.exception.TemplateException;
 import com.example.employeesservice.repository.EmployeeRepository;
 import com.example.employeesservice.repository.RoleRepository;
 import com.example.employeesservice.service.RoleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -27,7 +29,9 @@ public class RoleServiceImp implements RoleService {
         this.roleRepository = roleRepository;
     }
 
-    /** Создание роли */
+    /**
+     * Создание роли
+     */
     @Override
     public boolean create(CreateRoleDto request) {
         var role = this.dtoInEntity(request, new Role());
@@ -36,7 +40,9 @@ public class RoleServiceImp implements RoleService {
         return true;
     }
 
-    /** Обновление роли */
+    /**
+     * Обновление роли
+     */
     @Override
     public RoleDto update(CreateRoleDto request, long id) {
         var role = roleRepository.findById(id)
@@ -47,28 +53,34 @@ public class RoleServiceImp implements RoleService {
         return new RoleDto(updatedRole);
     }
 
-    /** Получить список ролей */
+    /**
+     * Получить список ролей
+     */
     @Override
     public List<RoleDto> getList() {
         return roleRepository
-                .findAll()
+                .findAll(Sort.by(Sort.Direction.ASC, "title"))
                 .stream()
-                .sorted(Comparator.comparing(Role::getTitle, Comparator.reverseOrder()))
+                .sorted()
                 .map(RoleDto::new)
                 .collect(Collectors.toList());
     }
 
-    /** Удалить роль */
+    /**
+     * Удалить роль
+     */
     @Override
     public boolean delete(long id) {
         var role = roleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id));
+                .orElseThrow(() -> new TemplateException("Роль не найдена"));
 
         roleRepository.delete(role);
         return true;
     }
 
-    /** Преобразовать из dto в сущность role */
+    /**
+     * Преобразовать из dto в сущность role
+     */
     private Role dtoInEntity(CreateRoleDto request, Role role) {
         BeanUtils.copyProperties(request, role);
         return role;

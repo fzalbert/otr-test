@@ -52,7 +52,9 @@ public class EmployeeServiceImp implements EmployeeService {
         this.kafkaSender = kafkaSender;
     }
 
-    /** Авторизация */
+    /**
+     * Авторизация
+     */
     @Override
     public EmployeeModelDto auth(AuthDto request) {
         CryptoHelper.setSecretKey(secretKey);
@@ -62,10 +64,12 @@ public class EmployeeServiceImp implements EmployeeService {
                 .findByLoginAndPassword(request.getLogin(), hmacPassword)
                 .orElseThrow(() -> new TemplateException("Пользователь не найден"));
 
-        if(!user.isActive())
+        if (!user.isActive())
             throw new TemplateException("Вас заблокировали");
 
         var employee = user.getEmployee();
+        if(employee == null)
+            throw new TemplateException("Сотрудник не найден");
 
         return new EmployeeModelDto(employee.getId(),
                 employee.getEmail(),
@@ -73,7 +77,9 @@ public class EmployeeServiceImp implements EmployeeService {
                 employee.getRoleType().name());
     }
 
-    /** Создание сотрудника */
+    /**
+     * Создание сотрудника
+     */
     @Override
     public boolean create(CreateEmployeeDto request) {
         dtoValidator.validate(request);
@@ -81,11 +87,12 @@ public class EmployeeServiceImp implements EmployeeService {
 
         employeeRepository.save(employee);
         kafkaSender.sendEmployee(new EmployeeModel(employee));
-
         return true;
     }
 
-    /** Обновление сотрудника */
+    /**
+     * Обновление сотрудника
+     */
     @Override
     public EmployeeDto update(UpdateEmployeeDto request, long employeeId) {
         var employee = employeeRepository.findById(employeeId)
@@ -98,7 +105,9 @@ public class EmployeeServiceImp implements EmployeeService {
         return new EmployeeDto(updatedEmployee);
     }
 
-    /** Удаление сотрудника */
+    /**
+     * Удаление сотрудника
+     */
     @Override
     public boolean delete(long employeeId) {
         var employee = employeeRepository.findById(employeeId)
@@ -107,7 +116,9 @@ public class EmployeeServiceImp implements EmployeeService {
         return true;
     }
 
-    /** Получить список всех сотрудников в системе */
+    /**
+     * Получить список всех сотрудников в системе
+     */
     @Override
     public List<EmployeeDto> getList() {
         return employeeRepository
@@ -117,7 +128,9 @@ public class EmployeeServiceImp implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
-    /** Получить данные о сотруднике по id */
+    /**
+     * Получить данные о сотруднике по id
+     */
     @Override
     public EmployeeDto getById(long employeeId) {
         var employee = employeeRepository.findById(employeeId)
@@ -125,7 +138,9 @@ public class EmployeeServiceImp implements EmployeeService {
         return new EmployeeDto(employee);
     }
 
-    /** Назначить роль сотруднику */
+    /**
+     * Назначить роль сотруднику
+     */
     @Override
     public boolean appointRole(long employeeId, RoleType role) {
         var employee = employeeRepository.findById(employeeId)
@@ -137,7 +152,41 @@ public class EmployeeServiceImp implements EmployeeService {
         return true;
     }
 
-    /** Преобразовать из dto в сущность employee */
+    /**
+     * Разблокировать сотрудник по id
+     */
+    @Override
+    public void blockById(long id) {
+        this.changeActiveEmployee(false, id);
+    }
+
+    /**
+     * Разблокировать сотрудник по id
+     */
+    @Override
+    public void unblockById(long id) {
+        this.changeActiveEmployee(true, id);
+    }
+
+    /**
+     * Изменить статус сотрудника
+     */
+    private void changeActiveEmployee(boolean isActive, long id) {
+        var client = employeeRepository
+                .findById(id)
+                .orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
+
+        var person = personRepository
+                .findById(client.getPerson().getId())
+                .orElseThrow(() -> new TemplateException("Пользователь не найден"));
+
+        person.setActive(isActive);
+        personRepository.save(person);
+    }
+
+    /**
+     * Преобразовать из dto в сущность employee
+     */
     private Employee dtoToEntity(CreateEmployeeDto request, Employee employee) {
         CryptoHelper.setSecretKey(secretKey);
         BeanUtils.copyProperties(request, employee);
@@ -152,7 +201,9 @@ public class EmployeeServiceImp implements EmployeeService {
         return employee;
     }
 
-    /** Преобразовать из dto в сущность employee */
+    /**
+     * Преобразовать из dto в сущность employee
+     */
     private Employee dtoToEntity(UpdateEmployeeDto request, Employee employee) {
         CryptoHelper.setSecretKey(secretKey);
         BeanUtils.copyProperties(request, employee);
@@ -166,35 +217,5 @@ public class EmployeeServiceImp implements EmployeeService {
         employee.setPerson(person);
 
         return employee;
-    }
-
-    @Override
-    public void blockById(long id) {
-
-        var client = employeeRepository.findById(id).orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
-
-        var person = personRepository
-                .findById(client.getPerson().getId())
-                .get();
-
-        person.setActive(false);
-
-        personRepository.save(person);
-    }
-
-    /**
-     * Разблокировать клиента по id
-     */
-    @Override
-    public void unblockById(long id) {
-        var client = employeeRepository.findById(id).orElseThrow(()
-                -> new TemplateException("Сотрудник с таким id не найден"));
-
-        var person = personRepository
-                .findById(client.getPerson().getId())
-                .orElseThrow(() -> new TemplateException("Сотрудник с таким id не найден"));
-
-        person.setActive(true);
-        personRepository.save(person);
     }
 }
