@@ -1,3 +1,4 @@
+/*
 package com.example.apigateawayservice;
 
 import org.springframework.context.annotation.Configuration;
@@ -13,3 +14,4 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoggerInterceptor());
     }
 }
+*/

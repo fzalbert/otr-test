@@ -40,7 +40,7 @@ import static com.example.autorizeservice.utils.SecurityConstants.AUTHORIZATION_
 import static com.example.autorizeservice.utils.SecurityConstants.BEARER_PREFIX;
 
 
-@Log4j
+//@Log4j
 public class JwtEmployeeFilter extends AbstractAuthenticationProcessingFilter {
 
     private final String signingKey;
