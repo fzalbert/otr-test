@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -25,6 +24,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
                 + "]" + request.getRequestURI() + getParameters(request) + "\n"
                 + makeUrl(request) + "\n"
                 + makeBody(request) + "\n"
+                + getHeaders(request) + "\n"
         );
         return true;
     }
@@ -61,7 +61,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
         }
         String ip = request.getHeader("X-FORWARDED-FOR");
         String ipAddr = (ip == null) ? getRemoteAddr(request) : ip;
-        if (ipAddr != null && !ipAddr.equals("")) {
+        if (ipAddr!=null && !ipAddr.equals("")) {
             posted.append("&_psip=" + ipAddr);
         }
         return posted.toString();
@@ -76,13 +76,34 @@ public class LoggerInterceptor implements HandlerInterceptor {
         return request.getRemoteAddr();
     }
 
-    private static String makeUrl(HttpServletRequest request) {
-        return request.getRequestURL().toString() + "?" + request.getQueryString();
+    private static String makeUrl(HttpServletRequest request)
+    {
+        var result = request.getRequestURL().toString();
+        var query = request.getQueryString();
+        if(query != null)
+            result = "?" + query;
+        return result;
+    }
+
+    private static String getHeaders(HttpServletRequest request){
+        Enumeration<String> headerNames = request.getHeaderNames();
+        StringBuilder headers = new StringBuilder();
+        if (headerNames != null) {
+            while (headerNames.hasMoreElements()) {
+                var headerName = headerNames.nextElement();
+                headers.append("Header ").append(headerName).append(":")
+                        .append(request.getHeader(headerName))
+                        .append("\n");
+            }
+        }
+        return headers.toString();
     }
 
     private static String makeBody(HttpServletRequest request) throws IOException {
-        if ("POST".equalsIgnoreCase(request.getMethod())) {
+        if ("POST".equalsIgnoreCase(request.getMethod()))
+        {
             return "";
-        } else return "";
+        }
+        else return "";
     }
 }

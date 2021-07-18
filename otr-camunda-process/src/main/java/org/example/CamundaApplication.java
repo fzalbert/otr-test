@@ -17,30 +17,30 @@ import org.springframework.web.filter.CorsFilter;
 @EnableProcessApplication("otr-camunda-process")
 public class CamundaApplication {
 
-  public static void main(String... args) {
-    SpringApplication.run(CamundaApplication.class, args);
-  }
+    public static void main(String... args) {
+        SpringApplication.run(CamundaApplication.class, args);
+    }
 
-  @Bean
-  public FilterRegistrationBean<CorsFilter> processCorsFilter() {
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowCredentials(true);
-    config.addAllowedOrigin("*");
-    config.addAllowedHeader("*");
-    config.addAllowedMethod("*");
-    source.registerCorsConfiguration("/**", config);
+    @Bean
+    public FilterRegistrationBean<CorsFilter> processCorsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
 
-    FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
-    bean.setOrder(0);
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
+        bean.setOrder(0);
 
-    return bean;
-  }
+        return bean;
+    }
 
-  @Bean
-  public RestTemplate createRestTemplate() {
-    RestTemplate restTemplate = new RestTemplate();
-    return restTemplate;
-  }
+    @Bean
+    public RestTemplate createRestTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate;
+    }
 
 }
