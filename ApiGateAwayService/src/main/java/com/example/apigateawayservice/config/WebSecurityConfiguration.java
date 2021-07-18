@@ -59,7 +59,6 @@ public class WebSecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfiguration() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.
         corsConfig.applyPermitDefaultValues();
         corsConfig.addAllowedMethod(HttpMethod.POST);
         corsConfig.addAllowedMethod(HttpMethod.GET);
