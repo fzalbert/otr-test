@@ -7,9 +7,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- * Модель для создание сотрудника
- */
 @Data
 public class CreateEmployeeDto {
 
