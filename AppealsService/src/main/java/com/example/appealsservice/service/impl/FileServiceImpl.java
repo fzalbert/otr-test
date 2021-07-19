@@ -1,5 +1,22 @@
 package com.example.appealsservice.service.impl;
 
+import com.example.appealsservice.domain.File;
+import com.example.appealsservice.dto.response.FileDto;
+import com.example.appealsservice.exception.TemplateException;
+import com.example.appealsservice.httpModel.UserModel;
+import com.example.appealsservice.repository.AppealRepository;
+import com.example.appealsservice.repository.FileRepository;
+import com.example.appealsservice.service.CostCatService;
+import com.example.appealsservice.service.FileService;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -10,25 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import com.example.appealsservice.domain.File;
-import com.example.appealsservice.dto.response.FileDto;
-import com.example.appealsservice.exception.NotRightsException;
-import com.example.appealsservice.httpModel.UserModel;
-import com.example.appealsservice.httpModel.UserType;
-import io.swagger.annotations.Scope;
-import lombok.Value;
-import org.springframework.core.io.Resource;
-import com.example.appealsservice.exception.TemplateException;
-import com.example.appealsservice.repository.AppealRepository;
-import com.example.appealsservice.repository.FileRepository;
-import com.example.appealsservice.service.CostCatService;
-import com.example.appealsservice.service.FileService;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 @Scope("prototype")
 @Service
@@ -61,10 +59,6 @@ public class FileServiceImpl implements FileService {
      */
     public void store(MultipartFile fileRequest, Long appealId, Long clientId) throws IOException {
 
-//        java.io.File directory = new java.io.File(pathFile);
-//        if(!directory.exists())
-//            directory.mkdirs();
-
         var filename = fileRequest.getOriginalFilename();
 
         if (filename == null)
@@ -75,7 +69,6 @@ public class FileServiceImpl implements FileService {
         String name = DigestUtils.md5Hex(StringUtils.cleanPath(Objects.requireNonNull(fileRequest.getOriginalFilename()))
                 + new SimpleDateFormat("dd-MM-yyyy").format(new Date())) + filename.substring(lastIndexOf);
 
-        //var path = new java.io.File().getAbsolutePath();
         FileOutputStream outputStream = new FileOutputStream(pathFile + name);
         outputStream.write(fileRequest.getBytes());
         outputStream.close();
