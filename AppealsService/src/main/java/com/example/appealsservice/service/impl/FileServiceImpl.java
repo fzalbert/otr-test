@@ -114,12 +114,8 @@ public class FileServiceImpl implements FileService {
         var fileDb = fileRepository.findById(fileId).orElseThrow(()
                 -> new TemplateException("Файл не найден"));
 
-        if (userModel.getUserType().equals(UserType.ROLE_CLIENT.name())) {
-            var appeal = appealRepository.findById(fileDb.getAppealId())
+        var appeal = appealRepository.findById(fileDb.getAppealId())
                     .orElseThrow(() -> new TemplateException("Обращение не найдено"));
-            if (!appeal.getClientId().equals(userModel.getId()))
-                throw new NotRightsException("Нет прав");
-        }
 
         Path root = Paths.get(pathFile);
 
