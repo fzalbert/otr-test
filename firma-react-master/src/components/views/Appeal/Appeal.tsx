@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Appeal.scss';
-import activityIcon from '../../../assets/images/sidebar/activity.svg';
-import creditCardIcon from '../../../assets/images/sidebar/credit-card.svg';
-import { CSSTransition } from 'react-transition-group';
-import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
 import ArrowLeftIcon from '../../../assets/images/icons/arrow-left.svg';
 import AppealsAPI from '../../../api/appeals';

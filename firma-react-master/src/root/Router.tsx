@@ -11,7 +11,6 @@ const AppealCreation = React.lazy(() => import('../components/views/AppealCreati
 const Appeal = React.lazy(() => import('../components/views/Appeal/Appeal'));
 const Appeals = React.lazy(() => import('../components/views/Appeals/Appeals'));
 const Authorization = React.lazy(() => import('../components/views/Auth/Authorization/Authorization'));
-// const Settings = React.lazy(() => import('../components/views/Settings/Settings'));
 
 
 const RenderAppComponent = (props:any) => (
@@ -38,7 +37,6 @@ const Router = () => {
             <Route path="/admin/appeal/:id" render={props => RenderAppComponent(<Appeal />)} />
             <Route path="/admin/edit-appeal/:id" render={props => RenderAppComponent(<AppealCreation />)} />
             {/* <Route path="/admin/new-appeal" render={props => RenderAppComponent(<AppealCreation />)} /> */}
-            {/* <Route path="/settings" render={props => RenderAppComponent(<Settings />)} /> */}
             
             <Redirect exact from="/" to="/authorization" />
         </Switch>

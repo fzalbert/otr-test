@@ -6,20 +6,12 @@ import { NavLink } from 'react-router-dom';
 import LogotypeIcon from '../../../assets/images/logotype.svg';
 import { setAuthState } from '../../../store/actions/auth-actions';
 
-const activityStyle = {
-    // backgroundImage: `url(${activityIcon})`
-}
-
 const Sidebar = (props:any) => {
 
     const history = useHistory()
     const dispatch = useDispatch()
 
-    // const [clientWidth, changeClientWidth] = useState(document.documentElement.clientWidth)
     const [isAdmin, setIsAdmin] = useState(false)
-    const [menu, toggleMenu] = useState(false)
-    const [wallet, walletVision] = useState(false)
-    const [profileMenu, profileMenuVision] = useState(false)
     let profileState = localStorage.getItem('user')
 
     const logout = () => {
@@ -32,26 +24,7 @@ const Sidebar = (props:any) => {
 
     useEffect(() => {
         setIsAdmin(location.hash.slice(2,7) === 'admin')
-        // if(profileState.avatar === undefined) {
-        //     setProfileState()
-        // }
-        // window.addEventListener('resize', () => {
-        //     changeClientWidth(document.documentElement.clientWidth);
-        // })
     })
-
-    // Handlers
-    const showMenu = () => {
-        toggleMenu(!menu);
-        props.showMenuComponent(!menu);
-        profileMenu && profileMenuVision(false)
-        wallet && walletVision(false)
-    }
-
-    const showProfileMenu = () => {
-        profileMenuVision(!profileMenu)
-        wallet && walletVision(false)
-    }
 
     return (
         <div className="sidebar">
@@ -68,14 +41,6 @@ const Sidebar = (props:any) => {
                     </nav> :
                     null
             }
-            {/* <div className="profile-menu-toggle" onClick={showProfileMenu}>
-                {profileState && JSON.parse(profileState)?.avatar ? 
-                    <img src={'http://185.22.63.194:998/' + JSON.parse(profileState ? profileState : '')?.avatar} alt=" " className="avatar"/> :
-                    <div className="not-avatar"><i className="icon-profile-icon"></i></div>
-                }
-                Александр
-            </div> */}
-            {/* <button onClick={() => history.push('/settings')}><i className="icon-cog"></i></button> */}
             <button onClick={() => logout()}><i className="icon-logout-icon"></i></button>
         </div>
     );
