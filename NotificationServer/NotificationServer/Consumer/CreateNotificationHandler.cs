@@ -38,7 +38,16 @@ namespace NotificationServer.Consumer
                 };
 
                 Console.WriteLine($"SAVE MONGO {model.Email}");
-                await MongoBase.Save(mongoModel);
+                try
+                {
+                    await MongoBase.Save(mongoModel);
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("CATCH"  + e.Message);
+                }
+                
 
             }
         }

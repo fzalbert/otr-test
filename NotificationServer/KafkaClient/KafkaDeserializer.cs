@@ -26,6 +26,7 @@ namespace KafkaClient
             } 
             catch(Exception e)
             {
+                Console.WriteLine($"DATA ERROR" + e.Message);
                 return default(T);
             }
         }
