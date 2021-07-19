@@ -41,6 +41,8 @@ namespace KafkaClient.Consumer
                         {
                             await _handler.HandleAsync(result.Message.Key, result.Message.Value);
 
+                            Console.WriteLine($"INIT KAFKA {result.Message.Key}");
+
                             consumer.Commit(result);
 
                             consumer.StoreOffset(result);
