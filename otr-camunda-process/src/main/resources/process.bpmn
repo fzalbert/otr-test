@@ -9,7 +9,7 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow1" sourceRef="StartEvent" targetRef="ServiceTask_Logger" />
     <bpmn:sequenceFlow id="SequenceFlow_18o7zqy" sourceRef="ServiceTask_Logger" targetRef="Gateway_0rhice7" />
-    <bpmn:serviceTask id="ServiceTask_Logger" name="Создание обращения">
+    <bpmn:serviceTask id="ServiceTask_Logger" name="Создание обращения" camunda:delegateExpression="#{appealsCreate}">
       <bpmn:incoming>SequenceFlow1</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_18o7zqy</bpmn:outgoing>
     </bpmn:serviceTask>
