@@ -91,6 +91,8 @@ public class AppealController  extends AuthorizeController{
         return appealService.filterAdmin(request);
     }
 
+    
+
     /**
      * Удалить обращение
      * @param id
