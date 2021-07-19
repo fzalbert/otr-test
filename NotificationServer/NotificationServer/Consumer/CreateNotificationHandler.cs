@@ -2,6 +2,7 @@
 using Mongo;
 using NotificationServer.DTO;
 using NotificationServer.EmailServices;
+using System;
 using System.Threading.Tasks;
 
 namespace NotificationServer.Consumer
@@ -35,7 +36,19 @@ namespace NotificationServer.Consumer
                     Content = model.Content,
                     Email = model.Email
                 };
-                await MongoBase.Save(mongoModel);
+
+                Console.WriteLine($"SAVE MONGO {model.Email}");
+                try
+                {
+                    await MongoBase.Save(mongoModel);
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("CATCH"  + e.Message);
+                }
+                
+
             }
         }
     }
