@@ -63,10 +63,8 @@ public class FileServiceImpl implements FileService {
 
         java.io.File directory = new java.io.File(pathFile);
         if(!directory.exists())
-        {
-            directory.mkdir();
+            directory.mkdirs();
 
-        }
         var filename = fileRequest.getOriginalFilename();
 
         if (filename == null)
