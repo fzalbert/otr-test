@@ -68,9 +68,8 @@ public class AppealServiceImpl implements AppealService {
     @Override
     public List<ShortAppealDto> getAll() {
         return appealRepository
-                .findAll()
+                .findAll(Sort.by(Sort.Direction.ASC, "createDate"))
                 .stream()
-                .sorted(Comparator.comparing(Appeal::getCreateDate, Comparator.reverseOrder()))
                 .map(ShortAppealDto::new)
                 .collect(Collectors.toList());
     }
@@ -84,16 +83,16 @@ public class AppealServiceImpl implements AppealService {
                 -> new TemplateException("Обращение не найдено"));
 
         var files = fileServiceImpl.getFilesByAppealId(id);
+        var report = reportRepository.findByAppealId(appeal.getId());
 
-        var report = reportRepository
-                .findByAppealId(appeal.getId());
+        if (report == null)
+            throw new TemplateException("Отчет не найден");
 
         var task = taskRepository
                 .getByAppealIdAndIsOverFalse(appeal.getId())
                 .stream()
                 .findFirst()
                 .orElse(null);
-
 
         return new AppealDto(appeal, files, new ReportDto(report), new TaskDto(task));
     }
@@ -131,7 +130,6 @@ public class AppealServiceImpl implements AppealService {
             throw new TemplateException("Неверная сумма заявки");
 
         appeal.setAmount(request.amount);
-
         appeal.setCreateDate(new Date());
         appeal.setEndDate(request.endDate);
         appeal.setEmail(client.getEmail());
@@ -140,12 +138,9 @@ public class AppealServiceImpl implements AppealService {
         appeal.setStatusAppeal(StatusAppeal.NOTPROCCESING);
         appeal.setClientId(client.getId());
 
-
         appealRepository.save(appeal);
         if (files != null && !files.isEmpty()) {
-
-            for (MultipartFile f :
-                    files) {
+            for (MultipartFile f : files) {
                 fileServiceImpl.store(f, appeal.getId(), appeal.getClientId());
             }
         }
@@ -163,7 +158,6 @@ public class AppealServiceImpl implements AppealService {
         msgSender.sendEmail(model);
 
         msgSender.sendAppeal(new ShortAppealDto(appeal));
-
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null, new TaskDto(task));
     }
 
@@ -200,7 +194,6 @@ public class AppealServiceImpl implements AppealService {
             appeal.setTheme(theme);
         }
 
-
         if (request.endDate != null) {
             var date = new Date();
             if (date.after(request.endDate))
@@ -217,14 +210,12 @@ public class AppealServiceImpl implements AppealService {
 
         if (request.amount != null && request.amount < 0)
             throw new TemplateException("Неверная сумма заявки");
-        appeal.setAmount(request.amount);
 
+        appeal.setAmount(request.amount);
         appeal.setUpdateDate(new Date());
         appeal.setDescription(request.description);
 
         appealRepository.save(appeal);
-
-
         return new AppealDto(appeal, fileServiceImpl.getFilesByAppealId(appeal.getId()), null, null);
     }
 
@@ -245,7 +236,7 @@ public class AppealServiceImpl implements AppealService {
                 .stream()
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new TemplateException("Задача не найдена"));
 
         if (task.getTaskStatus() != TaskStatus.NEEDUPDATE)
             throw new TemplateException("Задача в неверном статусе");
@@ -253,13 +244,11 @@ public class AppealServiceImpl implements AppealService {
         if (!task.getEmployeeId().equals(employeeId))
             throw new TemplateException("Задача уже закреплена за исполнителем");
 
-
         if (request.tnvedId != null) {
             var theme = themeRepository.findById(request.themeId).orElseThrow(()
                     -> new TemplateException("Тема не найдена"));
             appeal.setTheme(theme);
         }
-
 
         if (request.endDate != null) {
             var date = new Date();
@@ -277,15 +266,13 @@ public class AppealServiceImpl implements AppealService {
 
 
         appeal.setAmount(request.amount);
-
         appeal.setUpdateDate(new Date());
         appeal.setDescription(request.description);
-
         appealRepository.save(appeal);
-        task.setOver(true);
-        taskRepository.save(task);
 
+        task.setOver(true);
         task.setEmployeeId(employeeId);
+        taskRepository.save(task);
 
         var newTask = new Task();
         newTask.setTaskStatus(TaskStatus.NEEDCHECK);
@@ -336,7 +323,6 @@ public class AppealServiceImpl implements AppealService {
      */
     @Override
     public List<ShortAppealDto> myAppeals(Long clientId) {
-
         return appealRepository
                 .findByClientId(clientId, Sort.by(Sort.Direction.DESC, "createDate"))
                 .stream()
@@ -359,7 +345,6 @@ public class AppealServiceImpl implements AppealService {
         newTask.setTaskStatus(status);
         newTask.setAppeal(appeal);
         newTask.setDate(new Date());
-
 
         msgSender.sendChangeStatus(new AppealStatusChangedDto(appeal, status.name()));
         taskRepository.save(newTask);
@@ -384,7 +369,6 @@ public class AppealServiceImpl implements AppealService {
             appeals = appeals.stream().filter(x -> x.getStatusAppeal() == status)
                     .collect(Collectors.toList());
         }
-
 
         if (filter != null && filter.date != null)
             appeals = appeals.stream().filter(x -> x.getCreateDate().after(filter.date))

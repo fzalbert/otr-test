@@ -8,8 +8,8 @@ import java.util.List;
 public interface CostCatService {
 
     List<CostCatDto> getAll();
+
     CostCatDto byId(Long id);
 
     void init() throws URISyntaxException;
-
 }

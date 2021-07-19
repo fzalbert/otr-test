@@ -15,5 +15,4 @@ public interface ReportService {
     ReportDto getById(Long id);
 
     List<ReportDto> getByStatus(ReportStatus status);
-
 }

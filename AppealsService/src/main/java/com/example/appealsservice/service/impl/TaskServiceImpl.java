@@ -14,6 +14,7 @@ import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.TaskService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -44,7 +45,6 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public void takeTask(Long appealId, Long employeeId) {
-
         var appeal = appealRepository.findById(appealId).orElseThrow(()
                 -> new ResourceNotFoundException(appealId));
 
@@ -56,17 +56,16 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new TemplateException("Задача не найдена"));
 
         if (task.getEmployeeId() != null)
-            throw new TemplateException("Задача занята");
+            throw new TemplateException("Сотрудник не найден");
 
         appeal.setStatusAppeal(StatusAppeal.INPROCCESING);
         appealRepository.save(appeal);
 
         task.setEmployeeId(employeeId);
         taskRepository.save(task);
-
     }
 
 
@@ -75,15 +74,12 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public List<TaskDto> getTasksByEmployeeId(Long employeeId) {
-
         return taskRepository
-                .findAll()
+                .findAll(Sort.by(Sort.Direction.ASC, "id"))
                 .stream()
                 .filter(x -> x.getEmployeeId() == employeeId)
-                .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
                 .map(TaskDto::new)
                 .collect(Collectors.toList());
-
     }
 
 
@@ -110,7 +106,7 @@ public class TaskServiceImpl implements TaskService {
                         -> new ResourceNotFoundException(appealId));
 
         var task = taskRepository
-                .getByAppealId(appealId)
+                .getByAppealId(appeal.getId())
                 .stream()
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
                 .findFirst()
@@ -122,7 +118,5 @@ public class TaskServiceImpl implements TaskService {
         task.setEmployeeId(employeeId);
 
         taskRepository.save(task);
-
     }
-
 }

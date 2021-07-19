@@ -28,6 +28,10 @@ public class TaskController extends AuthorizeController{
         this.checkUser = checkUser;
     }
 
+    /**
+     * Взять задачу
+     * @param appealId
+     */
     @GetMapping("take")
     public void take(@RequestParam Long appealId) throws JsonProcessingException {
 
@@ -46,6 +50,11 @@ public class TaskController extends AuthorizeController{
 
     }
 
+    /**
+     * Назначить сотрудника на задачу
+     * @param appealId
+     * @param employeeId
+     */
     @GetMapping("appoint")
     public void appoint(@RequestParam Long appealId, @RequestParam Long employeeId) throws JsonProcessingException {
         if(!checkUser.isAdmin(userModel))
@@ -55,6 +64,10 @@ public class TaskController extends AuthorizeController{
 
     }
 
+    /**
+     * Получить таск по id
+     * @param id
+     */
     @GetMapping("by-id")
     public TaskDto byId(@RequestParam Long id) {
 

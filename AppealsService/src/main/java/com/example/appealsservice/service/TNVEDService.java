@@ -8,6 +8,8 @@ import java.util.List;
 public interface TNVEDService {
 
     public void init() throws URISyntaxException;
+
     public List<TNVEDDto> getAll();
+
     public TNVEDDto byId(Long id);
 }

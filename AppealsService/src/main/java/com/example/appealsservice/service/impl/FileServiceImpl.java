@@ -34,10 +34,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final FileRepository fileRepository;
-    private final AppealRepository appealRepository;
     @Value("${path.file}")
     private String pathFile;
+    private final FileRepository fileRepository;
+    private final AppealRepository appealRepository;
 
     public FileServiceImpl(FileRepository fileRepository, CostCatService costCatService,
                            AppealRepository appealRepository) {
@@ -61,6 +61,10 @@ public class FileServiceImpl implements FileService {
      */
     public void store(MultipartFile fileRequest, Long appealId, Long clientId) throws IOException {
         var filename = fileRequest.getOriginalFilename();
+
+        if (filename == null)
+            throw new TemplateException("Файл не найден");
+
         int lastIndexOf = filename.lastIndexOf(".");
 
         String name = DigestUtils.md5Hex(StringUtils.cleanPath(Objects.requireNonNull(fileRequest.getOriginalFilename()))
@@ -92,19 +96,20 @@ public class FileServiceImpl implements FileService {
         return fileRepository
                 .findAll()
                 .stream()
-                .filter(x -> x.getAppealId() == appealId)
+                .filter(x -> x.getAppealId() == appeal.getId())
                 .map(FileDto::new)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Скачать файл
+     */
     @Override
     public Resource download(Long fileId, UserModel userModel) {
-
         var fileDb = fileRepository.findById(fileId).orElseThrow(()
                 -> new TemplateException("Файл не найден"));
 
-        if(userModel.getUserType().equals(UserType.ROLE_CLIENT.name()))
-        {
+        if (userModel.getUserType().equals(UserType.ROLE_CLIENT.name())) {
             var appeal = appealRepository.findById(fileDb.getAppealId())
                     .orElseThrow(() -> new TemplateException("Обращение не найдено"));
             if (!appeal.getClientId().equals(userModel.getId()))
@@ -126,10 +131,7 @@ public class FileServiceImpl implements FileService {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error: " + e.getMessage());
         }
-
     }
-
-
 
 
     /**
@@ -140,17 +142,15 @@ public class FileServiceImpl implements FileService {
         var fileDb = fileRepository.findById(id).orElseThrow(()
                 -> new TemplateException("Файл не найден"));
 
+        fileRepository.delete(fileDb);
     }
-
-
 
     /**
      * удалить файлы по id обращения
      */
     private void deleteFiles(Long appealId) {
         var files = getFilesByAppealId(appealId);
-        for (var file :
-                files) {
+        for (var file : files) {
             deleteFile(file.getId());
         }
     }

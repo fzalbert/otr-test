@@ -20,24 +20,35 @@ public class CostCatController extends AuthorizeController {
 
     private final CostCatService costCatService;
 
+
     @Autowired
     public CostCatController(CostCatService costCatService, HttpServletRequest request) {
         super(request);
         this.costCatService = costCatService;
     }
 
+    /**
+     * Получить список категорий затрат
+     */
     @GetMapping("list")
     public List<CostCatDto> getAll() {
 
         return costCatService.getAll();
     }
 
+    /**
+     * Получить категорию затрат по id
+     * @param id
+     */
     @GetMapping("by-id")
     public CostCatDto byId(@RequestParam Long id) {
 
         return costCatService.byId(id);
     }
 
+    /**
+     * Инициализировать категории затрат
+     */
     @GetMapping("/init")
     public void initCats() throws IOException, URISyntaxException {
         costCatService.init();

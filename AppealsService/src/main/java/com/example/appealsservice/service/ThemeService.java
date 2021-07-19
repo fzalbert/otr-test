@@ -16,5 +16,4 @@ public interface ThemeService {
     void Delete(long id);
 
     ThemeDto update(long id, String name);
-
 }

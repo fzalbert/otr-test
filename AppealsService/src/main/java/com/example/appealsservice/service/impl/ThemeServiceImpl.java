@@ -8,6 +8,7 @@ import com.example.appealsservice.repository.ThemeRepository;
 import com.example.appealsservice.service.ThemeService;
 import com.sun.istack.NotNull;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -31,9 +32,8 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     public List<ThemeDto> getAll() {
         return themeRepository
-                .findAll()
+                .findAll(Sort.by(Sort.Direction.ASC, "name"))
                 .stream()
-                .sorted(Comparator.comparing(Theme::getName, Comparator.reverseOrder()))
                 .map(ThemeDto::new)
                 .collect(Collectors.toList());
     }

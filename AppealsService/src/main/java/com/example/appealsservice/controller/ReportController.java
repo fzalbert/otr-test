@@ -32,16 +32,29 @@ public class ReportController extends AuthorizeController {
     }
 
 
+    /**
+     * Получить список отчетов
+     */
     @GetMapping("list")
     public List<ReportDto> getAll() {
         return reportService.getAll();
     }
 
+    /**
+     * Получить отчет по id
+     * @param id
+     */
     @GetMapping("by-id")
     public ReportDto byId(@RequestParam Long id) {
         return reportService.getById(id);
     }
 
+    /**
+     * Создать отчет
+     * @param appealId
+     * @param isApprove
+     * @param text
+     */
     @GetMapping("approve-or-reject")
     public void approveOrReject(@RequestParam Long appealId, @RequestParam Boolean isApprove, @RequestParam String text) throws JsonProcessingException {
 
@@ -60,6 +73,10 @@ public class ReportController extends AuthorizeController {
         }
     }
 
+    /**
+     * Получить отчеты по статусу
+     * @param status
+     */
     @GetMapping("by-status")
     public List<ReportDto> getByStatus(ReportStatus status) {
         return reportService.getByStatus(status);

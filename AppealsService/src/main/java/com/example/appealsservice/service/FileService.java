@@ -19,6 +19,5 @@ public interface FileService {
     Resource download(Long fileId, UserModel userModel);
 
     void deleteFile(Long Id);
-
 }
 

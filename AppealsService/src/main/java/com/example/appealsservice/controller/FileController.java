@@ -36,17 +36,29 @@ public class FileController extends AuthorizeController {
     }
 
 
+    /**
+     * Получить файлы
+     * @param appealId
+     */
     @GetMapping("files")
     public List<FileDto> getFilesByIdAppealId(@RequestParam Long appealId) {
         return fileService.getFilesByAppealId(appealId);
     }
 
+    /**
+     * Удалить файл
+     * @param id
+     */
     @DeleteMapping("delete")
     public void delete(@RequestParam Long id) {
         fileService.deleteFile(id);
     }
 
-
+    /**
+     * Загрузить файл
+     * @param appealId
+     * @param files
+     */
     @PostMapping(value = "upload")
     public ResponseEntity<ResponseMessage> uploadFile(@RequestPart("appealId") String appealId,
                                                       @RequestPart("file") List<MultipartFile> files) {
@@ -69,6 +81,10 @@ public class FileController extends AuthorizeController {
     }
 
 
+    /**
+     * Скачать файл
+     * @param id
+     */
     @GetMapping("download")
     public Resource download(@RequestParam Long id){
         return fileService.download(id, userModel);

@@ -27,11 +27,18 @@ public class ThemeController extends AuthorizeController{
         this.checkUser = checkUser;
     }
 
+    /**
+     * Получить список тем
+     */
     @GetMapping("list")
     public List<ThemeDto> getAll() {
         return themeService.getAll();
     }
 
+    /**
+     * Создать тему
+     * @param name
+     */
     @GetMapping("create")
     public  ThemeDto create(@RequestParam String name){
         if(!checkUser.isAdmin(userModel))
@@ -39,11 +46,20 @@ public class ThemeController extends AuthorizeController{
         return themeService.Create(name);
     }
 
+    /**
+     * Получить тему по id
+     * @param id
+     */
     @GetMapping("by-id")
     public ThemeDto byId( @RequestParam Long id){
         return themeService.getById(id);
     }
 
+    /**
+     * Обновить тему
+     * @param id
+     * @param name
+     */
     @GetMapping("update")
     public ThemeDto update(@RequestParam Long id, @RequestParam String name){
         return themeService.update(id, name);

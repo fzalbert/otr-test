@@ -15,6 +15,5 @@ public interface TaskService {
 
     TaskDto geById(Long Id);
 
-    //admin appoint appeals to employees
     void appoint(Long employeeId, Long appealId) throws JsonProcessingException;
 }

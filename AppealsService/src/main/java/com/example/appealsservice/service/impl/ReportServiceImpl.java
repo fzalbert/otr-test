@@ -1,6 +1,5 @@
 package com.example.appealsservice.service.impl;
 
-import com.example.appealsservice.domain.Appeal;
 import com.example.appealsservice.domain.Report;
 import com.example.appealsservice.domain.Task;
 import com.example.appealsservice.domain.enums.ReportStatus;
@@ -8,7 +7,6 @@ import com.example.appealsservice.domain.enums.StatusAppeal;
 import com.example.appealsservice.domain.enums.TaskStatus;
 import com.example.appealsservice.dto.response.ReportCamundaDto;
 import com.example.appealsservice.dto.response.ReportDto;
-import com.example.appealsservice.exception.NotRightsException;
 import com.example.appealsservice.exception.ResourceNotFoundException;
 import com.example.appealsservice.exception.TemplateException;
 import com.example.appealsservice.kafka.model.MessageType;
@@ -20,8 +18,8 @@ import com.example.appealsservice.repository.ReportRepository;
 import com.example.appealsservice.repository.TaskRepository;
 import com.example.appealsservice.service.ReportService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import javassist.NotFoundException;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -53,7 +51,7 @@ public class ReportServiceImpl implements ReportService {
      * создание отчета и одобрение либо отклонение обращения
      */
     @Override
-    public void approveOrReject(Long appealId, Long employeeId, Boolean isApprove, String text) throws JsonProcessingException {
+    public void approveOrReject(Long appealId, Long employeeId, Boolean isApprove, String text) {
 
         var appeal = appealRepository
                 .findById(appealId)
@@ -64,10 +62,7 @@ public class ReportServiceImpl implements ReportService {
                 .stream()
                 .sorted(Comparator.comparing(Task::getDate, Comparator.reverseOrder()))
                 .findFirst()
-                .orElse(null);
-
-        if (task == null)
-            throw new ResourceNotFoundException(appealId);
+                .orElseThrow(() -> new TemplateException("Задача не найдена"));
 
         if (!task.getEmployeeId().equals(employeeId))
             throw new TemplateException("Задача занята");
@@ -83,19 +78,15 @@ public class ReportServiceImpl implements ReportService {
         report.setReportStatus(isApprove ? ReportStatus.SUCCESS : ReportStatus.REJECTED);
         report.setText(text);
 
-        task.setOver(true);
-
         reportRepository.save(report);
 
+        task.setOver(true);
         task.getAppeal().setStatusAppeal(isApprove ? StatusAppeal.SUCCESS : StatusAppeal.REJECT);
-
         task.getAppeal().setOver(true);
 
         appealRepository.save(task.getAppeal());
 
-
         String subject = isApprove ? "APPEAL APPROVED" : "APPEAL REJECTED";
-
         MessageType messageType = isApprove ? MessageType.ACCEPT : MessageType.REJECT;
 
         ModelMessage model = ModelConvertor.Convert(task.getAppeal().getEmail(),
@@ -103,7 +94,6 @@ public class ReportServiceImpl implements ReportService {
         msgSender.sendEmail(model);
 
         msgSender.sendReport(new ReportCamundaDto(report));
-
     }
 
     /**
@@ -112,9 +102,8 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<ReportDto> getAll() {
         return reportRepository
-                .findAll()
+                .findAll(Sort.by(Sort.Direction.ASC, "createDate"))
                 .stream()
-                .sorted(Comparator.comparing(Report::getCreateDate, Comparator.reverseOrder()))
                 .map(ReportDto::new)
                 .collect(Collectors.toList());
     }
@@ -136,10 +125,9 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<ReportDto> getByStatus(ReportStatus status) {
         return reportRepository
-                .findAll()
+                .findAll(Sort.by(Sort.Direction.ASC, "createDate"))
                 .stream()
                 .filter(x -> x.getReportStatus() == status)
-                .sorted(Comparator.comparing(Report::getCreateDate, Comparator.reverseOrder()))
                 .map(ReportDto::new)
                 .collect(Collectors.toList());
     }

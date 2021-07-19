@@ -40,23 +40,37 @@ public class AppealController  extends AuthorizeController{
         this.checkUser = checkUser;
     }
 
+    /**
+     * Получить список всех обращений(Сотрудник)
+     */
     @GetMapping("short-list")
     public List<ShortAppealDto> getAll() {
         return appealService.getAll();
     }
 
+    /**
+     * Получить обращение по id
+     * @param id
+     */
     @GetMapping("by-id")
     public AppealDto byId(@RequestParam Long id){
         log.debug("Request method: appeal/by-id. UserId = " + userModel.getId());
         return appealService.getById(id);
     }
 
+    /**
+     * Получить список обращений с фильтром(Клиент)
+     * @param request
+     */
     @PostMapping("filter-for-client")
     public List<ShortAppealDto> filter(@RequestBody(required = false) FilterAppealDto request){
         log.debug("Request method: appeal/filter-for-client. UserId = " + userModel.getId());
         return appealService.filter(userModel.getId(), request);
     }
 
+    /**
+     * Получить список обращений по клиенту
+     */
     @GetMapping("by-client-id")
     public List<ShortAppealDto> byClientId(){
         if(!checkUser.isClient(userModel))
@@ -65,23 +79,41 @@ public class AppealController  extends AuthorizeController{
         return appealService.myAppeals(userModel.getId());
     }
 
+    /**
+     * Получить список обращений с фильтром(Сотрудник)
+     * @param request
+     */
     @PostMapping("filter-for-admin")
     public List<ShortAppealDto> filterAdmin(@RequestBody(required = false) FilterAppealAdminDto request){
         log.debug("Request method: appeal/filter-for-admin. EmployeeId = " + userModel.getId());
         return appealService.filterAdmin(request);
     }
 
+    /**
+     * Удалить обращение
+     * @param id
+     */
     @DeleteMapping("delete")
     public void delete(@RequestParam Long id){
         appealService.deleteById(id);
     }
 
+    /**
+     * Выбрать решение по обращению
+     * @param id
+     * @param status
+     */
     @GetMapping("check")
     public void check(@RequestParam Long id, @RequestParam int status){
         log.debug("Request method: appeal/check. EmployeeId = " + userModel.getId());
         appealService.check(id, TaskStatus.values()[status]);
     }
 
+    /**
+     * Обновить обращение(Клиент)
+     * @param request
+     * @param appealId
+     */
     @RequestMapping(value = "update-my")
     public AppealDto updateMy(@RequestBody AppealRequestDto request,
                              @RequestParam("appeal-id") Long appealId) {
@@ -89,6 +121,11 @@ public class AppealController  extends AuthorizeController{
         return appealService.updateMyAppeal(userModel.getId(), appealId, request);
     }
 
+    /**
+     * Обновление обращения(Сотрудник)
+     * @param request
+     * @param appealId
+     */
     @RequestMapping(value = "update")
     public AppealDto update( @RequestBody AppealRequestDto request,
                              @RequestParam("appeal-id") Long appealId) {
@@ -97,7 +134,11 @@ public class AppealController  extends AuthorizeController{
         return appealService.update(userModel.getId(), appealId, request);
     }
 
-
+    /**
+     * Создать обращение
+     * @param request
+     * @param files
+     */
     @RequestMapping(value = "create", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE,
                         MediaType.MULTIPART_FORM_DATA_VALUE})

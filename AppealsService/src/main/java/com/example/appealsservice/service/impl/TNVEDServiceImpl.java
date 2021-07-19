@@ -41,6 +41,10 @@ public class TNVEDServiceImpl implements TNVEDService {
             throw new NotRightsException("Tnveds already created");
 
         URL res = getClass().getClassLoader().getResource("tnved.json");
+
+        if (res == null)
+            throw new TemplateException("Url не найден");
+
         var file = Paths.get(res.toURI()).toFile();
         String absolutePath = file.getAbsolutePath();
 
@@ -62,7 +66,6 @@ public class TNVEDServiceImpl implements TNVEDService {
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
-
     }
 
     /**

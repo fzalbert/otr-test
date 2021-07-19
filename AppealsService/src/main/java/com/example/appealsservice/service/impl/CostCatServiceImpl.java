@@ -34,17 +34,21 @@ public class CostCatServiceImpl implements CostCatService {
         this.costCatRepository = costCatRepository;
     }
 
+    /**
+     * Получить список категорий затрат
+     */
     @Override
     public List<CostCatDto> getAll() {
-
         return costCatRepository
                 .findAll()
                 .stream()
                 .map(CostCatDto::new)
                 .collect(Collectors.toList());
-
     }
 
+    /**
+     * Получение категорий затрат по id
+     */
     @Override
     public CostCatDto byId(Long id) {
         var cat = costCatRepository.findById(id).orElseThrow(()
@@ -62,11 +66,13 @@ public class CostCatServiceImpl implements CostCatService {
             throw new NotRightsException("costCats already created");
 
         URL res = getClass().getClassLoader().getResource("costCats.json");
+
+        if (res == null)
+            throw new TemplateException("Url не найдена");
+
         var file = Paths.get(res.toURI()).toFile();
         String absolutePath = file.getAbsolutePath();
-
         JSONParser jsonParser = new JSONParser();
-
         ObjectMapper objectMapper = new ObjectMapper();
 
         try (FileReader reader = new FileReader(absolutePath)) {
@@ -79,11 +85,9 @@ public class CostCatServiceImpl implements CostCatService {
                     CostCat costCat = objectMapper.readValue(jsonArray.get(i).toString(), CostCat.class);
                     costCatRepository.save(costCat);
                 }
-
             }
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
-
     }
 }

@@ -24,18 +24,28 @@ public class TNVEDController extends AuthorizeController {
         this.tnvedService = tnvedService;
     }
 
+    /**
+     * Получить список ТН ВЕД
+     */
     @GetMapping("list")
     public List<TNVEDDto> getAll() {
 
         return tnvedService.getAll();
     }
 
+    /**
+     * Получить ТН ВЕД по id
+     * @param id
+     */
     @GetMapping("by-id")
     public TNVEDDto byId(@RequestParam Long id) {
 
         return tnvedService.byId(id);
     }
 
+    /**
+     * Иницилизировать список ТН ВЕД
+     */
     @GetMapping("/init")
     public void initTnveds() throws IOException, URISyntaxException {
         tnvedService.init();
