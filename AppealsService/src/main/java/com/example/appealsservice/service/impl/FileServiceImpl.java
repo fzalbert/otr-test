@@ -60,6 +60,13 @@ public class FileServiceImpl implements FileService {
      * создание файла
      */
     public void store(MultipartFile fileRequest, Long appealId, Long clientId) throws IOException {
+
+        java.io.File directory = new java.io.File(pathFile);
+        if(!directory.exists())
+        {
+            directory.mkdir();
+
+        }
         var filename = fileRequest.getOriginalFilename();
 
         if (filename == null)
