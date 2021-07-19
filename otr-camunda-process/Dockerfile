@@ -1,22 +1,7 @@
-# syntax=docker/dockerfile:experimental
-FROM openjdk:16-jdk as build
-WORKDIR /workspace/app
+FROM openjdk:8-jdk-alpine
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
 
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
-COPY src src
+EXPOSE 8181
 
-RUN ./mvnw install -DskipTests
-WORKDIR /workspace/app/target/dependency
-RUN jar -xf ../*.jar
-
-FROM openjdk:16-jdk
-RUN groupadd demo && useradd -g demo demo
-VOLUME /tmp
-USER demo
-ARG DEPENDENCY=/workspace/app/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-noverify","-XX:TieredStopAtLevel=1","-cp","app:app/lib/*","-Dspring.main.lazy-initialization=true","org.example.CamundaApplication"]
+ENTRYPOINT ["java","-jar","/app.jar"]
