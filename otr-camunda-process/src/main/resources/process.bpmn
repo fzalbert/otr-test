@@ -9,7 +9,7 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow1" sourceRef="StartEvent" targetRef="ServiceTask_Logger" />
     <bpmn:sequenceFlow id="SequenceFlow_18o7zqy" sourceRef="ServiceTask_Logger" targetRef="Gateway_0rhice7" />
-    <bpmn:serviceTask id="ServiceTask_Logger" name="Создание обращения">
+    <bpmn:serviceTask id="ServiceTask_Logger" name="Создание обращения" camunda:delegateExpression="#{appealsCreate}">
       <bpmn:incoming>SequenceFlow1</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_18o7zqy</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -53,6 +53,10 @@
       <bpmn:outgoing>Flow_1ndoway</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="check_appeal_key" name="Проверить обращение" camunda:formKey="embedded:app:forms/check-appeal-form.html">
+    <bpmn:extensionElements>
+            <camunda:executionListener class="org.example.TestEndedListener" event="end" />
+            <camunda:taskListener class="org.example.CheckAppealCompletedListener" event="complete" />
+          </bpmn:extensionElements>
       <bpmn:incoming>Flow_179ok36</bpmn:incoming>
       <bpmn:outgoing>Flow_0nsbk0y</bpmn:outgoing>
     </bpmn:userTask>
