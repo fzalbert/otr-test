@@ -71,14 +71,15 @@ public class FileServiceImpl implements FileService {
         String name = DigestUtils.md5Hex(StringUtils.cleanPath(Objects.requireNonNull(fileRequest.getOriginalFilename()))
                 + new SimpleDateFormat("dd-MM-yyyy").format(new Date())) + filename.substring(lastIndexOf);
 
-        log.info(String.format("Path is %s", pathFile + name));
-        FileOutputStream outputStream = new FileOutputStream(pathFile + name);
+        String fullPath = String.format("%s/%s",pathFile,name);
+        log.info(String.format("Path is %s", fullPath));
+        FileOutputStream outputStream = new FileOutputStream(fullPath);
         outputStream.write(fileRequest.getBytes());
         outputStream.close();
 
         File fileDb = new File();
         fileDb.setName(name);
-        fileDb.setUrl(pathFile + name);
+        fileDb.setUrl(fullPath);
         fileDb.setAppealId(appealId);
         fileDb.setType(fileRequest.getContentType());
 
