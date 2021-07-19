@@ -47,15 +47,6 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
                         responseDto.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
                 );
 
-                exchange.mutate().request(
-                        exchange.getRequest().mutate()
-                                .header("id", responseDto.getAuthorities().get(0))
-                                .header("name", URLEncoder.encode(responseDto.getAuthorities().get(1), "UTF-8"))
-                                .header("email", responseDto.getAuthorities().get(2))
-                                .header("role", responseDto.getAuthorities().get(3))
-                                .build())
-                        .build();
-
                 return Mono.justOrEmpty(new SecurityContextImpl(auth));
 
             } catch (Exception ignore) {

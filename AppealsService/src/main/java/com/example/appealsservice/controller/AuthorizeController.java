@@ -20,18 +20,15 @@ public abstract class AuthorizeController {
 
     public AuthorizeController(HttpServletRequest request, String jwtParseUrl) {
         this.jwtParseUrl = jwtParseUrl;
-        log.debug("Request header 'id' = " + request.getHeader("id"));
-        log.debug("Request header 'id' = " + request.getHeader("email"));
-        log.debug("Request header 'id' = " + request.getHeader("role"));
-        log.debug("Request header 'id' = " + URLDecoder.decode(request.getHeader("name"), StandardCharsets.UTF_8));
         log.debug("Request header 'authorize' = " + request.getHeader("Authorization"));
 
         String token = request.getHeader("Authorization");
+        token = token.replace("Bearer"  + " ", "");
         var model = parseJwt(token);
 
         var id = Long.parseLong(model.getAuthorities().get(0));
         var email = model.getAuthorities().get(2);
-        var name = URLEncoder.encode(model.getAuthorities().get(1), StandardCharsets.UTF_8);
+        var name = model.getAuthorities().get(1);
         var type = model.getAuthorities().get(3);
 
         userModel = new UserModel(id, email, name, type);

@@ -34,7 +34,8 @@ public class WebSecurityConfiguration {
                 .csrf().disable()
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange()
-                .anyExchange().permitAll();
+                .pathMatchers("/auth/**", "/client/api/account/register").permitAll()
+                .anyExchange().authenticated();
         return http.build();
     }
 

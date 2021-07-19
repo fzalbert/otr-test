@@ -85,9 +85,6 @@ public class AppealServiceImpl implements AppealService {
         var files = fileServiceImpl.getFilesByAppealId(id);
         var report = reportRepository.findByAppealId(appeal.getId());
 
-        if (report == null)
-            throw new TemplateException("Отчет не найден");
-
         var task = taskRepository
                 .getByAppealIdAndIsOverFalse(appeal.getId())
                 .stream()

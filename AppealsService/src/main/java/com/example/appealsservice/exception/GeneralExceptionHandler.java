@@ -41,7 +41,7 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.EXPECTATION_FAILED.value(),
                 HttpStatus.EXPECTATION_FAILED.getReasonPhrase(),
-                "File too large!");
+                "Файл не должен превышать 10 мб");
 
         return new ResponseEntity<>(error, HttpStatus.EXPECTATION_FAILED);
     }
