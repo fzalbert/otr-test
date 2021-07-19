@@ -8,7 +8,7 @@ camunda.bpm:
     create: All Tasks
   default-serialization-format: application/json
 server.address: 0.0.0.0
-server.port: 7788
+server.port: 8080
 spring.devtools:
   restart:
     enabled: false
