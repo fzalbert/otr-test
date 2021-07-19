@@ -9,6 +9,7 @@ import com.example.appealsservice.service.TNVEDService;
 
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -30,8 +31,9 @@ public class FileController extends AuthorizeController {
     private final FileService fileService;
 
     @Autowired
-    public FileController(FileService fileService, HttpServletRequest request) {
-        super(request);
+    public FileController(FileService fileService, HttpServletRequest request,
+                          @Value("${security.jwt.parse.url}") String jwtParseUrl) {
+        super(request, jwtParseUrl);
         this.fileService = fileService;
     }
 

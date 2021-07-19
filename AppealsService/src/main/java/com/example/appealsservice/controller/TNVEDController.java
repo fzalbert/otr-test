@@ -3,6 +3,7 @@ package com.example.appealsservice.controller;
 import com.example.appealsservice.dto.response.TNVEDDto;
 import com.example.appealsservice.service.TNVEDService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,9 @@ public class TNVEDController extends AuthorizeController {
     private final TNVEDService tnvedService;
 
     @Autowired
-    public TNVEDController(TNVEDService tnvedService, HttpServletRequest request) {
-        super(request);
+    public TNVEDController(TNVEDService tnvedService, HttpServletRequest request,
+                           @Value("${security.jwt.parse.url}") String jwtParseUrl) {
+        super(request, jwtParseUrl);
         this.tnvedService = tnvedService;
     }
 

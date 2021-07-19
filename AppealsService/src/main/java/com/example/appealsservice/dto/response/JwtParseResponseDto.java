@@ -1,14 +1,15 @@
 package com.example.appealsservice.dto.response;
 
-import com.example.appealsservice.dto.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class JwtParseResponseDto {
     private Long userId;
-    private UserType userType;
+    private List<String> authorities;
 }

@@ -20,14 +20,12 @@ import java.util.List;
 @RestController
 @Scope("prototype")
 @RequestMapping("employee")
-public class EmployeeController extends AuthorizeController {
+public class EmployeeController {
 
     private final EmployeeService employeeService;
 
     @Autowired
-    public EmployeeController(EmployeeService employeeService, EmployeeRepository employeeRepository,
-                              HttpServletRequest request) {
-        super(request, employeeRepository);
+    public EmployeeController(EmployeeService employeeService, HttpServletRequest request) {
         this.employeeService = employeeService;
     }
 

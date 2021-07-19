@@ -5,6 +5,7 @@ import com.example.appealsservice.dto.response.TNVEDDto;
 import com.example.appealsservice.service.CostCatService;
 import com.example.appealsservice.service.TNVEDService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +21,10 @@ public class CostCatController extends AuthorizeController {
 
     private final CostCatService costCatService;
 
-
     @Autowired
-    public CostCatController(CostCatService costCatService, HttpServletRequest request) {
-        super(request);
+    public CostCatController(CostCatService costCatService, HttpServletRequest request,
+                             @Value("${security.jwt.parse.url}") String jwtParseUrl) {
+        super(request, jwtParseUrl);
         this.costCatService = costCatService;
     }
 

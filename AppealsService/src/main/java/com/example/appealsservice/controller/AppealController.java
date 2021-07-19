@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +35,9 @@ public class AppealController  extends AuthorizeController{
 
     @Autowired
     public AppealController(AppealService appealService, CheckUser checkUser,
-                            HttpServletRequest servletRequest) {
-        super(servletRequest);
+                            HttpServletRequest servletRequest,
+                            @Value("${security.jwt.parse.url}") String jwtParseUrl) {
+        super(servletRequest, jwtParseUrl);
         this.appealService = appealService;
         this.checkUser = checkUser;
     }

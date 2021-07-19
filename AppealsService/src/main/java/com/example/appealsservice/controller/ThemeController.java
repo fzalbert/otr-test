@@ -6,6 +6,7 @@ import com.example.appealsservice.httpModel.CheckUser;
 import com.example.appealsservice.service.ThemeService;
 import com.example.appealsservice.service.impl.ThemeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,9 @@ public class ThemeController extends AuthorizeController{
     private final CheckUser checkUser;
 
     @Autowired
-    public ThemeController(ThemeService themeService,CheckUser checkUser, HttpServletRequest request) {
-        super(request);
+    public ThemeController(ThemeService themeService,CheckUser checkUser, HttpServletRequest request,
+                           @Value("${security.jwt.parse.url}") String jwtParseUrl) {
+        super(request, jwtParseUrl);
         this.themeService = themeService;
         this.checkUser = checkUser;
     }

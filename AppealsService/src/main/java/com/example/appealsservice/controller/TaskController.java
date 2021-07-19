@@ -7,6 +7,7 @@ import com.example.appealsservice.service.TaskService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,9 @@ public class TaskController extends AuthorizeController{
     private final CheckUser checkUser;
 
     @Autowired
-    public TaskController(TaskService taskService,CheckUser checkUser, HttpServletRequest request) {
-        super(request);
+    public TaskController(TaskService taskService,CheckUser checkUser, HttpServletRequest request,
+                          @Value("${security.jwt.parse.url}") String jwtParseUrl) {
+        super(request, jwtParseUrl);
         this.taskService = taskService;
         this.checkUser = checkUser;
     }
