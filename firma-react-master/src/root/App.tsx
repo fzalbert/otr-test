@@ -12,10 +12,9 @@ const App:React.FC = () => {
 
   const dispatch = useDispatch();
   const token = localStorage.getItem('token');
-  const expireDate = localStorage.getItem('expireDate');
 
   useEffect(() => {
-    dispatch(setAuthState({isLoggedIn: token != undefined && expireDate != undefined && new Date(expireDate) > new Date(Date.now()), token: token != undefined ? token : ''}))
+    dispatch(setAuthState({isLoggedIn: token != undefined, token: token != undefined ? token : ''}))
   })
 
   return (

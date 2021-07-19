@@ -10,7 +10,6 @@ import { AppealItemClientModel, FileItem } from '../../../api/models/response/ap
 import ThemeAPI from '../../../api/theme';
 import { ThemeResponse } from '../../../api/models/response/theme-response.model';
 import useFormState from '../../../common/customHooks/useFormState';
-import appendArray from '../../../common/styles/appendArray_form-data';
 import TnvedAPI from '../../../api/tnved';
 import { TnvedResponse } from '../../../api/models/response/tnved-response.model';
 import { setTnvedList } from '../../../store/actions/tnved-actions';
@@ -110,19 +109,6 @@ const AppealCreation = (props:any) => {
                 setTimeout(() => setError(""), 5000);
             })
     }
-
-    // const uploadPhotos = () => {
-    //     const formData = new FormData();
-    //     appendArray(formData, filesList, 'file')
-    //     AppealsAPI.uploadAppealPhotos(+id, formData)
-    //         .then((response: AxiosResponse<void>) => {
-
-    //         }).catch((err:AxiosError) => {
-    //             console.log(err)
-    //             setError(err.response?.data.message)
-    //             setTimeout(() => setError(""), 5000);
-    //         })
-    // }
 
     const downloadPhotos = (id: number, fileName: string) => {
         AppealsAPI.downloadAppealFile(id)

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './AppealCard.scss';
 import { useHistory } from 'react-router';
-import { AppealItemClientModel, AppealItemModel } from '../../../api/models/response/appeals-response.model';
+import { AppealItemClientModel } from '../../../api/models/response/appeals-response.model';
 
 const AppealCard = (props:AppealItemClientModel) => {
     const history = useHistory();

@@ -5,7 +5,7 @@ import ArrowLeftIcon from '../../../../../assets/images/icons/arrow-left.svg';
 import useFormState from '../../../../../common/customHooks/useFormState';
 import ClientsAPI from '../../../../../api/clients';
 import { AxiosResponse } from 'axios';
-import { ClientDetailsResponse, ClientResponse } from '../../../../../api/models/response/client-response.model';
+import { ClientDetailsResponse } from '../../../../../api/models/response/client-response.model';
 
 const ClientDetails = () => {
     const history = useHistory()
