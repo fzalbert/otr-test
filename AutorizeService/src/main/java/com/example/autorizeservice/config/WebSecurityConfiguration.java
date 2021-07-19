@@ -47,6 +47,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/login/employee").permitAll()
                 .antMatchers("/api/jwt/parse").permitAll()
                 .antMatchers("/api/jwt/is-valid").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
     }
 }
