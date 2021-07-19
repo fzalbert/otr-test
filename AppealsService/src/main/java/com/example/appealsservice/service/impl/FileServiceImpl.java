@@ -8,6 +8,7 @@ import com.example.appealsservice.repository.AppealRepository;
 import com.example.appealsservice.repository.FileRepository;
 import com.example.appealsservice.service.CostCatService;
 import com.example.appealsservice.service.FileService;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Log4j
 @Scope("prototype")
 @Service
 public class FileServiceImpl implements FileService {
@@ -69,6 +71,7 @@ public class FileServiceImpl implements FileService {
         String name = DigestUtils.md5Hex(StringUtils.cleanPath(Objects.requireNonNull(fileRequest.getOriginalFilename()))
                 + new SimpleDateFormat("dd-MM-yyyy").format(new Date())) + filename.substring(lastIndexOf);
 
+        log.info(String.format("Path is %s", pathFile + name));
         FileOutputStream outputStream = new FileOutputStream(pathFile + name);
         outputStream.write(fileRequest.getBytes());
         outputStream.close();
@@ -111,9 +114,11 @@ public class FileServiceImpl implements FileService {
                     .orElseThrow(() -> new TemplateException("Обращение не найдено"));
 
         Path root = Paths.get(pathFile);
+        log.info(String.format("download Path is %s", root));
 
         try {
             Path file = root.resolve(fileDb.getName());
+            log.info(String.format("download file path is %s", file.toAbsolutePath()));
             Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable()) {
