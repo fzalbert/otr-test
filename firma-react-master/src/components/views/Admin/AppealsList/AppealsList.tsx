@@ -5,16 +5,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { AxiosResponse } from 'axios';
 import Filter from '../../../ui/Filter/Filter';
-import checkLoggedIn from '../../../../common/checkLoggedIn';
 import AppealsAPI from '../../../../api/appeals';
 import { AppealItemModel } from '../../../../api/models/response/appeals-response.model';
 import { setAppealsList, setSortList } from '../../../../store/actions/appeals-actions';
 import Moment from 'react-moment';
 import { FilterRequest } from '../../../../api/models/request/filter-body-request.model';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const AppealsList = (props:any) => {
-    // checkLoggedIn()
 
     const appealsState: AppealItemModel[] = useSelector((state:any) => state.AppealsReducer)
 
