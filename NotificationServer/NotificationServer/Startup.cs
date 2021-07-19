@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Mongo;
 using Newtonsoft.Json.Linq;
 using NotificationServer.Consumer;
 using NotificationServer.DTO;
@@ -30,7 +31,6 @@ namespace NotificationServer
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
-
             services.AddKafkaConsumer<string, CreateNotificationDto, CreateNotificationHandler>(p =>
             {
                 p.Topic = KafkaHelper.TOPIC;
@@ -43,7 +43,6 @@ namespace NotificationServer
             services.AddHttpContextAccessor();
 
             services.AddBuisnessServices();
-
 
         }
 
