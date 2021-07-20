@@ -2,56 +2,59 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: apigateawayservice
-  name: apigateawayservice
+    app: front
+  name: front
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: apigateawayservice
+      app: front
   template:
     metadata:
       labels:
-        app: apigateawayservice
-spec:
+        app: front
+    spec:
       containers:
-      - image: registry.gitlab.com/fajb420/otr-prototype/apigateawayservice:latest
+      - image: registry.gitlab.com/fajb420/otr-prototype/front:latest
         imagePullPolicy: Always
         name: service
         ports:
-        - containerPort: 4444
+        - containerPort: 80
           name: service
           protocol: TCP
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: apigateawayservice
+  name: front
   labels:
-    app: apigateawayservice
+    app: front
 spec:
   type: ClusterIP
   ports:
-- port: 4444
-      targetPort: 4444
+    - port: 80
+      targetPort: 80
       protocol: TCP
       name: http
   selector:
-    app: apigateawayservice
+    app: front
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: apigateawayservice
+  name: front
   labels:
-    app: apigateawayservice
+    app: front
 spec:
-#  ingressClassName: "public"
+  ingressClassName: "public"
   rules:
   - http:
       paths:
       - backend:
-          serviceName: apigateawayservice
+          serviceName: front
           servicePort: http
         path: /
+        pathType: Prefix

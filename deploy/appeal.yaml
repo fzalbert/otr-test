@@ -19,12 +19,21 @@ spec:
       - image: registry.gitlab.com/fajb420/otr-prototype/appealsservice:latest
         imagePullPolicy: Always
         name: service
-ports:
+        ports:
         - containerPort: 1111
           name: service
           protocol: TCP
+        volumeMounts:
+        - name: uploads
+          mountPath: /home/demo/uploads
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+      enableServiceLinks: false
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: appeal-service
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -40,3 +49,15 @@ spec:
       name: http
   selector:
     app: appealsservice
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: appeal-service
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: microk8s-hostpath

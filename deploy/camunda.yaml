@@ -13,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-       app: camunda
+        app: camunda
     spec:
       containers:
-      - image: registry.gitlab.com/fajb420/otr-prototype/otr-camunda-process:lat
-est
+      - image: docker26011999/otr-camunda-process
+#      - image: camunda/camunda-bpm-platform
         imagePullPolicy: Always
         name: service
         ports:
@@ -26,6 +26,7 @@ est
           protocol: TCP
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -34,24 +35,29 @@ metadata:
     app: camunda
 spec:
   type: ClusterIP
-ports:
+  ports:
     - port: 8080
       targetPort: 8080
       protocol: TCP
       name: http
   selector:
     app: camunda
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: camunda
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /$1$2
   labels:
     app: camunda
 spec:
+  ingressClassName: "public"
   rules:
   - http:
       paths:
       - backend:
           serviceName: camunda
           servicePort: http
-        path: /lolo
+        path: /camunda
+        pathType: Prefix

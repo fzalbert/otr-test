@@ -19,12 +19,13 @@ spec:
       - image: registry.gitlab.com/fajb420/otr-prototype/autorizeservice:latest
         imagePullPolicy: Always
         name: service
-ports:
+        ports:
         - containerPort: 8090
           name: service
           protocol: TCP
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+---
 apiVersion: v1
 kind: Service
 metadata:
