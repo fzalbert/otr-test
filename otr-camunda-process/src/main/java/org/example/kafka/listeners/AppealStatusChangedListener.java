@@ -1,9 +1,7 @@
 package org.example.kafka.listeners;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dto.appeal.AppealStatusChangedDto;
 import org.example.service.appeals.CamundaAppealService;
 import org.example.utils.JsonReaderHelper;
@@ -31,10 +29,13 @@ public class AppealStatusChangedListener {
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException {
 
+        System.out.println("method appealCreatedCommandReceived: messageJson: " + messageJson);
         AppealStatusChangedDto response = jsonReader.read(messageJson, AppealStatusChangedDto.class);
 
-        if(response != null)
+        if(response != null){
+            System.out.print("method appealCreatedCommandReceived: response is not null");
             appealService.changeStatus(response);
+        }
     }
 
 }

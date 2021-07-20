@@ -2,9 +2,7 @@ package org.example.kafka.listeners;
 
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dto.appeal.Appeal;
 import org.example.service.appeals.CamundaAppealService;
 import org.example.utils.JsonReaderHelper;

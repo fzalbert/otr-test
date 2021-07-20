@@ -1,18 +1,10 @@
 package org.example.kafka.listeners;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngines;
-import org.camunda.bpm.engine.task.Task;
-import org.example.dto.appeal.Appeal;
-import org.example.dto.appeal.StatusAppealParser;
 import org.example.dto.report.Report;
 import org.example.service.report.CamundaReportService;
 import org.example.utils.JsonReaderHelper;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -21,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.List;
 
 
 @Component
@@ -39,10 +30,11 @@ public class ReportCreatedListener {
     @Transactional
     public void appealCreatedCommandReceived(String messageJson) throws JsonParseException, JsonMappingException, IOException, Exception {
 
+        System.out.println("method appealCreatedCommandReceived: messageJson: " + messageJson);
         Report response = jsonReader.read(messageJson, Report.class);
 
         if(response != null)
-        service.create(response);
+            service.create(response);
     }
 
 }

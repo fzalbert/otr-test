@@ -6,14 +6,11 @@ import org.camunda.bpm.engine.task.Task;
 import org.example.appeal.create.AppealActStatus;
 import org.example.dto.appeal.Appeal;
 import org.example.dto.appeal.AppealStatusChangedDto;
-import org.example.dto.user.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 
 @Service
 public class CamundaAppealService implements AppealService {
@@ -41,6 +38,8 @@ public class CamundaAppealService implements AppealService {
 
     @Override
     public void changeStatus(AppealStatusChangedDto statusChangedDto) {
+
+        System.out.println("method changeStatus: Task status" + statusChangedDto.getTaskStatus());
         Appeal appeal = new Appeal(statusChangedDto);
 
         Task task = taskService
@@ -48,12 +47,16 @@ public class CamundaAppealService implements AppealService {
                 .processInstanceBusinessKey(appeal.getId().toString())
                 .singleResult();
 
+        System.out.println("method changeStatus: taskService entity Task: " + task);
+
         switch (statusChangedDto.getTaskStatus()){
             case "NEEDCHECK":
+                System.out.println("method changeStatus: Enter to NEEDCHECK case: ");
                 if(task.getTaskDefinitionKey().equals("change_appeal_key"))
                     this.update(appeal, task);
                 break;
             case "NEEDUPDATE":
+                System.out.println("method changeStatus: Enter to NEEDUPDATE case: ");
                 if(task.getTaskDefinitionKey().equals("check_appeal_key")){
                     Map<String, Object> variables = appeal.toVariableMap();
                     variables.put("status", AppealActStatus.Change);
@@ -61,6 +64,7 @@ public class CamundaAppealService implements AppealService {
                 }
                 break;
             case "NEEDREJECT":
+                System.out.println("method changeStatus: Enter to NEEDREJECT case: ");
                 if(task.getTaskDefinitionKey().equals("check_appeal_key")) {
                     Map<String, Object> variables = new HashMap<>();
                     variables.put("status", AppealActStatus.Denied);
@@ -68,6 +72,7 @@ public class CamundaAppealService implements AppealService {
                 }
                 break;
             case "NEEDSUCCESS":
+                System.out.println("method changeStatus: Enter to NEEDSUCCESS case: ");
                 if(task.getTaskDefinitionKey().equals("check_appeal_key")) {
                     Map<String, Object> variables = new HashMap<>();
                     variables.put("status", AppealActStatus.Allow);
@@ -88,13 +93,11 @@ public class CamundaAppealService implements AppealService {
         if(task == null)
             return;
 
-        taskService
-                .setAssignee(task.getId(), login);
+        taskService.setAssignee(task.getId(), login);
     }
 
     private void update(Appeal appeal, Task task) {
-        taskService
-                .complete(task.getId(), appeal.toVariableMap());
+        taskService.complete(task.getId(), appeal.toVariableMap());
     }
 
 }
