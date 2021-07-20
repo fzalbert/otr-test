@@ -2,7 +2,6 @@ package org.example.service.appeals;
 
 import org.example.dto.appeal.Appeal;
 import org.example.dto.appeal.AppealStatusChangedDto;
-import org.example.dto.user.Employee;
 
 public interface AppealService {
 

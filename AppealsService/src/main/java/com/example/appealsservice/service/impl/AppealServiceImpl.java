@@ -279,7 +279,7 @@ public class AppealServiceImpl implements AppealService {
         taskRepository.save(newTask);
 
         ModelMessage model = ModelConvertor.Convert(appeal.getEmail(),
-                appeal.getNameOrg(), "APPEAL IS UPDATE", appeal.getId().toString(), MessageType.UPDATE);
+                appeal.getNameOrg(), appeal.getId().toString(),"APPEAL IS UPDATE",  MessageType.UPDATE);
 
         msgSender.sendEmail(model);
         msgSender.sendChangeStatus(new AppealStatusChangedDto(appeal, "NEEDCHECK"));
