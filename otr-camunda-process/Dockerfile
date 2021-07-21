@@ -1,8 +1,18 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jdk-alpine as build
 
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+RUN ./mvnw install -DskipTests
+RUN ./mvnw package spring-boot:repackage
+#RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+FROM openjdk:8-jdk-alpine
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+COPY --from=build /target/*.jar app.jar
+
+ENTRYPOINT ["java","-jar","app.jar"]
