@@ -18,7 +18,7 @@ public class ShortClientDto {
 
     public ShortClientDto(Client client) {
         BeanUtils.copyProperties(client, this);
-        this.email = client.getUser().getLogin();
+        this.email = client.getEmail();
         this.isActive = client.getUser().isActive();
     }
 }
