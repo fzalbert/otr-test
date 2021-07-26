@@ -14,19 +14,11 @@ import javax.validation.constraints.Size;
 public class UpdateEmployeeDto {
 
     @Nullable
-    @Size(min = 5, max = 20, message = "Длина логина минимум 5 символов, максимум 20")
-    private String login;
-
-    @Nullable
-    @Size(min = 5, message = "Длина имени минимум 5 символов")
+    @Size(min = 2, message = "Длина имени минимум 2 символа")
     private String firstName;
 
     @Nullable
-    @Size(min = 5, message = "Длина пароля минимум 5 символов")
-    private String password;
-
-    @Nullable
-    @Size(min = 5, message = "Длина фамилии минимум 5 символов")
+    @Size(min = 2, message = "Длина фамилии минимум 2 символа")
     private String lastName;
 
     @Nullable

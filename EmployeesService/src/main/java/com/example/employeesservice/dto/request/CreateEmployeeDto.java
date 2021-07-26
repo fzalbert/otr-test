@@ -19,11 +19,11 @@ public class CreateEmployeeDto {
     private String password;
 
     @NotNull
-    @Size(min = 5, message = "Длина имени минимум 5 символов")
+    @Size(min = 2, message = "Длина имени минимум 2 символа")
     private String firstName;
 
     @NotNull
-    @Size(min = 5, message = "Длина фамилии минимум 5 символов")
+    @Size(min = 2, message = "Длина фамилии минимум 2 символа")
     private String lastName;
 
     @NotNull

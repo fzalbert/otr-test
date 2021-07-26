@@ -46,7 +46,7 @@ public class EmployeeController {
      */
     @PostMapping("update")
     public EmployeeDto update(@RequestParam long employeeId, @RequestBody UpdateEmployeeDto request) {
-        log.debug("Request method: employee/update. User login = " + request.getLogin());
+        log.debug("Request method: employee/update. User login = " + request.getEmail());
         return employeeService.update(request, employeeId);
     }
 

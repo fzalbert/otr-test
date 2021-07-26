@@ -207,15 +207,6 @@ public class EmployeeServiceImp implements EmployeeService {
     private Employee dtoToEntity(UpdateEmployeeDto request, Employee employee) {
         CryptoHelper.setSecretKey(secretKey);
         BeanUtils.copyProperties(request, employee);
-
-        var person = new Person();
-        BeanUtils.copyProperties(request, person, "password");
-        if (request.getPassword() != null)
-            person.setPassword(CryptoHelper.HMAC(request.getPassword()));
-        person.setRegistrationDate(new Date());
-        person.setActive(true);
-        employee.setPerson(person);
-
         return employee;
     }
 }
