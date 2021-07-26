@@ -84,7 +84,11 @@ const AppealCreation = (props:any) => {
             })
             .catch((err:AxiosError) => {
                 console.log(err)
-                setError(err.response?.data.message)
+                if(err.response?.status == 413) {
+                    setError("Файл не должен превышать 10 Мб")
+                } else {
+                    setError(err.response?.data.message)
+                }
                 setTimeout(() => setError(""), 5000);
             })
     }

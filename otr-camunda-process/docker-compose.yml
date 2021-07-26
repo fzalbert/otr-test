@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Ivan230691
+      - POSTGRES_DB=camunda
+
+  app:
+    image: 'albert2020/otr-camunda:latest'
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/camunda
+#      - SPRING_DATASOURCE_USERNAME=compose-postgres
+#      - SPRING_DATASOURCE_PASSWORD=compose-postgres
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
