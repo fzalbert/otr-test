@@ -34,12 +34,12 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
 #    url: jdbc:postgresql://192.168.1.108:5432/camunda
-    url: jdbc:postgresql://10.0.1.1:5432/camunda
+    url: jdbc:postgresql://db:5432/camunda
     username: postgres
     password: Ivan230691
 
     hikari:
-      jdbc-url: jdbc:postgresql://10.0.1.1:5432/camunda
+      jdbc-url: jdbc:postgresql://db:5432/camunda
 #      jdbc-url: jdbc:postgresql://192.168.1.108:5432/camunda
       username: postgres
       password: Ivan230691
